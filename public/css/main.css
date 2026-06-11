@@ -15,7 +15,6 @@
     --d2-color: #c1c1c1;
 }
 
-/* ========== BODY ========== */
 body {
     width: 100%;
     min-height: 100vh;
@@ -96,4 +95,34 @@ footer {
 
 body.sidebar-collapsed #sidebarToggle {
     left: 0 !important;
+}
+
+
+/* SCROLLBAR */
+
+body {
+  --sb-track-color: #232E33;
+  --sb-thumb-color: #ffffff;
+  --sb-size: 3px;
+}
+
+body::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 3px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 3px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+      scrollbar-color: var(--sb-thumb-color)
+                     var(--sb-track-color);
+  }
 }

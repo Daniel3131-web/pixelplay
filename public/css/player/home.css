@@ -1,0 +1,45 @@
+.card {
+    cursor: pointer;
+    -webkit-box-shadow: 0px 0px 7px 0.5px #ffffff;
+    box-shadow: 0px 0px 7px 0.5px #ffffff;
+    transition: all 0.25s ease-in-out;
+    &:hover {
+        transform: scale(1.025);
+    }
+}
+
+span {
+    font-size: 1rem;
+}
+
+span,
+h5,
+img {
+    user-select: none;
+}
+
+.scroll-frame {
+    --sb-track-color: #232e33;
+    --sb-thumb-color: #ffffff;
+    --sb-size: 3px;
+}
+
+.scroll-frame::-webkit-scrollbar {
+    width: var(--sb-size);
+}
+
+.scroll-frame::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 3px;
+}
+
+.scroll-frame::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 3px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+    .scroll-frame {
+        scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    }
+}

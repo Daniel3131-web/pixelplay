@@ -20,7 +20,7 @@
 
     <header class="container-fluid z-3 p-0 position-relative">
         {{-- Botão de toggle da sidebar --}}
-        <button class="btn mb-2 position-absolute" id="sidebarToggle" style="top: 0; left: 270px;">
+        <button class="btn position-fixed" id="sidebarToggle" style="top: 5%; left: 270px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                 class="bi bi-chevron-left text-white" id="sidebarArrow" viewBox="0 0 16 16">
                 <path fill-rule="evenodd"

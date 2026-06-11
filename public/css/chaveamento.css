@@ -1,0 +1,144 @@
+@import '/css/main.css';
+
+.bracket-wrapper {
+    z-index: 2;
+    overflow-x: scroll;
+}
+
+.bracket-wrapper {
+  --sb-track-color: #232E33;
+  --sb-thumb-color: #ffffff;
+  --sb-size: 3px;
+}
+
+.bracket-wrapper::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+.bracket-wrapper::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 3px;
+}
+
+.bracket-wrapper::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 3px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+.bracket-wrapper {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
+
+.bracket-container {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    min-width: 900px;
+    padding: 3rem;
+    background-color: var(--a-color);
+    border-radius: 2rem;
+}
+
+/* Coluna de rodada */
+.bracket-round {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 160px;
+}
+
+.bracket-round__title {
+    text-align: center;
+    font-size: .875rem;
+    font-weight: 700;
+    color: var(--d-color);
+    margin-bottom: .5rem;
+}
+
+.bracket-round__matches {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex-grow: 1;
+    gap: 1rem;
+}
+
+/* Conector entre rodadas */
+.bracket-connector {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    min-width: 24px;
+    flex-shrink: 0;
+    padding: 0 2px;
+}
+
+/* Partida (par de slots) */
+.bracket-match {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+    &:hover {
+        transform: scale(1.0125);
+    }
+}
+
+/* Slot individual (jogador) */
+.bracket-slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    padding: .35rem .5rem;
+    background: #fff;
+    font-size: .875rem;
+    gap: 4px;
+}
+
+.bracket-slot__seed {
+    font-size: .75rem;
+    color: #6c757d;
+    min-width: 14px;
+}
+
+.bracket-slot__name {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bracket-slot__score {
+    font-size: .75rem;
+}
+
+/* Estados */
+.bracket-slot--winner {
+    /* padrão, sem opacidade */
+}
+
+.bracket-slot--winner .bracket-slot__name {
+    font-weight: 700;
+}
+
+.bracket-slot--loser {
+    opacity: .5;
+}
+
+.bracket-slot--live {
+    border-color: #ff0707;
+}
+
+.bracket-slot--pending .bracket-slot__score {
+    /* badge warning já cuida disso */
+}
+
+/* Utilitário de recuo para alinhar semifinais/rodadas intermediárias */
+.bracket-match--indent-top    { margin-top: 40px; }
+.bracket-match--indent-bottom { margin-bottom: 40px; }

@@ -10,3 +10,6 @@ Route::get('/home', function () {
     return view('player.home');
 });
 
+Route::get('/torneio', function() {
+    return view('player.torneio');
+});
