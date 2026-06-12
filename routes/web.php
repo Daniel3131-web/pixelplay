@@ -1,15 +1,11 @@
 <?php
 
+use App\Http\Controllers\TournamentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('landing');
 });
 
-Route::get('/home', function () {
-    return view('player.home');
-});
-
-Route::get('/torneio', function() {
-    return view('player.torneio');
-});
+Route::get('/home', [TournamentController::class, 'index'])->name('tournaments.index');
+Route::get('/torneio/{id}', [TournamentController::class, 'show'])->name('tournaments.show');

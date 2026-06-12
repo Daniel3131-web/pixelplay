@@ -12,12 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
+            //-- Primary key
             $table->id();
-            $table->string('name');
+            //-- Nomes
+            $table->string('name'); // Nome real
+            $table->string('nickname')->unique()->nullable();
+            //-- Security
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            //-- Foto de Perfil
+            $table->string('avatar')->nullable();
+            //-- Time do jogador
+            $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
+            //-- Cargo
+            $table->enum('role', ['player', 'organizador', 'admin'])->default('player');
+            //-- Token
             $table->rememberToken();
+            //-- Tempo e data
             $table->timestamps();
         });
 

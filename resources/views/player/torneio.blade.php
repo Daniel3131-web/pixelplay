@@ -30,8 +30,8 @@
 
                     <div class="card-body d-flex flex-column bg-light rounded-bottom">
                         <div class="card-title fw-bold text mb-4">
-                            <h5>Torneio de Dragon Ball Fighter Z</h5>
-                            <span class="d-block text-muted fw-bold">ID 0000000000</span>
+                            <h5>{{ $Tournament->name }}</h5>
+                            <span class="d-block text-muted fw-bold">ID {{ $Tournament->id }}</span>
                         </div>
 
                         <div class="row text-center align-items-center mt-auto">
@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-4 border-end">
                                 <span class="d-block text-muted fw-bold">VAGAS</span>
-                                <span class="fw-bold text-danger">8/8</span>
+                                <span class="fw-bold text-danger"> {{ $Tournament->participants }} / {{ $Tournament->participants }}</span>
                             </div>
                             <div class="col-5">
                                 <span class="d-block text-muted fw-bold">PREMIAÇÃO</span>
