@@ -21,7 +21,23 @@ class TournamentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Tournament = new Tournament;
+
+        $Tournament->name = $request->name;
+
+        // IMAGE UPLOAD
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+
+            $requestImage = $request->image;
+            $extension = $requestImage->extension();
+            $imageName = md5($requestImage->getClientOriginalName() . strtotime("now")) . "." . $extension;
+
+            $requestImage->move(public_path('/assets/tournaments/banner/'), $imageName);
+
+            $Tournament->img = "/assets/tournaments/banner/" . $imageName;
+        }
+
+        $Tournament->save();
     }
 
     /**
@@ -29,7 +45,12 @@ class TournamentController extends Controller
      */
     public function show($id)
     {
-        $Tournament = Tournament::findOrFail($id);
+        $Tournament = Tournament::with([
+            'matches.teamA',
+            'matches.teamB',
+            'matches.winner'
+        ])->findOrFail($id);
+
         return view('player.torneio', ['Tournament' => $Tournament]);
     }
 

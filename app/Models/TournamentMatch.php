@@ -48,4 +48,13 @@ class TournamentMatch extends Model
         return $this->belongsTo(Team::class, 'team_b_id');
     }
 
+    /**
+     * Relacionamento: O time vencedor da partida.
+     */
+    public function winner(): BelongsTo
+    {
+        // Aponta para a tabela 'teams' usando a coluna estrangeira 'winner_id'
+        return $this->belongsTo(Team::class, 'winner_id');
+    }
+
 }

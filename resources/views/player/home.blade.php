@@ -37,7 +37,7 @@
                         <!-- CARD -->
                         <div class="col-12 col-md-6" onclick="window.location.href='/torneio/{{ $Tournament->id }}'">
                             <div class="card border-2">
-                                <img src="/assets/cards/card.png" class="card-img-top" alt="Foto do Torneio ou Evento" style="height: 150px; object-fit: cover;">
+                                <img src="{{ $Tournament->img }}" class="card-img-top" alt="banner do Torneio ou Evento" style="height: 150px; object-fit: cover;">
                                 <div class="card-img-overlay d-flex flex-column justify-content-between p-3">
                                     <div class="d-flex justify-content-between align-items-start">
                                         @if ($Tournament->live == true)
@@ -72,7 +72,7 @@
                                     <div class="row text-center align-items-center mt-auto">
                                         <div class="col border-end">
                                             <span class="d-block text-muted fw-bold">DATA</span>
-                                            <div class="d-flex gap-2">
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
                                                 <span class="fw-bold">{{ $Tournament->start_date }}</span>
                                                 <span class="fw-bold"> - </span>
                                                 <span class="fw-bold"> {{ $Tournament->end_date }}</span>

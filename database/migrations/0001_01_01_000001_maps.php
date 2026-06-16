@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             //--
             $table->string('name');
-            $table->string('game');
+            $table->enum('category', ['valorant','cs2','lol','mlbb','ow2','mr']);
             $table->string('img');
             //-- Tempo e data
             $table->timestamps();

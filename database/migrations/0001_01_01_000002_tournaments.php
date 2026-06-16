@@ -13,13 +13,13 @@ return new class extends Migration
     {
        Schema::create('tournaments', function (Blueprint $table) {
             //-- Primary key
-            $table->bigInteger('id')->unsigned()->primary();
+            $table->id();
             //-- Informações Básicas
             $table->string('name');
             $table->text('description')->nullable();
             $table->enum('category', ['valorant','cs2','lol','mlbb','ow2','mr']);
-            //-- Regras de Vagas
-            $table->enum('max_participants', ['4','8','16','32','64'])->default(4);
+            //-- Regras de Vagas (limite de participantes 64)
+            $table->enum('max_participants', ['4','8','16'])->default(4);
             $table->integer('current_participants')->default(0);
             //-- Status
             $table->boolean('live')->default(false);
@@ -34,6 +34,8 @@ return new class extends Migration
             $table->time('end_time');   // Horário estimado de término do dia
             //-- Datas de Inscrição
             $table->date('entry_date'); // Data limite para os times se inscreverem
+            //-- Url da imagem do torneio
+            $table->string('img')->nullable();
             //-- Tempo e data
             $table->timestamps();
         });

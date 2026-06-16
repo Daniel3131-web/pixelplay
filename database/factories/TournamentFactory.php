@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Model;
+use App\Models\TournamentMatch;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TournamentFactory extends Factory
@@ -17,7 +18,7 @@ class TournamentFactory extends Factory
         $categoriaSorteada = $this->faker->randomElement($categorias);
 
         // Sorteia uma quantidade de participantes válida baseada no enum
-        $max_vagas = ['4', '8', '16', '32', '64'];
+        $max_vagas = ['4', '8', '16'];
         $max_vaga = $this->faker->randomElement($max_vagas);
         $current_participants = mt_rand(0, $max_vaga);
 
@@ -54,9 +55,6 @@ class TournamentFactory extends Factory
         }
 
         return [
-
-            'id' => mt_rand(10000000, 99999999),
-            
             'name' => 'Torneio Grand Master de ' . ucfirst($categoriaSorteada),
             'description' => $this->faker->paragraph(3), // Gera um texto com 3 parágrafos de regras
             'category' => $categoriaSorteada,
@@ -75,5 +73,16 @@ class TournamentFactory extends Factory
             'start_time' => '13:00:00',
             'end_time' => '22:00:00',
         ];
+    }
+
+    /**
+     * Define a quantidade dinâmica de partidas que este torneio terá.
+     */
+    public function hasMatches(int $count): static
+    {
+        return $this->has(
+            TournamentMatch::factory()->count($count),
+            'matches'
+        );
     }
 }

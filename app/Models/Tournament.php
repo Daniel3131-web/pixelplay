@@ -28,7 +28,8 @@ class Tournament extends Model
         'end_date',
         'start_time',
         'end_time',
-        'entry_date'
+        'entry_date',
+        'img'
     ];
 
     protected function startDate(): Attribute

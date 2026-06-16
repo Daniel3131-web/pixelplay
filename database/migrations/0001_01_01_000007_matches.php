@@ -21,9 +21,9 @@ return new class extends Migration
             $table->foreignId('team_b_id')->nullable()->constrained('teams');
             $table->foreignId('winner_id')->nullable()->constrained('teams');;
             //--
-            $table->enum('stage', ['Oitavas de Final', 'Quartas de Final', 'Semifinais', 'Final']);
+            $table->enum('stage', ['Oitavas de Final','Quartas de Final', 'Semi Final', 'Final']);
             $table->string('order_of_keys');
-            $table->enum('match_status', ['Agendada', 'Em andamento', 'Finalizada', 'W.O.'])->default('Agendada');
+            $table->enum('match_status', ['Agendada', 'Em Andamento', 'Finalizada', 'W.O.'])->default('Agendada');
             //-- Tempo e data
             $table->timestamps();
         });

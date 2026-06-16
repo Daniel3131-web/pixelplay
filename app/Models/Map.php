@@ -9,4 +9,12 @@ class Map extends Model
 {
     /** @use HasFactory<\Database\Factories\MapFactory> */
     use HasFactory;
+
+     protected $fillable = [
+        'id',
+        'name',
+        'category',
+        'img',
+    ];
+    
 }
