@@ -13,7 +13,7 @@ class TournamentController extends Controller
     public function index()
     {
         $Tournaments = Tournament::all();
-        return view('player.home', ['Tournaments' => $Tournaments]);
+        return view('player.torneios', ['Tournaments' => $Tournaments]);
     }
 
     /**

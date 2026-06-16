@@ -10,7 +10,7 @@
 :root {
     --a-color: #202020;
     --b-color: #000000;
-    --c-color: #fcc92b;
+    --c-color: #2bb6fc;
     --d-color: #ffffff;
     --d2-color: #c1c1c1;
 }
@@ -36,7 +36,7 @@ header {
 footer {
     width: 100%;
     height: 20vh;
-    background-color: var(--a-color);
+    background-color: var(--d-color);
 }
 
 .icon {
@@ -46,29 +46,6 @@ footer {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-}
-
-.btn-custom {
-    background-color: var(--c-color);
-}
-
-.btn-custom:hover,
-.btn-custom:focus {
-    background-color: var(--c-color);
-    filter: brightness(0.9);
-}
-
-.nav-link {
-    color: var(--c-color);
-}
-
-.nav-link:hover {
-    color: var(--d-color);
-}
-
-.nav-link.active {
-    background-color: var(--c-color) !important;
-    color: var(--b-color) !important;
 }
 
 .sidebar {

@@ -38,7 +38,7 @@
                         <div class="col-12 col-md-6" onclick="window.location.href='/torneio/{{ $Tournament->id }}'">
                             <div class="card border-2">
                                 <img src="{{ $Tournament->img }}" class="card-img-top" alt="banner do Torneio ou Evento" style="height: 150px; object-fit: cover;">
-                                <div class="card-img-overlay d-flex flex-column justify-content-between p-3">
+                                {{-- <div class="card-img-overlay d-flex flex-column justify-content-between p-3">
                                     <div class="d-flex justify-content-between align-items-start">
                                         @if ($Tournament->live == true)
                                             <span class="badge bg-danger fs-6 shadow-sm opacity-100 d-flex align-items-center justify-content-center gap-2">
@@ -61,11 +61,11 @@
                                             <span class="badge bg-danger fs-6 shadow-sm opacity-100">Finalizado</span>
                                         @endif
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="card-body d-flex flex-column bg-light rounded-bottom">
                                         <div class="card-title fw-bold text mb-4">
-                                            <h5>{{ $Tournament->name }}</h5>
+                                            <h5 class="text-uppercase">{{ $Tournament->name }}</h5>
                                             <span class="d-block text-muted fw-bold">ID {{ $Tournament->id}}</span>
                                         </div>
                                         

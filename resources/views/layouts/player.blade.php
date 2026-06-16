@@ -27,66 +27,105 @@
                     d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
             </svg>
         </button>
-        <div class="d-flex flex-column flex-shrink-0 p-3 shadow-lg sidebar collapsed">
-            <a href="/"
-                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none sidebar-text">
-                <span class="fs-4">Pixelplay</span>
-            </a>
-            <hr>
+        <div class="d-flex flex-column flex-shrink-0 p-3 py-5 shadow-lg sidebar collapsed">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="#" class="nav-link active d-flex justify-content-center gap-3 align-items-center" aria-current="page">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trophy-fill" viewBox="0 0 16 16">
-                            <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935"/>
-                        </svg>
+                    <a href="{{ route('player.torneios') }}"
+                        class="nav-link @if(request()->routeIs('player.torneios')) active @endif"
+                        @if(request()->routeIs('player.torneios')) aria-current="page" @endif>
                         <span class="sidebar-text">Torneios e Eventos</span>
                     </a>
+
                     <a href="#" class="nav-link">
-                        <svg class="bi pe-none me-2" width="16" height="16">
-                            <use xlink:href="#home"></use>
-                        </svg>
                         <span class="sidebar-text">Meus Torneios e Eventos</span>
                     </a>
-                    <a href="#" class="nav-link">
-                        <svg class="bi pe-none me-2" width="16" height="16">
-                            <use xlink:href="#home"></use>
-                        </svg>
-                        <span class="sidebar-text">Meu Time</span>
+
+                    <a href="{{ route('player.times') }}"
+                        class="nav-link @if(request()->routeIs('player.times')) active @endif"
+                        @if(request()->routeIs('player.times')) aria-current="page" @endif>
+                        <span class="sidebar-text">Times</span>
                     </a>
                 </li>
             </ul>
             <hr>
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+            <div class="dropdown border-top border-secondary pt-3 mt-2">
+                <a href="#"
+                    class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2 py-1 rounded-3 user-dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/daniel3131-web.png" alt="" width="32" height="32"
-                        class="rounded-circle me-2">
-                    <strong class="sidebar-text">Daniel</strong>
+                    <div class="position-relative me-2">
+                        <img src="https://github.com/daniel3131-web.png" alt="Avatar de Daniel" width="36" height="36"
+                            class="rounded-circle border border-2 border-primary shadow-sm">
+                        <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-1"
+                            style="width: 10px; height: 10px;"></span>
+                    </div>
+                    <div class="d-flex flex-column text-start lh-sm sidebar-text">
+                        <strong class="fs-6">Daniel</strong>
+                        <span class="text-muted small" style="font-size: 0.75rem;">Jogador</span>
+                    </div>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                    <li><a class="dropdown-item" href="#">Meu perfil</a></li>
+
+                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-lg border-secondary animated-dropdown"
+                    style="min-width: 200px;">
                     <li>
-                        <hr class="dropdown-divider">
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+                            <i class="bi bi-person-vcard text-secondary fs-5"></i>
+                            <span>Meu perfil</span>
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="#">Minha carteira</a></li>
                     <li>
-                        <hr class="dropdown-divider">
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+                            <i class="bi bi-wallet2 text-success fs-5"></i>
+                            <span>Minha carteira</span>
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="#">Configurações</a></li>
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider border-secondary">
                     </li>
-                    <li><a class="dropdown-item text-red" href="#">SAIR</a></li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger-hover" href="/profile">
+                            <i class="bi bi-gear text-secondary fs-5"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider border-secondary">
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" href="#">
+                            <i class="bi bi-box-arrow-right fs-5"></i>
+                            <span>Sair da conta</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </header>
 
     <main class="d-flex flex-column py-3">
+        @if (session('msg'))
+            <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Mensagem</h5>
+                            <button type="button" class="btn-close" onclick="this.closest('.modal').remove()"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="msg">{{ session('msg') }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                onclick="this.closest('.modal').remove()">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
         @yield('content')
     </main>
 
-    <footer class="d-flex justify-content-between text-white p-3">
+    <footer class="d-flex justify-content-between p-3">
         <div class="icon"></div>
         <div class="d-flex flex-column justify-content-center">
             <p class="border-bottom text-center">&copy;{{ date('Y') }} Todos os direitos reservados</p>
@@ -121,7 +160,7 @@
                 ? 'rotate(180deg)'
                 : 'rotate(0deg)';
         });
-        
+
     </script>
 
 </body>

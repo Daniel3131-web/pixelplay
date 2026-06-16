@@ -17,6 +17,8 @@ return new class extends Migration
             //--
             $table->string('name');
             $table->string('acronym');
+            $table->enum('privacy', ['public', 'private'])->default('public');
+            $table->string('password')->nullable();
             $table->string('img');
             //-- Tempo e data
             $table->timestamps();

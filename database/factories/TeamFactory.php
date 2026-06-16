@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User; 
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @extends Factory<Team>
@@ -42,6 +43,10 @@ class TeamFactory extends Factory
 
         if ($teamCount < count($realTeams)) {
             $selectedTeam = $realTeams[$teamCount];
+
+            $selectedTeam['privacy'] = 'public'; 
+            $selectedTeam['password'] = null;
+
             $teamCount++;
         } else {
             // Caso você queira criar mais de 16 times futuramente, o fallback evita quebras
@@ -49,6 +54,8 @@ class TeamFactory extends Factory
             $selectedTeam = [
                 'name'    => 'Team ' . ucfirst($word),
                 'acronym' => strtoupper(substr($word, 0, 3)),
+                'privacy' => 'private',
+                'password' => Hash::make('12345678'),
                 'img'     => 'teams/default.png'
             ];
         }
@@ -56,7 +63,10 @@ class TeamFactory extends Factory
         return [
             'name'    => $selectedTeam['name'],
             'acronym' => $selectedTeam['acronym'],
-            'img'     => $selectedTeam['img'],
+            'privacy'     => $selectedTeam['privacy'],
+            'password' => $selectedTeam['password'],
+            'img'     => $selectedTeam['img']
+            
         ];
     }
 }

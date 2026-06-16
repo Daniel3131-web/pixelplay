@@ -17,7 +17,7 @@
                     <img src="{{ $Tournament->img }}" class="card-img-top" alt="banner do Torneio ou Evento"
                         style="height: 400px; object-fit: cover;">
 
-                    <div class="card-img-overlay d-flex flex-column justify-content-between p-3" style="max-height: 400px;">
+                    {{-- <div class="card-img-overlay d-flex flex-column justify-content-between p-3" style="max-height: 400px;">
                         <div class="d-flex justify-content-between align-items-start">
 
                             @if ($Tournament->live == true)
@@ -48,7 +48,7 @@
                         <div class="d-flex justify-content-center align-items-center w-100 h-100">
                             <video controls width="90%" height="90%" src="" class="object-fit-contain rounded"></video>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="card-body d-flex flex-column bg-light rounded-bottom">
 

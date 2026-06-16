@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
     
-        for ($x=0; $x < 5; $x++) { 
+        for ($x=0; $x < 1; $x++) { 
             
             // 1. Cria 16 times
             $teams = Team::factory()->count(16)->create();

@@ -18,8 +18,8 @@
                 <h1 class="text-white mb-4">PIXEL PLAY</h1>
                 
                 <div class="d-flex flex-column align-items-center gap-2 max-width-buttons mx-auto">
-                    <a href="#" class="btn btn-custom w-75">Entrar</a>
-                    <a href="#" class="btn btn-outline-light w-50">Criar conta</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary w-75">Entrar</a>
+                    <a href="{{ route('register') }}" class="btn btn-outline-light w-50">Criar conta</a>
                 </div>
             </div>
         </div>
@@ -161,8 +161,8 @@
                 <h1 class="text-white mb-4">PIXEL PLAY</h1>
                 
                 <div class="d-flex flex-column align-items-center gap-2 max-width-buttons mx-auto">
-                    <a href="#" class="btn btn-custom w-75">Entrar</a>
-                    <a href="#" class="btn btn-outline-light w-50">Criar conta</a>
+                    <a href=" {{ route('login') }} " class="btn btn-primary w-75">Entrar</a>
+                    <a href=" {{ route('register') }}" class="btn btn-outline-light w-50">Criar conta</a>
                 </div>
             </div>
         </div>

@@ -26,7 +26,7 @@
         @yield('content')
     </main>
 
-    <footer class="d-flex justify-content-between text-white p-3">
+    <footer class="d-flex justify-content-between p-3">
         <div class="icon"></div>
         <div class="d-flex flex-column justify-content-center">
             <p class="border-bottom text-center">&copy;{{ date('Y') }} Todos os direitos reservados</p>
