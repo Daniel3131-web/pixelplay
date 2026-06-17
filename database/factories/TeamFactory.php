@@ -44,8 +44,9 @@ class TeamFactory extends Factory
         if ($teamCount < count($realTeams)) {
             $selectedTeam = $realTeams[$teamCount];
 
-            $selectedTeam['privacy'] = 'public'; 
-            $selectedTeam['password'] = null;
+            $selectedTeam['privacy'] = 'private'; 
+            $selectedTeam['password'] = Hash::make('12345678');
+            $selectedTeam['description'] = 'Time de Esport Profissional';
 
             $teamCount++;
         } else {
@@ -54,8 +55,9 @@ class TeamFactory extends Factory
             $selectedTeam = [
                 'name'    => 'Team ' . ucfirst($word),
                 'acronym' => strtoupper(substr($word, 0, 3)),
-                'privacy' => 'private',
-                'password' => Hash::make('12345678'),
+                'privacy' => 'public',
+                'password' => null,
+                'description' => 'Time de Esport Amador',
                 'img'     => 'teams/default.png'
             ];
         }

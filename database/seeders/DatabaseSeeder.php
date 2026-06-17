@@ -14,6 +14,20 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
     public function run(): void
     {
+        // Cria uma conta organizadora
+        User::factory()->count(1)->create([
+            'name' => 'organizador',
+            'email' => 'organizador@gmail.com',
+            'password' => '1234',
+            'role' => 'organizador',
+        ]);
+        // Cria uma conta de player
+        User::factory()->count(1)->create([
+            'name' => 'Player',
+            'email' => 'player@gmail.com',
+            'password' => '1234',
+            'role' => 'player',
+        ]);
     
         for ($x=0; $x < 1; $x++) { 
             
@@ -29,7 +43,7 @@ class DatabaseSeeder extends Seeder
 
             // 3. Cria o torneio
             $tournament = Tournament::factory()->create([
-                'name'                 => 'VALORANT Torneio '.$x,
+                'name'                 => 'Torneio '.$x,
                 'category'             => 'valorant',
                 'max_participants'     => '16',
                 'current_participants' => 16,

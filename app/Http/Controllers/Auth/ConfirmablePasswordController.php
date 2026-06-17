@@ -24,10 +24,12 @@ class ConfirmablePasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        if (! Auth::guard('web')->validate([
-            'email' => $request->user()->email,
-            'password' => $request->password,
-        ])) {
+        if (
+            !Auth::guard('web')->validate([
+                'email' => $request->user()->email,
+                'password' => $request->password,
+            ])
+        ) {
             throw ValidationException::withMessages([
                 'password' => __('auth.password'),
             ]);
@@ -35,6 +37,18 @@ class ConfirmablePasswordController extends Controller
 
         $request->session()->put('auth.password_confirmed_at', time());
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        if ($user->role === 'player') {
+            return redirect()->intended(route('player.torneios'));
+        }
+
+        if ($user->role === 'organizador') {
+            return redirect()->intended(route('org.dashboard'));
+        }
+
+        // Fallback caso seja um admin ou role indefinida
+        return redirect('/');
+
     }
 }

@@ -11,9 +11,25 @@ class TournamentController extends Controller
      * Display a listing of the resource.
      */
     public function index()
+    {   
+        $search = request('search');
+
+        if($search) {
+            $tournaments = Tournament::where([
+                ['name', 'like', '%'.$search.'%']
+            ])->orWhere([
+                ['category', 'like', '%'.$search.'%']
+            ])->get();
+        } else {
+            $tournaments = Tournament::all();
+        }
+
+        return view('player.torneios', ['tournaments' => $tournaments, 'search' => $search]);
+    }
+
+    public function create()
     {
-        $Tournaments = Tournament::all();
-        return view('player.torneios', ['Tournaments' => $Tournaments]);
+        return view('org.torneio-create');
     }
 
     /**
@@ -21,9 +37,9 @@ class TournamentController extends Controller
      */
     public function store(Request $request)
     {
-        $Tournament = new Tournament;
+        $tournament = new Tournament;
 
-        $Tournament->name = $request->name;
+        $tournament->name = $request->name;
 
         // IMAGE UPLOAD
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
@@ -34,10 +50,10 @@ class TournamentController extends Controller
 
             $requestImage->move(public_path('/assets/tournaments/banner/'), $imageName);
 
-            $Tournament->img = "/assets/tournaments/banner/" . $imageName;
+            $tournament->img = "/assets/tournaments/banner/" . $imageName;
         }
 
-        $Tournament->save();
+        $tournament->save();
     }
 
     /**
@@ -45,13 +61,13 @@ class TournamentController extends Controller
      */
     public function show($id)
     {
-        $Tournament = Tournament::with([
+        $tournament = Tournament::with([
             'matches.teamA',
             'matches.teamB',
             'matches.winner'
         ])->findOrFail($id);
 
-        return view('player.torneio', ['Tournament' => $Tournament]);
+        return view('player.torneio', ['Tournament' => $tournament]);
     }
 
     /**

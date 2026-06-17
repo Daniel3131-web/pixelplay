@@ -28,7 +28,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('player.torneios', absolute: false));
+        $user = Auth::user();
+
+        if ($user->role === 'player') {
+            return redirect()->intended(route('player.torneios'));
+        }
+
+        if ($user->role === 'organizador') {
+            return redirect()->intended(route('org.dashboard'));
+        }
+
+        // Fallback caso seja um admin ou role indefinida
+        return redirect('/');
     }
 
     /**

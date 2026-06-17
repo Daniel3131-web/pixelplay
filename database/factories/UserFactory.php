@@ -15,11 +15,10 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name(), // Gera um nome real aleatório (ex: "Daniel Silva")
-            'nickname' => $this->faker->unique()->userName(), // Gera um nick único (ex: "dark_knight99")
             'email' => $this->faker->unique()->safeEmail(), // Gera um e-mail válido falso
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // Todos os usuários de teste terão a senha "password"
-            'avatar' => 'avatars/default.png',
+            'img' => '/assets/profiles/avatar/default.png',
             'role' => 'player',
             'remember_token' => Str::random(10),
         ];

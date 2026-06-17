@@ -1,43 +1,27 @@
-@import '/css/main.css';
-
+/* Container principal com rolagem horizontal */
 .bracket-wrapper {
     z-index: 2;
-    overflow-x: scroll;
+    overflow-x: auto;
+    padding-bottom: 20px;
 }
 
 .bracket-wrapper {
-  --sb-track-color: #232E33;
-  --sb-thumb-color: #ffffff;
-  --sb-size: 3px;
+    --sb-track-color: #232E33;
+    --sb-thumb-color: #ffffff;
+    --sb-size: 3px;
 }
 
-.bracket-wrapper::-webkit-scrollbar {
-  width: var(--sb-size);
-}
-
-.bracket-wrapper::-webkit-scrollbar-track {
-  background: var(--sb-track-color);
-  border-radius: 3px;
-}
-
-.bracket-wrapper::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb-color);
-  border-radius: 3px;
-}
-
-@supports not selector(::-webkit-scrollbar) {
-.bracket-wrapper {
-    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
-  }
-}
+.bracket-wrapper::-webkit-scrollbar { height: var(--sb-size); }
+.bracket-wrapper::-webkit-scrollbar-track { background: var(--sb-track-color); border-radius: 3px; }
+.bracket-wrapper::-webkit-scrollbar-thumb { background: var(--sb-thumb-color); border-radius: 3px; }
 
 .bracket-container {
     display: flex;
     align-items: stretch;
-    gap: 0;
+    gap: 1rem;
     min-width: 900px;
     padding: 3rem;
-    background-color: var(--a-color);
+    background-color: #1f1f1f; /* Ajuste conforme seu design */
     border-radius: 2rem;
 }
 
@@ -53,8 +37,9 @@
     text-align: center;
     font-size: .875rem;
     font-weight: 700;
-    color: var(--d-color);
-    margin-bottom: .5rem;
+    color: #495057;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
 }
 
 .bracket-round__matches {
@@ -65,7 +50,7 @@
     gap: 1rem;
 }
 
-/* Conector entre rodadas */
+/* Conector de linhas (ajuste fino) */
 .bracket-connector {
     display: flex;
     flex-direction: column;
@@ -73,38 +58,39 @@
     align-items: center;
     min-width: 24px;
     flex-shrink: 0;
-    padding: 0 2px;
 }
 
-/* Partida (par de slots) */
+/* Partida */
 .bracket-match {
     display: flex;
     flex-direction: column;
     gap: 2px;
     cursor: pointer;
-    transition: all 0.25s ease-in-out;
-    &:hover {
-        transform: scale(1.0125);
-    }
+    transition: transform 0.25s ease;
+    padding: 10px 0;
 }
 
-/* Slot individual (jogador) */
+.bracket-match:hover {
+    transform: scale(1.02);
+}
+
+/* Slot do jogador */
 .bracket-slot {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border: 1px solid #dee2e6;
     border-radius: .375rem;
-    padding: .35rem .5rem;
+    padding: .5rem;
     background: #fff;
     font-size: .875rem;
-    gap: 4px;
+    gap: 8px;
 }
 
 .bracket-slot__seed {
     font-size: .75rem;
     color: #6c757d;
-    min-width: 14px;
+    font-weight: bold;
 }
 
 .bracket-slot__name {
@@ -114,31 +100,26 @@
     white-space: nowrap;
 }
 
-.bracket-slot__score {
-    font-size: .75rem;
-}
-
 /* Estados */
 .bracket-slot--winner {
-    /* padrão, sem opacidade */
+    border-left: 4px solid #198754; /* Verde para vencedor */
 }
 
 .bracket-slot--winner .bracket-slot__name {
     font-weight: 700;
+    color: #198754;
 }
 
 .bracket-slot--loser {
-    opacity: .5;
+    opacity: 0.6;
+    background: #f8f9fa;
 }
 
 .bracket-slot--live {
-    border-color: #ff0707;
+    border-color: #dc3545;
+    box-shadow: 0 0 5px rgba(220, 53, 69, 0.3);
 }
 
-.bracket-slot--pending .bracket-slot__score {
-    /* badge warning já cuida disso */
-}
-
-/* Utilitário de recuo para alinhar semifinais/rodadas intermediárias */
-.bracket-match--indent-top    { margin-top: 40px; }
+/* Recuos para alinhamento das chaves */
+.bracket-match--indent-top { margin-top: 40px; }
 .bracket-match--indent-bottom { margin-bottom: 40px; }

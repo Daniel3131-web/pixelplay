@@ -16,7 +16,8 @@ return new class extends Migration
             $table->id();
             //--
             $table->string('name');
-            $table->string('acronym');
+            $table->string('acronym', 5);
+            $table->text('description')->default('Descrição vazia');
             $table->enum('privacy', ['public', 'private'])->default('public');
             $table->string('password')->nullable();
             $table->string('img');

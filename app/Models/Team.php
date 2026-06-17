@@ -22,6 +22,7 @@ class Team extends Model
         'id',
         'name',
         'acronym',
+        'description',
         'privacy',
         'password',
         'img'

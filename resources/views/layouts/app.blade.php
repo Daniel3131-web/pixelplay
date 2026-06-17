@@ -20,9 +20,9 @@
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
+                    <a href="{{ route('player.torneios') }}">
+                        <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    </a>
                 </header>
             @endisset
 

@@ -1,5 +1,9 @@
 @import '/public/css/main.css';
 
+body {
+    padding: 0;
+}
+
 .img {
     background-color: var(--d2-color);
     background-position: center;

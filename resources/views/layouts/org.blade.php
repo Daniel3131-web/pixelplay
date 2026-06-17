@@ -20,40 +20,35 @@
     </button>
 
     <aside class="d-flex flex-column p-3 text-white sidebar border-end border-dark shadow">
-        <div class="d-flex gap-3 align-items-center mb-4 px-2 pt-3">
-            <i class="bi bi-controller text-primary fs-3 me-2"></i>
-            <span class="fs-4 fw-bold tracking-wide">Pixelplay</span>
+        <div class="d-flex flex-column mb-4 px-2 pt-3">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-shield-lock-fill text-primary fs-3 me-2"></i>
+                <span class="fs-4 fw-bold tracking-wide">Pixelplay</span>
+            </div>
         </div>
 
         <hr class="opacity-25 my-2">
 
         <nav class="nav flex-column gap-1 mb-auto pt-2">
-            <a href="{{ route('player.torneios') }}" class="nav-link-custom @if(request()->routeIs('player.torneios')) active @endif">
+            <a href="{{ route('org.dashboard') }}" class="nav-link-custom @if(request()->routeIs('org.dashboard')) active @endif">
+                <i class="bi bi-speedometer2 fs-5"></i>
+                <span>Painel Geral</span>
+            </a>
+
+            <a href="#" class="nav-link-custom">
                 <i class="bi bi-trophy fs-5"></i>
-                <span>Torneios</span>
+                <span>Gerenciar Torneios</span>
             </a>
 
             <a href="#" class="nav-link-custom">
-                <i class="bi bi-calendar-event fs-5"></i>
-                <span>Eventos</span>
+                <i class="bi bi-shield-check fs-5"></i>
+                <span>Validar Equipes</span>
             </a>
 
             <a href="#" class="nav-link-custom">
-                <i class="bi bi-bookmark-star fs-5"></i>
-                <span>Minhas Inscrições</span>
+                <i class="bi bi-graph-up-arrow fs-5"></i>
+                <span>Relatórios</span>
             </a>
-
-            <a href="{{ route('player.times') }}" class="nav-link-custom @if(request()->routeIs('player.times*')) active @endif">
-                <i class="bi bi-people fs-5"></i>
-                <span>Procurar Times</span>
-            </a>
-
-            @if(Auth::user()->team_id)
-                <a href="{{ route('player.time.show', Auth::user()->team_id) }}" class="nav-link-custom @if(request()->is('time/' . Auth::user()->team_id)) active @endif">
-                    <i class="bi bi-columns-gap fs-5"></i>
-                    <span>Dashboard do Time</span>
-                </a>
-            @endif
         </nav>
 
         <div class="dropdown border-top border-secondary pt-3 mt-auto">
@@ -71,21 +66,15 @@
                 </div>
                 <div class="d-flex flex-column text-start lh-sm">
                     <strong class="fs-6 text-truncate" style="max-width: 150px;">{{ Auth::user()->name }}</strong>
-                    <span class="text-white small" style="font-size: 0.75rem;">Jogador</span>
+                    <span class="text-white-50 small text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Organizador</span>
                 </div>
             </a>
 
             <ul class="dropdown-menu dropdown-menu-white dropdown-menu-end shadow-lg border-secondary pb-2" style="min-width: 220px;">
                 <div class="px-3 py-2 border-bottom border-secondary mb-1">
-                    <span class="d-block text-muted fw-bold small">Logado como:</span>
+                    <span class="d-block text-muted fw-bold small">Acesso Administrativo:</span>
                     <span class="d-block text-truncate small">{{ Auth::user()->email }}</span>
                 </div>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2 py-2" href=" {{ route('profile.show', Auth::user()->id) }}">
-                        <i class="bi bi-person-vcard text-muted fs-5"></i>
-                        <span>Meu Perfil</span>
-                    </a>
-                </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('profile.edit') }}">
                         <i class="bi bi-gear text-muted fs-5"></i>
@@ -98,7 +87,7 @@
                         @csrf
                         <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger">
                             <i class="bi bi-box-arrow-right fs-5"></i>
-                            <span>Sair da Conta</span>
+                            <span>Sair do Painel</span>
                         </button>
                     </form>
                 </li>
@@ -128,11 +117,10 @@
     <footer class="d-flex justify-content-between p-3">
         <div class="icon"></div>
         <div class="d-flex flex-column justify-content-center">
-            <p class="border-bottom text-center">&copy;{{ date('Y') }} Todos os direitos reservados</p>
+            <p class="border-bottom text-center">&copy;{{ date('Y') }} Pixelplay Org - Painel Administrativo</p>
             <div class="d-flex justify-content-between gap-3">
-                <a class="nav-link" href="#">FAQ:Central de ajuda</a>
-                <a class="nav-link" href="#">Contato</a>
-                <a class="nav-link" href="#">Sobre nós</a>
+                <a class="nav-link" href="#">Suporte da Org</a>
+                <a class="nav-link" href="#">Termos e Diretrizes</a>
             </div>
         </div>
     </footer>
@@ -145,7 +133,6 @@
         const sidebar = document.querySelector('.sidebar');
         const arrow = document.getElementById('sidebarArrow');
 
-        // Estado inicial configurado como expandido (padrão de dashboards modernos)
         let isCollapsed = false; 
 
         if(isCollapsed) {
@@ -169,9 +156,7 @@
                 toast.show();
             }
         });
-
     </script>
-
 
 </body>
 </html>

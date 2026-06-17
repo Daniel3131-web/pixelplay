@@ -15,14 +15,13 @@ return new class extends Migration
             //-- Primary key
             $table->id();
             //-- Nomes
-            $table->string('name'); // Nome real
-            $table->string('nickname')->unique()->nullable();
+            $table->string('name'); // nickname
             //-- Security
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             //-- Foto de Perfil
-            $table->string('avatar')->nullable();
+            $table->string('img')->nullable();
             //-- Time do jogador
             $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
             //-- Cargo

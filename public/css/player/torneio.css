@@ -1,7 +1,0 @@
-span {
-    font-size: 1rem;
-}
-
-span, h5, img, p {
-    user-select: none;
-}

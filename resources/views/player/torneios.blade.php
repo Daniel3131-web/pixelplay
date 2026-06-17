@@ -1,101 +1,91 @@
 @extends('layouts.player')
 
-@section('title', 'Pixelplay - Home')
+@section('title', 'Pixelplay - Torneios')
 
 @push('styles')
-    <link rel="stylesheet" href="/css/player/home.css">
+    <style>
+        .tournament-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+        }
+
+        .tournament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .scroll-frame {
+            scrollbar-width: thin;
+        }
+    </style>
 @endpush
 
 @section('content')
-
     <section class="container py-5">
-        <div class="row justify-content-between align-items-center">
-            <div class="col-8">
-                <h2 class="text-white mb-4">LISTA DE TORNEIOS</h2>
+        <div class="d-flex flex-column justify-content-between align-items-start mb-4">
+            <div>
+                <h2 class="text-white fw-bold mb-1">{{ $search ? "Resultados para: $search" : "Torneios Disponíveis" }}</h2>
+                <p class="text-secondary">Encontre sua próxima competição</p>
             </div>
-            <div class="col">
-                <div class="row">
-                    <select class="w-100 h-100 p-2 rounded" name="filtro" id="filtro">
-                        <option value="torneios">Torneios</option>
-                        <option value="eventos">Eventos</option>
-                    </select>
+            <form action="{{ route('player.torneios') }}" method="GET" class="w-100">
+                <div class="input-group shadow-sm" style="border-radius: 10px; overflow: hidden;">
+                    <span class="input-group-text bg-white border-end-0 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="search" name="search" class="form-control border-start-0 py-2.5" placeholder="Buscar por nome do torneio ou categoria..." aria-label="Search" value="{{ $search }}">
                 </div>
-            </div>
+            </form>
         </div>
-        <div class="row py-3">
-            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-        </div>
-    </section>
 
-    
+        <div class="scroll-frame overflow-y-auto p-5" style="max-height: 800px;">
+            <div class="row row-cols-1 row-cols-lg-2 g-4">
+                @forelse ($tournaments as $tournament)
+                    <div class="col" onclick="window.location.href='/torneio/{{ $tournament->id }}'">
+                        <div class="card tournament-card h-100 border-0 rounded-4 overflow-hidden">
+                            <div class="position-relative">
+                                @if ($tournament->img)
+                                    <img src="{{ $tournament->img }}" class="card-img-top" alt="{{ $tournament->name }}"
+                                        style="height: 180px; object-fit: cover;">
+                                @else
+                                    <img src="/assets/tournaments/banner/default.jpg" class="card-img-top"
+                                        alt="{{ $tournament->name }}" style="height: 180px; object-fit: cover;">
+                                @endif
 
-    <section class="container py-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="scroll-frame z-2 row p-4 g-5 justify-content-center overflow-y-auto" style="max-height: 500px; padding-bottom: 1rem;">
-                    @foreach ($Tournaments as $Tournament)
-                        <!-- CARD -->
-                        <div class="col-12 col-md-6" onclick="window.location.href='/torneio/{{ $Tournament->id }}'">
-                            <div class="card border-2">
-                                <img src="{{ $Tournament->img }}" class="card-img-top" alt="banner do Torneio ou Evento" style="height: 150px; object-fit: cover;">
-                                {{-- <div class="card-img-overlay d-flex flex-column justify-content-between p-3">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        @if ($Tournament->live == true)
-                                            <span class="badge bg-danger fs-6 shadow-sm opacity-100 d-flex align-items-center justify-content-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                    <circle cx="8" cy="8" r="8"/>
-                                                </svg>
-                                                LIVE
-                                            </span>
-                                        @else
-                                            <div></div>
-                                        @endif
-                                        
-                                        @if ($Tournament->status == 'Aberto')
-                                            <span class="badge bg-success fs-6 shadow-sm opacity-100">Aberto</span>
-                                        @elseif ($Tournament->status == 'Agendado')
-                                            <span class="badge bg-info fs-6 shadow-sm opacity-100">Agendado</span>
-                                        @elseif ($Tournament->status == 'Em andamento')
-                                            <span class="badge bg-warning text-dark fs-6 shadow-sm opacity-100">Em andamento</span>
-                                        @elseif ($Tournament->status == 'Finalizado')
-                                            <span class="badge bg-danger fs-6 shadow-sm opacity-100">Finalizado</span>
-                                        @endif
+                                <div class="position-absolute top-0 start-0 p-3">
+                                    @if ($tournament->live)
+                                        <span class="badge bg-danger mb-2 d-block"><i class="bi bi-broadcast"></i> LIVE</span>
+                                    @endif
+                                    <span class="badge bg-dark">{{ $tournament->status }}</span>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-uppercase mb-3">{{ $tournament->name }}</h5>
+
+                                <div class="d-flex justify-content-between text-center pt-3 border-top">
+                                    <div>
+                                        <small class="d-block text-muted text-uppercase">Vagas</small>
+                                        <span
+                                            class="fw-bold">{{ $tournament->current_participants }}/{{ $tournament->max_participants }}</span>
                                     </div>
-                                </div> --}}
-
-                                <div class="card-body d-flex flex-column bg-light rounded-bottom">
-                                        <div class="card-title fw-bold text mb-4">
-                                            <h5 class="text-uppercase">{{ $Tournament->name }}</h5>
-                                            <span class="d-block text-muted fw-bold">ID {{ $Tournament->id}}</span>
-                                        </div>
-                                        
-                                    <div class="row text-center align-items-center mt-auto">
-                                        <div class="col border-end">
-                                            <span class="d-block text-muted fw-bold">DATA</span>
-                                            <div class="d-flex justify-content-center align-items-center gap-2">
-                                                <span class="fw-bold">{{ $Tournament->start_date }}</span>
-                                                <span class="fw-bold"> - </span>
-                                                <span class="fw-bold"> {{ $Tournament->end_date }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="col border-end">
-                                            <span class="d-block text-muted fw-bold">VAGAS</span>
-                                            <span class="fw-bold">{{ $Tournament->current_participants }} / {{ $Tournament->max_participants }}</span>
-                                        </div>
-                                        <div class="col">
-                                            <span class="d-block text-muted fw-bold">PREMIAÇÃO</span>
-                                            <span class="fw-bold text-success">R$ {{ $Tournament->awards }}</span>
-                                        </div>
+                                    <div>
+                                        <small class="d-block text-muted text-uppercase">Premiação</small>
+                                        <span class="fw-bold text-success">R$
+                                            {{ number_format($tournament->awards, 2, ',', '.') }}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <!-- FIM DO CARD -->
-                    @endforeach
-                </div>
+                    </div>
+                @empty
+                    <div class="col-12 text-center py-5">
+                        <h4 class="text-white">Nenhum torneio encontrado.</h4>
+                        <a href="/torneios" class="btn btn-outline-light">Ver todos</a>
+                    </div>
+                @endforelse
             </div>
         </div>
-        
     </section>
-
 @endsection
