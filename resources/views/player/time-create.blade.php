@@ -58,7 +58,7 @@
                         <div class="col-sm-6">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Nome do Time:</label>
                             <input type="text" name="name" class="form-control form-white-input"
-                                placeholder="Ex: Team Pixel" required maxlength="255">
+                                placeholder="Ex: Team Pixel" required minlength="5" maxlength="255">
                         </div>
 
                         <div class="col-sm-6">

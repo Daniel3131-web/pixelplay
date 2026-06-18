@@ -32,6 +32,13 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::table('teams', function (Blueprint $table) {
+        $table->foreign('leader_id')
+              ->references('id')
+              ->on('users')
+              ->onDelete('set null');
+        });
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');

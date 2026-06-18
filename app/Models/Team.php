@@ -25,7 +25,8 @@ class Team extends Model
         'description',
         'privacy',
         'password',
-        'img'
+        'img',
+        'leader_id'
     ];
 
     /**

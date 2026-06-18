@@ -43,7 +43,7 @@
                     <div class="card-body p-4 pt-0">
                         <div class="d-flex justify-content-center mb-3" style="margin-top: -55px;">
                             @if ($user->img)
-                                <img src="{{ $user->img }}"
+                                <img src="{{ asset($user->img) }}"
                                     class="me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
                                     style="width: 128px; height: 128px;" alt="Foto de Perfil">
                             @else
@@ -148,10 +148,8 @@
                                         <td class="ps-4 py-3" style="cursor: pointer"
                                             onclick="window.location.href='/time/{{ $team->id }}'">
                                             <div class="d-flex align-items-center">
-                                                <div class="bg-secondary text-white rounded d-flex align-items-center justify-content-center fw-bold me-3"
-                                                    style="width: 45px; height: 45px; font-size: 1rem;">
-                                                    <img src="{{ $team->img ?? '/assets/teams/default-banner.jpg' }}"
-                                                        class="w-100" style="object-fit: cover;" alt="Foto do time">
+                                                <div class="bg-secondary text-white rounded d-flex align-items-center justify-content-center fw-bold me-3" style="width: 45px; height: 45px; font-size: 1rem;">
+                                                    <img src="{{ asset($team->img) }}" class="w-100 h-100" style="object-fit: cover;" alt="Foto do time">
                                                 </div>
                                                 <div>
                                                     <span

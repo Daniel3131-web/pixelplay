@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('teams', function (Blueprint $table) {
             //-- Primary Key
             $table->id();
-            //--
+            //-- Chaves Estrangeiras
+            $table->unsignedBigInteger('leader_id')->nullable();
+            // --
             $table->string('name');
             $table->string('acronym', 5);
             $table->text('description')->default('Descrição vazia');

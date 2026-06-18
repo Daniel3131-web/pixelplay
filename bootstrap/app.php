@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request; 
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,6 +13,16 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         
+        $middleware->redirectUsersTo(function (Request $request) {
+            $user = $request->user();
+
+            if ($user && $user->role === 'organizador') {
+                return '/dashboard'; // Rota do Organizador
+            }
+
+            return '/torneios'; // Rota padrão do Player
+        });
+
         $middleware->alias([
             'org' => \App\Http\Middleware\EnsureUserIsOrganizer::class,
         ]);

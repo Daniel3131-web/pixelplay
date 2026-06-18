@@ -3,7 +3,6 @@
 @section('title', 'Pixelplay - ' . $Team->name)
 
 @push('styles')
-    <link rel="stylesheet" href="/css/player/torneio.css">
     <style>
         .player-badge,
         .member-card {
@@ -38,8 +37,7 @@
         <div class="row g-4">
             <div class="col-lg-4">
                 <div class="card card-custom border-0 shadow-sm bg-light overflow-hidden">
-                    <img src="{{ $Team->img ?? '/assets/teams/default-banner.jpg' }}" class="w-100"
-                        style="height: 160px; object-fit: cover;" alt="Banner">
+                    <img src="{{ asset($Team->img) }}" class="w-100" style="height: 160px; object-fit: cover;" alt="{{ $Team->name }}">
 
                     <div class="card-body p-4">
                         <div class="mb-4">
@@ -144,9 +142,7 @@
                                         <td class="ps-4 py-3">
                                             <div class="d-flex align-items-center">
                                                 @if ($member->img)
-                                                    <img src="{{ $member->img }}"
-                                                        class="me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
-                                                        style="width: 40px; height: 40px;" alt="Foto de Perfil">
+                                                    <img src="{{ asset($member->img) }}" class="me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary" style="width: 40px; height: 40px;" alt="Foto de Perfil">
                                                 @else
                                                     <div class="me-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
                                                         style="width: 40px; height: 40px; font-size: 0.85rem;">
@@ -157,8 +153,10 @@
                                                     <span class="fw-bold d-block text-dark">
                                                         {{ $member->name }}
                                                         @if($member->id === Auth::id())
-                                                            <span class="badge bg-info text-dark ms-1"
-                                                                style="font-size: 0.65rem;">Você</span>
+                                                            <span class="badge bg-info text-dark ms-1" style="font-size: 0.65rem;">Você</span>
+                                                        @endif
+                                                        @if($member->id == $Team->leader_id)
+                                                            <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Líder</span>
                                                         @endif
                                                     </span>
                                                     <span class="text-muted small">Membro</span>

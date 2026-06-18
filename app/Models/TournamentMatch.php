@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class TournamentMatch extends Model
 {
     /** @use HasFactory<\Database\Factories\TournamentMatchFactory> */
@@ -14,6 +14,7 @@ class TournamentMatch extends Model
     //Tem que avisar que a tabela se chama 'matches' no database, pq tive que mudar o nome aqui
     protected $table = 'matches';
      protected $fillable = [
+        'id',
         'tournament_id',
         'map_id',
         'team_a_id',
@@ -53,8 +54,15 @@ class TournamentMatch extends Model
      */
     public function winner(): BelongsTo
     {
-        // Aponta para a tabela 'teams' usando a coluna estrangeira 'winner_id'
         return $this->belongsTo(Team::class, 'winner_id');
+    }
+
+    /**
+    * Relacionamento: Estatísticas (Player Infos) desta partida
+    */
+    public function player_Infos(): HasMany
+    {
+        return $this->hasMany(PlayerInfos::class, 'match_id');
     }
 
 }

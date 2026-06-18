@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tournament;
+use App\Models\TournamentMatch;
 use Illuminate\Http\Request;
 
 class TournamentController extends Controller
@@ -36,10 +37,11 @@ class TournamentController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    {  
         $tournament = new Tournament;
 
         $tournament->name = $request->name;
+    
 
         // IMAGE UPLOAD
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
@@ -59,7 +61,7 @@ class TournamentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(int $id)
     {
         $tournament = Tournament::with([
             'matches.teamA',
@@ -68,6 +70,18 @@ class TournamentController extends Controller
         ])->findOrFail($id);
 
         return view('player.torneio', ['Tournament' => $tournament]);
+    }
+
+    public function show_match(int $id)
+    {
+        $match = TournamentMatch::with([
+            'tournament',
+            'teamA', 
+            'teamB',
+            'player_Infos.player'
+        ])->findOrFail($id);
+
+        return view('player.partida', ['Match' => $match]);
     }
 
     /**

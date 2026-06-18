@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -26,6 +27,15 @@ class User extends Authenticatable
         'team_id',
         'role'
     ];
+
+    /**
+     * Relacionamento: O User pertence a um Time.
+     */
+    public function User_Team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'team_id');
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

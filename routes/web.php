@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
     // Rota para ver um torneio específico 
     Route::get('/torneio/{id}', [TournamentController::class, 'show'])->name('player.torneio.show');
 
+    Route::get('/partida/{id}', [TournamentController::class, 'show_match'])->name('player.match.show');
+
     // Rota para ver todos os times
     Route::get('/times', [TeamController::class, 'index'])->name('player.times');
 

@@ -58,7 +58,7 @@ class TeamFactory extends Factory
                 'privacy' => 'public',
                 'password' => null,
                 'description' => 'Time de Esport Amador',
-                'img'     => 'teams/default.png'
+                'img'     => 'assets/teams/default.png'
             ];
         }
 
@@ -67,7 +67,7 @@ class TeamFactory extends Factory
             'acronym' => $selectedTeam['acronym'],
             'privacy'     => $selectedTeam['privacy'],
             'password' => $selectedTeam['password'],
-            'img'     => $selectedTeam['img']
+            'img'     => 'assets/teams/default.png'
             
         ];
     }

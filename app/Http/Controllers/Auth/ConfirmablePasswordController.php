@@ -41,9 +41,7 @@ class ConfirmablePasswordController extends Controller
 
         if ($user->role === 'player') {
             return redirect()->intended(route('player.torneios'));
-        }
-
-        if ($user->role === 'organizador') {
+        } elseif ($user->role === 'organizador') {
             return redirect()->intended(route('org.dashboard'));
         }
 

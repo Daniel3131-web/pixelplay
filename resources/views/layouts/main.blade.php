@@ -11,7 +11,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/css/main.css">
     <!-- FAVICON -->
-    <!-- <link rel="shortcut icon" href="/assets/favicon/" type="image/x-icon"> -->
+    <link rel="shortcut icon" href="/assets/imgs/icon.svg" type="image/x-icon">
     <!-- CSS STACK -->
     @stack('styles')
 </head>
