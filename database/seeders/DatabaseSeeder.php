@@ -32,8 +32,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->createTournament('Torneio de Abertura', 'valorant');
-        $this->createTournament('Torneio de Abertura 2', 'cs2');
-        $this->createTournament('Torneio de Abertura 3', 'mr');
+        // $this->createTournament('Torneio de Abertura 2', 'cs2');
+        // $this->createTournament('Torneio de Abertura 3', 'mr');
     }
 
     private function createTournament(string $name, string $category): void
@@ -62,7 +62,8 @@ class DatabaseSeeder extends Seeder
             'category' => $category,
             'max_participants' => '16',
             'current_participants' => 16,
-            'status' => 'Finalizado'
+            'status' => 'Finalizado',
+            'user_id' => 1
         ]);
 
         // ------------------------------------------------

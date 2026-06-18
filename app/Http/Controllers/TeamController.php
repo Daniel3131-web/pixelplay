@@ -180,19 +180,4 @@ class TeamController extends Controller
         return view('player.time', ['Team' => $team]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Team $Teams)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Team $Teams)
-    {
-        //
-    }
 }

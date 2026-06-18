@@ -32,6 +32,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        // A chave estrangeira é criada separadamente
+        Schema::table('tournaments', function (Blueprint $table) {
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+        });
+
         Schema::table('teams', function (Blueprint $table) {
         $table->foreign('leader_id')
               ->references('id')

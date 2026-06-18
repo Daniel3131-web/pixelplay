@@ -14,14 +14,11 @@ class Tournament extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
         'name',
+        'user_id',
         'description',
         'category',
         'max_participants',
-        'current_participants',
-        'live',
-        'status',
         'entrance_fee',
         'awards',
         'start_date',
@@ -29,6 +26,7 @@ class Tournament extends Model
         'start_time',
         'end_time',
         'entry_date',
+        'status',
         'img'
     ];
 

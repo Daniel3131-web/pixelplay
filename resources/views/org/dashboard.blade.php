@@ -116,9 +116,7 @@
                                         <tr>
                                             <td class="ps-4 py-3">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="bg-secondary-subtle text-secondary rounded d-flex align-items-center justify-content-center fw-bold me-3" style="width: 40px; height: 40px; font-size: 0.9rem;">
-                                                        {{ strtoupper(substr($tournament->name, 0, 2)) }}
-                                                    </div>
+                                                    <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}" class="me-2 rounded-circle" style="width: 32px; height: 32px;" alt=" {{ $tournament->name }}">
                                                     <div>
                                                         <span class="fw-bold d-block text-dark text-uppercase">{{ $tournament->name }}</span>
                                                         <span class="text-muted small">ID: #{{ $tournament->id }}</span>
@@ -127,12 +125,12 @@
                                             </td>
                                             <td>
                                                 <span class="text-secondary small fw-medium">
-                                                    <i class="bi bi-calendar-event me-1"></i> {{ \Carbon\Carbon::parse($tournament->start_date)->format('d/m/Y') }}
+                                                    <i class="bi bi-calendar-event me-1"></i> {{ $tournament->start_date }}
                                                 </span>
                                             </td>
                                             <td>
                                                 <span class="text-dark small fw-bold">
-                                                    {{ $tournament->teams_count }} / {{ $tournament->max_teams }}
+                                                    {{ $tournament->current_participants }} / {{ $tournament->max_participants }}
                                                 </span>
                                             </td>
                                             <td>
@@ -149,7 +147,7 @@
                                                     <a href="#" class="btn btn-sm btn-outline-dark fw-bold text-uppercase px-2" title="Gerenciar Chaves/Partidas">
                                                         <i class="bi bi-diagram-3-fill"></i>
                                                     </a>
-                                                    <a href="#" class="btn btn-sm btn-primary fw-bold text-uppercase px-3">
+                                                    <a href="{{ Route('org.torneio.edit', $tournament->id) }}" class="btn btn-sm btn-primary fw-bold text-uppercase px-3">
                                                         Editar
                                                     </a>
                                                 </div>

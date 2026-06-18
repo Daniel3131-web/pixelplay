@@ -134,7 +134,7 @@
         const sidebar = document.querySelector('.sidebar');
         const arrow = document.getElementById('sidebarArrow');
 
-        let isCollapsed = false; 
+        let isCollapsed = true; 
 
         if(isCollapsed) {
             sidebar.classList.add('collapsed');

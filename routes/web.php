@@ -59,7 +59,9 @@ Route::middleware('org')->group(function () {
 
     Route::get('/org/torneio/criar', [OrgController::class, 'create'])->name('org.torneio.criar');
     Route::post('/org/torneio/store', [OrgController::class, 'store'])->name('org.torneio.store');
-    
+    Route::get('/org/torneio/{id}/edit', [OrgController::class, 'edit'])->name('org.torneio.edit');
+    Route::put('/org/torneio/{id}/update', [OrgController::class, 'update'])->name('org.torneio.update');
+    Route::delete('/org/torneio/{id}/destroy', [OrgController::class, 'destroy'])->name('org.torneio.destroy');
 });
 
 require __DIR__.'/auth.php';

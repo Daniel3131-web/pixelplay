@@ -101,7 +101,7 @@
                         <div class="col-sm-6">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Premiação Total (R$):</label>
                             <input type="number" step="0.01" min="0" name="awards" class="form-control form-white-input"
-                                   placeholder="Ex: 500.00" required>
+                                   placeholder="Ex: 500.00" required maxlength="8">
                         </div>
                     </div>
 

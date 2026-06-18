@@ -4,26 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-       Schema::create('tournaments', function (Blueprint $table) {
+        Schema::create('tournaments', function (Blueprint $table) {
             //-- Primary key
             $table->id();
+
+            //-- Criador do torneio
+            $table->unsignedBigInteger('user_id');
+
             //-- Informações Básicas
             $table->string('name');
             $table->text('description')->nullable();
-            $table->enum('category', ['valorant','cs2','lol','mlbb','ow2','mr']);
+            $table->enum('category', ['valorant', 'cs2', 'lol', 'mlbb', 'ow2', 'mr']);
             //-- Regras de Vagas (limite de participantes 64)
-            $table->enum('max_participants', ['4','8','16'])->default(4);
+            $table->enum('max_participants', ['4', '8', '16'])->default(4);
             $table->integer('current_participants')->default(0);
             //-- Status
             $table->boolean('live')->default(false);
-            $table->enum('status', ['Aberto','Agendado','Em andamento','Finalizado'])->default('Agendado');
+            $table->enum('status', ['Aberto', 'Agendado', 'Em andamento', 'Finalizado'])->default('Agendado');
             //-- Financeiro/Premiação
             $table->decimal('entrance_fee', 8, 2)->default(0.00); // Taxa de inscrição
             $table->decimal('awards', 8, 2);
@@ -39,6 +42,7 @@ return new class extends Migration
             //-- Tempo e data
             $table->timestamps();
         });
+
     }
 
     /**

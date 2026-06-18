@@ -3,18 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Tournament; // 1. CORRIGIDO: Importação da Model que estava faltando
+use App\Models\Tournament;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrgController extends Controller
 {
-    public function index() 
+    public function index()
     {
-        return view('org.dashboard');
+        $tournaments = Tournament::where('user_id', Auth::id())->get();
+
+        $totalTournaments = $tournaments->count();
+
+        return view('org.dashboard', [
+            'tournaments' => $tournaments,
+            'totalTournaments' => $totalTournaments,
+        ]);
     }
 
     public function create()
     {
-        return view('org.torneio-create'); 
+        return view('org.torneio-create');
     }
 
     /**
@@ -23,49 +32,92 @@ class OrgController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|unique:tournaments,name|max:255',
+            'description' => 'nullable|string',
             'category' => 'required|in:valorant,cs2,lol,mlbb,ow2,mr',
             'max_participants' => 'required|in:4,8,16',
-            'status' => 'required|in:Aberto,Agendado',
             'entrance_fee' => 'required|numeric|min:0',
             'awards' => 'required|numeric|min:0',
-            'entry_date' => 'required|date',
-            'start_date' => 'required|date|after_or_equal:entry_date',
+            'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'start_time' => 'required',
             'end_time' => 'required',
-            'description' => 'required|string',
-            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+            'entry_date' => 'required|date|before_or_equal:start_date',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $tournament = new Tournament;
+        $organizer = Auth::user();
 
-        $tournament->name = $request->name;
-        $tournament->category = $request->category;
-        $tournament->max_participants = $request->max_participants;
-        $tournament->status = $request->status;
-        $tournament->entrance_fee = $request->entrance_fee;
-        $tournament->awards = $request->awards;
-        $tournament->entry_date = $request->entry_date;
-        $tournament->start_date = $request->start_date;
-        $tournament->end_date = $request->end_date;
-        $tournament->start_time = $request->start_time;
-        $tournament->end_time = $request->end_time;
-        $tournament->description = $request->description;
+        $tournament = DB::transaction(function () use ($request, $organizer) {
+            $newTournament = new Tournament();
+
+            $newTournament->user_id = $organizer->id;
+            $newTournament->name = $request->name;
+            $newTournament->description = $request->description;
+            $newTournament->category = $request->category;
+            $newTournament->max_participants = $request->max_participants;
+            $newTournament->entrance_fee = $request->entrance_fee;
+            $newTournament->awards = $request->awards;
+            $newTournament->start_date = $request->start_date;
+            $newTournament->end_date = $request->end_date;
+            $newTournament->start_time = $request->start_time;
+            $newTournament->end_time = $request->end_time;
+            $newTournament->entry_date = $request->entry_date;
+            $newTournament->status = 'Agendado';
+
+            if ($request->hasFile('img') && $request->file('img')->isValid()) {
+                $requestImage = $request->img;
+                $extension = $requestImage->extension();
+                $imageName = md5($requestImage->getClientOriginalName() . strtotime("now")) . "." . $extension;
+
+                $requestImage->move(public_path('/assets/tournaments/'), $imageName);
+                $newTournament->img = "/assets/tournaments/" . $imageName;
+            }
+
+            $newTournament->save();
+
+            return $newTournament;
+        });
+
+        return redirect()->route('org.dashboard')
+            ->with('success', 'Torneio criado com sucesso!');
+    }
+
+    public function edit($id)
+    {
+        $tournament = Tournament::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        return view('org.torneio-edit', ['tournament' => $tournament]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $tournament = Tournament::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        $tournament->update($request->except('img'));
 
         if ($request->hasFile('img') && $request->file('img')->isValid()) {
-
-            $requestImage = $request->img;
-            $extension = $requestImage->extension();
-            $imageName = md5($requestImage->getClientOriginalName() . strtotime("now")) . "." . $extension;
-
-            $requestImage->move(public_path('/assets/tournaments/banner/'), $imageName);
-
-            $tournament->img = "/assets/tournaments/banner/" . $imageName;
+            $imageName = md5($request->img->getClientOriginalName() . strtotime("now")) . "." . $request->img->extension();
+            $request->img->move(public_path('/assets/tournaments/'), $imageName);
+            $tournament->img = "/assets/tournaments/" . $imageName;
+            $tournament->save();
         }
 
-        $tournament->save();
+        return redirect()->route('org.dashboard')->with('success', 'Torneio atualizado!');
+    }
 
-        return redirect()->route('org.dashboard')->with('msg', 'Torneio publicado com sucesso!');
+    public function destroy($id)
+    {
+        $tournament = Tournament::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        if ($tournament->img) {
+            $imagePath = public_path($tournament->img);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        $tournament->delete();
+
+        return redirect()->route('org.dashboard')->with('msg', 'Torneio removido com sucesso!');
     }
 }
