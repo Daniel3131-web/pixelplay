@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Character;
 use App\Models\PlayerInfos;
 use App\Models\User;
 use App\Models\Team;
@@ -27,8 +28,15 @@ class PlayerInfosFactory extends Factory
             'user_id' => User::factory(),
             'team_id' => Team::factory(),
             'match_id' => TournamentMatch::factory(),
+            'character_id' => function (array $attributes) {
+                $match = TournamentMatch::find($attributes['match_id']);
+                $category = $match ? $match->tournament->category : 'valorant';
 
-            // Estatísticas da partida com valores aleatórios realistas
+                $char = Character::where('category', $category)->inRandomOrder()->first();
+
+                return $char ? $char->id : Character::factory()->create(['category' => $category])->id;
+            },
+
             'kill' => fake()->numberBetween(0, 25),
             'death' => fake()->numberBetween(0, 15),
             'assistance' => fake()->numberBetween(0, 30),

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             //--
             $table->string('name');
-            $table->string('game');
+            $table->string('category');
             $table->string('class');
             $table->string('img');
             //-- Tempo e data

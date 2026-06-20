@@ -36,7 +36,7 @@
                 <span>Painel Geral</span>
             </a>
 
-            <a href="#" class="nav-link-custom">
+            {{-- <a href="#" class="nav-link-custom">
                 <i class="bi bi-trophy fs-5"></i>
                 <span>Gerenciar Torneios</span>
             </a>
@@ -49,7 +49,7 @@
             <a href="#" class="nav-link-custom">
                 <i class="bi bi-graph-up-arrow fs-5"></i>
                 <span>Relatórios</span>
-            </a>
+            </a> --}}
         </nav>
 
         <div class="dropdown border-top border-secondary pt-3 mt-auto">

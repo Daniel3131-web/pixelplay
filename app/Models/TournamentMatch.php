@@ -19,11 +19,21 @@ class TournamentMatch extends Model
         'map_id',
         'team_a_id',
         'team_b_id',
+        'score_a',
+        'score_b',
         'winner_id',
         'stage',
         'order_of_keys',
         'match_status',
     ];
+
+    /**
+     * Relacionamento: A partida pertence a um mapa.
+     */
+    public function map(): BelongsTo
+    {
+        return $this->belongsTo(Map::class);
+    }
 
     /**
      * Relacionamento: A partida pertence a um Torneio.

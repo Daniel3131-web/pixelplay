@@ -8,12 +8,15 @@
             border-radius: 15px;
             transition: 0.2s ease;
         }
+
         .stat-card-org:hover {
             transform: translateY(-3px);
         }
+
         .card-custom {
             border-radius: 15px;
         }
+
         .action-icon {
             width: 40px;
             height: 40px;
@@ -28,24 +31,28 @@
 @section('content')
 
     <section class="container py-5">
-        
+
         <div class="row align-items-center mb-5 g-3">
             <div class="col-md-8 text-center text-md-start">
                 <h2 class="fw-bold text-white text-uppercase mb-1">Painel do Organizador</h2>
-                <p class="text-white small mb-0">Gerencie seus campeonatos, valide partidas e controle as inscrições da Pixelplay</p>
+                <p class="text-white small mb-0">Gerencie seus campeonatos, valide partidas e controle as inscrições da
+                    Pixelplay</p>
             </div>
             <div class="col-md-4 text-center text-md-end">
-                <a href="{{ Route('org.torneio.criar') }}" class="btn btn-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
+                <a href="{{ Route('org.torneio.criar') }}"
+                    class="btn btn-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
                     <i class="bi bi-plus-lg me-1"></i> Novo Torneio
                 </a>
             </div>
         </div>
 
         <div class="row g-4 mb-5">
-            <div class="col-6 col-lg-3">
-                <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
+            <div class="col col-lg">
+                <div
+                    class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
                     <div>
-                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Seus Torneios</span>
+                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Seus
+                            Torneios</span>
                         <span class="fw-bold fs-2 text-dark">{{ $totalTournaments ?? 0 }}</span>
                     </div>
                     <div class="action-icon bg-primary-subtle text-primary fs-4">
@@ -53,11 +60,14 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="col-6 col-lg-3">
-                <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
+
+            <div class="col col-lg">
+                <div
+                    class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
                     <div>
-                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Inscrições Ativas</span>
+                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Inscrições
+                            Ativas</span>
+
                         <span class="fw-bold fs-2 text-dark">{{ $totalSubscribers ?? 0 }}</span>
                     </div>
                     <div class="action-icon bg-success-subtle text-success fs-4">
@@ -66,10 +76,12 @@
                 </div>
             </div>
 
-            <div class="col-6 col-lg-3">
-                <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
+            {{-- <div class="col-6 col-lg-3">
+                <div
+                    class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
                     <div>
-                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Partidas Hoje</span>
+                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Partidas
+                            Hoje</span>
                         <span class="fw-bold fs-2 text-dark">{{ $todayMatches ?? 0 }}</span>
                     </div>
                     <div class="action-icon bg-info-subtle text-info fs-4">
@@ -79,16 +91,18 @@
             </div>
 
             <div class="col-6 col-lg-3">
-                <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
+                <div
+                    class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
                     <div>
-                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Resultados Pendentes</span>
+                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Resultados
+                            Pendentes</span>
                         <span class="fw-bold fs-2 text-danger">{{ $pendingResults ?? 0 }}</span>
                     </div>
                     <div class="action-icon bg-danger-subtle text-danger fs-4">
                         <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         <div class="row">
@@ -101,7 +115,8 @@
 
                     @if(isset($tournaments) && count($tournaments) > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle bg-white rounded shadow-sm border overflow-hidden mb-0">
+                            <table
+                                class="table table-hover align-middle bg-white rounded shadow-sm border overflow-hidden mb-0">
                                 <thead class="table-dark">
                                     <tr>
                                         <th scope="col" class="ps-4">Torneio</th>
@@ -116,9 +131,12 @@
                                         <tr>
                                             <td class="ps-4 py-3">
                                                 <div class="d-flex align-items-center">
-                                                    <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}" class="me-2 rounded-circle" style="width: 32px; height: 32px;" alt=" {{ $tournament->name }}">
+                                                    <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}"
+                                                        class="me-2 rounded-circle" style="width: 32px; height: 32px;"
+                                                        alt=" {{ $tournament->name }}">
                                                     <div>
-                                                        <span class="fw-bold d-block text-dark text-uppercase">{{ $tournament->name }}</span>
+                                                        <span
+                                                            class="fw-bold d-block text-dark text-uppercase">{{ $tournament->name }}</span>
                                                         <span class="text-muted small">ID: #{{ $tournament->id }}</span>
                                                     </div>
                                                 </div>
@@ -134,22 +152,40 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                @if($tournament->status === 'inscricoes')
-                                                    <span class="badge bg-success text-uppercase py-1 px-2" style="font-size: 0.65rem;">Inscrições Abertas</span>
-                                                @elseif($tournament->status === 'andamento')
-                                                    <span class="badge bg-warning text-dark text-uppercase py-1 px-2" style="font-size: 0.65rem;">Em Andamento</span>
+                                                @if($tournament->status === 'Aberto')
+                                                    <span class="badge bg-success text-uppercase py-1 px-2"
+                                                        style="font-size: 0.65rem;">Inscrições Abertas</span>
+                                                @elseif($tournament->status === 'Em andamento')
+                                                    <span class="badge bg-warning text-dark text-uppercase py-1 px-2"
+                                                        style="font-size: 0.65rem;">Em Andamento</span>
+                                                @elseif($tournament->status == 'Agendado')
+                                                    <span class="badge bg-info text-dark text-uppercase py-1 px-2"
+                                                        style="font-size: 0.65rem;">Agendado</span>
                                                 @else
-                                                    <span class="badge bg-secondary text-uppercase py-1 px-2" style="font-size: 0.65rem;">Finalizado</span>
+                                                    <span class="badge bg-danger text-uppercase py-1 px-2"
+                                                        style="font-size: 0.65rem;">Finalizado</span>
                                                 @endif
                                             </td>
                                             <td class="text-end pe-4">
                                                 <div class="d-flex justify-content-end gap-2">
-                                                    <a href="#" class="btn btn-sm btn-outline-dark fw-bold text-uppercase px-2" title="Gerenciar Chaves/Partidas">
-                                                        <i class="bi bi-diagram-3-fill"></i>
+                                                    <a href="{{ Route('org.torneio.bracket', $tournament->id) }}"
+                                                        class="btn btn-sm btn-outline-dark fw-bold text-uppercase px-2">
+                                                        Partidas
                                                     </a>
-                                                    <a href="{{ Route('org.torneio.edit', $tournament->id) }}" class="btn btn-sm btn-primary fw-bold text-uppercase px-3">
+                                                    <a href="{{ Route('org.torneio.edit', $tournament->id) }}"
+                                                        class="btn btn-sm btn-primary fw-bold text-uppercase px-3">
                                                         Editar
                                                     </a>
+                                                    <form action="{{ route('org.torneio.destroy', $tournament->id) }}" method="POST"
+                                                        onsubmit="return confirm('Tem certeza absoluta que deseja deletar o torneio?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-bold text-uppercase"
+                                                            style="font-size: 0.85rem;">
+                                                            Deletar
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -161,7 +197,8 @@
                         <div class="text-center py-5 border bg-white rounded shadow-sm">
                             <i class="bi bi-trophy text-muted display-4 d-block mb-3"></i>
                             <h5 class="fw-bold text-secondary mb-2">Nenhum torneio criado por você</h5>
-                            <p class="text-muted small mb-0 fw-medium">Clique no botão "Novo Torneio" acima para lançar sua primeira competição na plataforma.</p>
+                            <p class="text-muted small mb-0 fw-medium">Clique no botão "Novo Torneio" acima para lançar sua
+                                primeira competição na plataforma.</p>
                         </div>
                     @endif
                 </div>

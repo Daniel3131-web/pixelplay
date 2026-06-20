@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Team extends Model
 {
@@ -39,9 +39,9 @@ class Team extends Model
     ];
 
     // Relacionamento
-     public function users(): HasMany
+    public function users(): HasMany
     {
-        return $this->hasMany(User::class, 'team_id'); 
+        return $this->hasMany(User::class, 'team_id');
     }
 
     /**
@@ -65,7 +65,15 @@ class Team extends Model
     protected function maxParticipants(): Attribute
     {
         return Attribute::make(
-            get: fn () => 5, // max 5 players
+            get: fn() => 5, // max 5 players
         );
+    }
+
+    /**
+     *  Relacionamento um time tem varios torneios e um torneio tem varios times N:N.
+     */
+    public function tournaments(): BelongsToMany
+    {
+        return $this->belongsToMany(Tournament::class, 'tournament_team', 'team_id', 'tournament_id');
     }
 }

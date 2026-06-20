@@ -67,7 +67,7 @@
                                         <i class="bi bi-slash-circle"></i> Vagas Esgotadas.
                                     </button>
                                 @elseif (Auth()->user()->User_Team?->leader_id == Auth()->user()->id)
-                                    <a href="/pagamento?torneio={{ $Tournament->id }}"
+                                    <a href="{{ Route('payment.checkout', $Tournament->id) }}"
                                         class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2">
                                         <i class="bi bi-ticket-perforated"></i> Comprar Ingresso.
                                     </a>

@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Character;
+use App\Models\Map;
 use App\Models\PlayerInfos;
 use App\Models\User;
 use App\Models\Team;
@@ -16,55 +18,50 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        // Cria uma conta organizadora
-        User::factory()->count(1)->create([
-            'name' => 'organizador',
-            'email' => 'organizador@gmail.com',
-            'password' => '1234',
-            'role' => 'organizador',
-        ]);
-        // Cria uma conta de player
-        User::factory()->count(1)->create([
-            'name' => 'Player',
-            'email' => 'player@gmail.com',
-            'password' => '1234',
-            'role' => 'player',
-        ]);
+        // Limpa o banco antes de popular
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh');
 
-        $this->createTournament('Torneio de Abertura', 'valorant');
-        // $this->createTournament('Torneio de Abertura 2', 'cs2');
-        // $this->createTournament('Torneio de Abertura 3', 'mr');
+        User::factory()->create(['name' => 'Organizador', 'email' => 'organizador@gmail.com', 'role' => 'organizador', 'password' => bcrypt('1234')]);
+        User::factory()->create(['name' => 'Player', 'email' => 'player@gmail.com', 'role' => 'player', 'password' => bcrypt('1234')]);
+
+        Map::factory()->createAll();
+        Character::factory()->createAll();
+
+        // $this->createTournament('Torneio de Abertura (Finalizado)', 'valorant', 'Finalizado');
+        // $this->createTournament('Liga de Verão (Em andamento)', 'cs2', 'Em andamento');
+        // $this->createTournament('Campeonato de Inverno (Agendado)', 'mr', 'Agendado');
     }
 
-    private function createTournament(string $name, string $category): void
+    private function createTournament(string $name, string $category, string $status): void
     {
+        $tournament = Tournament::factory()->create([
+            'name' => $name, 'category' => $category, 'max_participants' => '16',
+            'current_participants' => ($status === 'Agendado') ? 0 : 16,
+            'status' => $status, 'user_id' => 1
+        ]);
 
+        if ($status === 'Agendado') return;
 
-        // 1. Cria 16 times
         $teams = Team::factory()->count(16)->create();
 
-        // 2. Cria 5 jogadores para cada time
         foreach ($teams as $team) {
-            $players = User::factory()->count(5)->create([
-                'team_id' => $team->id,
-            ]);
+            
+            $tournament->teams()->attach($team->id);
 
-            $leader = $players->first();
-
-            $team->update([
-                'leader_id' => $leader->id
-            ]);
+            $players = User::factory()->count(5)->create(['team_id' => $team->id]);
+            $team->update(['leader_id' => $players->first()->id]);
         }
 
-        // 3. Cria o torneio
-        $tournament = Tournament::factory()->create([
-            'name' => $name,
-            'category' => $category,
-            'max_participants' => '16',
-            'current_participants' => 16,
-            'status' => 'Finalizado',
-            'user_id' => 1
-        ]);
+        if ($status === 'Em andamento') {
+            for ($i = 0; $i < 8; $i++) {
+                TournamentMatch::factory()->create([
+                    'tournament_id' => $tournament->id, 'team_a_id' => $teams->get($i * 2)->id,
+                    'team_b_id' => $teams->get(($i * 2) + 1)->id, 'stage' => 'Oitavas de Final',
+                    'match_status' => 'Em andamento'
+                ]);
+            }
+            return;
+        }
 
         // ------------------------------------------------
         // OITAVAS DE FINAL — 8 partidas

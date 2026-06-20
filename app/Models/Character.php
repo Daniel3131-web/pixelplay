@@ -9,4 +9,12 @@ class Character extends Model
 {
     /** @use HasFactory<\Database\Factories\CharacterFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'id',
+        'name',
+        'category',
+        'class',
+        'img',
+    ];
 }

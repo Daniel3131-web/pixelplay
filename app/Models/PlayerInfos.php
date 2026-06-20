@@ -18,6 +18,7 @@ class PlayerInfos extends Model
         'user_id',
         'team_id',
         'match_id',
+        'character_id',
         'kill',
         'death',
         'assistance',
@@ -25,13 +26,20 @@ class PlayerInfos extends Model
         'score',
     ];
 
-
     /**
      * Relacionamento: O player info pertence a um player.
      */
     public function player(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Relacionamento: O player info pertence a um character.
+     */
+    public function character(): BelongsTo
+    {
+        return $this->belongsTo(Character::class, 'character_id');
     }
 
     /**
