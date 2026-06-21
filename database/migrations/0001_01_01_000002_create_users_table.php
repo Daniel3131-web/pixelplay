@@ -12,39 +12,31 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            //-- Primary key
             $table->id();
-            //-- Nomes
             $table->string('name'); // nickname
-            //-- Security
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            //-- Foto de Perfil
             $table->string('img')->nullable();
-            //-- Time do jogador
+            
             $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
-            //-- Cargo
+            
             $table->enum('role', ['player', 'organizador', 'admin'])->default('player');
-            //-- Token
+            
+            $table->integer('tournaments')->default(0);
+            $table->integer('matches')->default(0);
+            $table->integer('wins')->default(0);
+            $table->integer('events')->default(0);
+            
             $table->rememberToken();
-            //-- Tempo e data
             $table->timestamps();
         });
 
-        // A chave estrangeira é criada separadamente
-        Schema::table('tournaments', function (Blueprint $table) {
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
-        });
-
         Schema::table('teams', function (Blueprint $table) {
-        $table->foreign('leader_id')
-              ->references('id')
-              ->on('users')
-              ->onDelete('set null');
+            $table->foreign('leader_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('set null');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -68,6 +60,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('teams', function (Blueprint $table) {
+            $table->dropForeign(['leader_id']);
+        });
+
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

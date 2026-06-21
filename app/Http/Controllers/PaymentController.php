@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -61,6 +62,14 @@ class PaymentController extends Controller
                     'status' => 'confirmado'
                 ]);
             }
+            $tournament->increment('current_participants');
+
+            $team = Team::with('users')->find($user->team_id);
+
+            foreach ($team->users as $player) {
+                $player->increment('tournaments');
+            }
+
         }
 
         return redirect()->route('payment.success', $orderId);

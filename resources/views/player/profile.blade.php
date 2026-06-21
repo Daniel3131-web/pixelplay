@@ -1,4 +1,4 @@
-@extends('layouts.player')
+@extends('layouts.app_main')
 
 @section('title', 'Pixelplay - Perfil de ' . $user->name)
 
@@ -61,12 +61,12 @@
                             <span class="d-block text-muted small fw-bold">ID do Usuário: #{{ $user->id }}</span>
                         </div>
 
-                        <div class="mb-4">
+                        {{-- <div class="mb-4">
                             <span class="d-block text-muted small fw-bold text-uppercase mb-1">Biografia</span>
                             <p class="text-secondary small mb-0">
                                 "{{ $user->bio ?? 'Este jogador prefere manter o mistério e ainda não escreveu uma biografia.' }}"
                             </p>
-                        </div>
+                        </div> --}}
 
                         <div class="mb-4">
                             <span class="d-block text-muted small fw-bold text-uppercase mb-1">Cadastro</span>
@@ -101,28 +101,28 @@
                             <div class="stat-card-custom p-3 text-center border bg-white shadow-sm">
                                 <i class="bi bi-trophy text-warning fs-3 d-block mb-1"></i>
                                 <span class="d-block text-muted small fw-bold" style="font-size: 0.75rem;">TORNEIOS</span>
-                                <span class="fw-bold fs-4 text-dark">{{ $user->tournaments_count ?? 0 }}</span>
+                                <span class="fw-bold fs-4 text-dark">{{ $user->tournaments ?? 0 }}</span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="stat-card-custom p-3 text-center border bg-white shadow-sm">
                                 <i class="bi bi-controller text-info fs-3 d-block mb-1"></i>
                                 <span class="d-block text-muted small fw-bold" style="font-size: 0.75rem;">PARTIDAS</span>
-                                <span class="fw-bold fs-4 text-dark">{{ $user->matches_count ?? 0 }}</span>
+                                <span class="fw-bold fs-4 text-dark">{{ $user->matches ?? 0 }}</span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="stat-card-custom p-3 text-center border bg-white shadow-sm">
                                 <i class="bi bi-award text-success fs-3 d-block mb-1"></i>
                                 <span class="d-block text-muted small fw-bold" style="font-size: 0.75rem;">VITÓRIAS</span>
-                                <span class="fw-bold fs-4 text-dark">{{ $user->wins_count ?? 0 }}</span>
+                                <span class="fw-bold fs-4 text-dark">{{ $user->wins ?? 0 }}</span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="stat-card-custom p-3 text-center border bg-white shadow-sm">
                                 <i class="bi bi-fire text-danger fs-3 d-block mb-1"></i>
                                 <span class="d-block text-muted small fw-bold" style="font-size: 0.75rem;">EVENTOS</span>
-                                <span class="fw-bold fs-4 text-dark">{{ $user->events_count ?? 0 }}</span>
+                                <span class="fw-bold fs-4 text-dark">{{ $user->events ?? 0 }}</span>
                             </div>
                         </div>
                     </div>

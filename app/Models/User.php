@@ -25,7 +25,11 @@ class User extends Authenticatable
         'password',
         'img',
         'team_id',
-        'role'
+        'role',
+        'tournaments',
+        'matches',
+        'wins',
+        'events'
     ];
 
     /**
@@ -35,7 +39,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Team::class, 'team_id');
     }
-
 
     /**
      * The attributes that should be hidden for serialization.

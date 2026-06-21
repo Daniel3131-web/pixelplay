@@ -1,4 +1,4 @@
-@extends('layouts.org')
+@extends('layouts.app_main')
 
 @section('title', 'Pixelplay - Criar Partida')
 
@@ -14,6 +14,7 @@
 
                 <form action="{{ route('org.partida.store', $tournament->id) }}" method="POST">
                     @csrf
+                    @method('POST')
                     
                     <div class="mb-4">
                         <h5 class="text-uppercase text-white mb-3 fw-bold">Informações da Partida</h5>
@@ -60,7 +61,7 @@
 
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-uppercase text-white">Status Inicial:</label>
-                        <select name="match_status" class="form-select form-white-input">
+                        <select name="match_status" class="form-select form-white-input" required>
                             <option value="Agendada" selected>Agendada</option>
                             <option value="Em Andamento">Em Andamento</option>
                         </select>

@@ -10,20 +10,21 @@ class MapFactory extends Factory
     protected $model = Map::class;
 
     /**
-     * Define o estado padrão (usado para testes ou criar um mapa aleatório).
+     * Define o estado padrão (Evita erros quando outros Seeders chamam a Factory em massa)
      */
     public function definition(): array
     {
-        //
         return [
-            //
+            'name'     => $this->faker->unique()->word(), 
+            'category' => $this->faker->randomElement(['valorant', 'cs2', 'lol', 'mlbb', 'ow2', 'mr']),
+            'img'      => 'maps/default.png'
         ];
     }
 
     /**
-     * Método personalizado para popular TODOS os mapas de uma vez.
+     * Método personalizado para popular TODOS os mapas reais de uma vez.
      */
-    public function createAll()
+    public function createAll(): void
     {
         $allMaps = [];
         
@@ -42,7 +43,16 @@ class MapFactory extends Factory
                 ['name' => 'Split', 'img' => 'maps/valorant/split.png'],
                 ['name' => 'Sunset', 'img' => 'maps/valorant/sunset.png'],
             ],
-            //continuar adicionando os outros jogos aqui dentro...
+            'cs2' => [
+                ['name' => 'Mirage', 'img' => 'maps/cs2/mirage.png'],
+                ['name' => 'Dust II', 'img' => 'maps/cs2/dust2.png'],
+                ['name' => 'Inferno', 'img' => 'maps/cs2/inferno.png'],
+                ['name' => 'Overpass', 'img' => 'maps/cs2/overpass.png'],
+                ['name' => 'Nuke', 'img' => 'maps/cs2/nuke.png'],
+                ['name' => 'Ancient', 'img' => 'maps/cs2/ancient.png'],
+                ['name' => 'Anubis', 'img' => 'maps/cs2/anubis.png'],
+            ],
+            // Você pode continuar adicionando os outros jogos aqui...
         ];
 
         foreach ($mapsByGame as $category => $maps) {

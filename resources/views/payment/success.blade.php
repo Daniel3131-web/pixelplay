@@ -1,4 +1,4 @@
-@extends('layouts.player')
+@extends('layouts.app_main')
 
 @section('title', 'Pixelplay - Pagamento Confirmado')
 
@@ -22,7 +22,7 @@
                         <p class="mb-1"><span class="text-secondary">ID Transação:</span> #{{ rand(10000, 99999) }}</p>
                     </div>
 
-                    <p class="small text-white">Sua inscrição foi registrada com sucesso. Apresente este comprovante no dia do evento.</p>
+                    <p class="small text-white">Sua inscrição foi registrada com sucesso.</p>
                 </div>
             </div>
 

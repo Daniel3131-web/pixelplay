@@ -1,4 +1,4 @@
-@extends('layouts.player')
+@extends('layouts.app_main')
 
 @section('title', 'Pixelplay - Torneio')
 
@@ -62,23 +62,42 @@
                             </div>
 
                             <div class="w-100" style="max-width: 250px;">
+                                {{-- 1. Verifica se o torneio já acabou ou está lotado --}}
                                 @if($Tournament->current_participants >= $Tournament->max_participants || $Tournament->status == 'Finalizado')
                                     <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
                                         <i class="bi bi-slash-circle"></i> Vagas Esgotadas.
                                     </button>
-                                @elseif (Auth()->user()->User_Team?->leader_id == Auth()->user()->id)
+
+                                    {{-- 2. Verifica se o usuário NÃO tem um time --}}
+                                @elseif (!Auth()->user()->User_Team)
+                                    <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
+                                        <i class="bi bi-slash-circle"></i> Você tem que possuir um time.
+                                    </button>
+
+                                    {{-- 3. Verifica se o usuário NÃO é o líder do time --}}
+                                @elseif (Auth()->user()->User_Team->leader_id != Auth()->user()->id)
+                                    <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
+                                        <i class="bi bi-slash-circle"></i> Você tem que ser o líder do time.
+                                    </button>
+
+                                    {{-- 4. Verifica se o time NÃO tem 5 membros --}}
+                                @elseif (Auth()->user()->User_Team->users->count() != 5)
+                                    <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
+                                        <i class="bi bi-slash-circle"></i> O time precisa de exatamente 5 membros.
+                                    </button>
+
+                                    {{-- 5. Verifica se o time JÁ ESTÁ registrado neste torneio --}}
+                                @elseif ($Tournament->teams->contains('id', Auth()->user()->User_Team->id))
+                                    <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
+                                        <i class="bi bi-check-circle"></i> Seu time já está no torneio.
+                                    </button>
+
+                                    {{-- 6. Se passou por tudo acima, libera o botão de compra --}}
+                                @else
                                     <a href="{{ Route('payment.checkout', $Tournament->id) }}"
                                         class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2">
                                         <i class="bi bi-ticket-perforated"></i> Comprar Ingresso.
                                     </a>
-                                @elseif (Auth()->user()->User_Team)
-                                    <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
-                                        <i class="bi bi-slash-circle"></i> Você tem que ser o líder do time.
-                                    </button>
-                                @else
-                                    <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
-                                        <i class="bi bi-slash-circle"></i> Você tem que possuir um time.
-                                    </button>
                                 @endif
                             </div>
                         </div>
@@ -140,8 +159,7 @@
                                     </div>
                                     <h5 class="fw-bold text-dark mb-2">Aguardando definição dos confrontos</h5>
                                     <p class="text-muted mb-0 mx-auto" style="max-width: 500px;">
-                                        O chaveamento oficial e os confrontos deste torneio serão gerados automaticamente assim
-                                        que as inscrições forem encerradas e os times estiverem confirmados.
+                                        O chaveamento oficial e os confrontos deste torneio ainda serão gerados.
                                     </p>
                                 </div>
                             @else

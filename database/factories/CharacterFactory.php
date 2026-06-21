@@ -9,17 +9,23 @@ class CharacterFactory extends Factory
 {
     protected $model = Character::class;
 
+    /**
+     * Define o estado padrão (Ajustado com categorias dinâmicas do Faker)
+     */
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'category' => 'valorant',
-            'class' => 'Duelista',
-            'img' => 'img/default.png'
+            'name'     => $this->faker->name(),
+            'category' => $this->faker->randomElement(['valorant', 'cs2', 'lol', 'mlbb', 'ow2', 'mr']),
+            'class'    => $this->faker->randomElement(['Duelista', 'Controlador', 'Iniciador', 'Sentinela']),
+            'img'      => 'chars/default.png'
         ];
     }
 
-    public function createAll()
+    /**
+     * Método personalizado para popular TODOS os personagens de uma vez.
+     */
+    public function createAll(): void
     {
         $allCharacters = [];
         $charsByGame = [
@@ -51,16 +57,16 @@ class CharacterFactory extends Factory
                 ['name' => 'Vyse', 'class' => 'Sentinela', 'img' => 'chars/valorant/vyse.png'],
                 ['name' => 'Yoru', 'class' => 'Duelista', 'img' => 'chars/valorant/yoru.png'],
             ],
-            // Adicione aqui os outros jogos 
+            // Adicione os outros jogos aqui quando quiser
         ];
 
         foreach ($charsByGame as $category => $chars) {
             foreach ($chars as $char) {
                 $allCharacters[] = [
-                    'category' => $category,
-                    'name' => $char['name'],
-                    'class' => $char['class'],
-                    'img' => $char['img'],
+                    'category'   => $category,
+                    'name'       => $char['name'],
+                    'class'      => $char['class'],
+                    'img'        => $char['img'],
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];

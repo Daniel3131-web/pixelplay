@@ -1,4 +1,4 @@
-@extends('layouts.org')
+@extends('layouts.app_main')
 
 @section('title', 'Pixelplay - Criar Torneio')
 

@@ -1,4 +1,4 @@
-@extends('layouts.org') @section('title', 'Pixelplay - Painel do Organizador')
+@extends('layouts.app_main') @section('title', 'Pixelplay - Painel do Organizador')
 
 @push('styles')
     <link rel="stylesheet" href="/css/player/torneio.css">
@@ -38,12 +38,21 @@
                 <p class="text-white small mb-0">Gerencie seus campeonatos, valide partidas e controle as inscrições da
                     Pixelplay</p>
             </div>
-            <div class="col-md-4 text-center text-md-end">
-                <a href="{{ Route('org.torneio.criar') }}"
+            <div class="col-md-4 gap-5 d-flex align-items-center justify-content-between">
+                <div class="row text-center">
+                    <a href="{{ Route('org.torneio.criar') }}"
                     class="btn btn-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
                     <i class="bi bi-plus-lg me-1"></i> Novo Torneio
                 </a>
+                </div>
+                <div class="row text-center">
+                    <a href="{{ Route('org.evento.criar') }}"
+                    class="btn btn-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
+                    <i class="bi bi-plus-lg me-1"></i> Novo Evento
+                </a>
+                </div>
             </div>
+            
         </div>
 
         <div class="row g-4 mb-5">

@@ -20,6 +20,7 @@ class Tournament extends Model
         'description',
         'category',
         'max_participants',
+        'current_participants',
         'entrance_fee',
         'awards',
         'start_date',

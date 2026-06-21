@@ -1,4 +1,4 @@
-@extends('layouts.org')
+@extends('layouts.app_main')
 
 @section('title', 'Pixelplay - Editar Partida')
 
@@ -12,7 +12,6 @@
                     Configurar partida
                 </h2>
 
-                {{-- Adicionado: Método POST com @method('PUT') para a rota de update --}}
                 <form action="{{ route('org.partida.update', $Match->id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -38,11 +37,11 @@
                                 <div class="d-flex justify-content-center align-items-center gap-3">
                                     <input type="number" name="score_a"
                                         class="form-control form-control-lg text-center fs-2 fw-bold w-50"
-                                        value="{{ $Match->score_a ?? 0 }}" min="0">
+                                        value="{{ $Match->score_a ?? 0 }}" min="0" required>
                                     <h2 class="text-muted mb-0">-</h2>
                                     <input type="number" name="score_b"
                                         class="form-control form-control-lg text-center fs-2 fw-bold w-50"
-                                        value="{{ $Match->score_b ?? 0 }}" min="0">
+                                        value="{{ $Match->score_b ?? 0 }}" min="0" required>
                                 </div>
                             </div>
 
@@ -64,9 +63,8 @@
                                 <h5 class="fw-bold text-muted mb-3"><i class="bi bi-map-fill"></i> MAPA DA PARTIDA</h5>
                                 <div class="d-flex justify-content-center align-items-center gap-3">
                                     <select name="map_id" id="map_id"
-                                        class="form-select form-select-lg text-center fw-bold shadow-sm cursor-pointer">
-                                        <option value="" disabled {{ empty($Match->map) ? 'selected' : '' }}>Selecione o
-                                            mapa...</option>
+                                        class="form-select form-select-lg text-center fw-bold shadow-sm cursor-pointer" required>
+                                        <option value="" disabled {{ empty($Match->map) ? 'selected' : '' }}>Selecione o mapa...</option>
                                         @foreach ($maps as $map)
                                             <option value="{{ $map->id }}" {{ (isset($Match->map_id) && $Match->map_id == $map->id) ? 'selected' : '' }}>
                                                 {{ $map->name }}
@@ -114,11 +112,8 @@
                                                             {{ $stats->player->name ?? 'Desconhecido' }}
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <select name="stats[{{ $stats->id }}][character]"
-                                                                value="{{ $stats->character }}"
-                                                                class="form-select form-select-lg text-center fw-bold shadow-sm cursor-pointer">
-                                                                <option value="" disabled {{ empty($stats->character_id->name) ? 'selected' : '' }}>Selecione o
-                                                                    personagem...</option>
+                                                            <select name="stats[{{ $stats->id }}][character]" class="form-select form-select-lg text-center fw-bold shadow-sm cursor-pointer" required>
+                                                                <option value="" disabled {{ empty($stats->character_id) ? 'selected' : '' }}>Selecione...</option>
                                                                 @foreach ($characters as $character)
                                                                     <option value="{{ $character->id }}" {{ (isset($stats->character_id) && $stats->character_id == $character->id) ? 'selected' : '' }}>
                                                                         {{ $character->name }}
@@ -127,28 +122,16 @@
                                                             </select>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <input type="number" name="stats[{{ $stats->id }}][kill]"
-                                                                value="{{ $stats->kill }}"
-                                                                class="form-control form-control-sm text-center fw-bold"
-                                                                min="0">
+                                                            <input type="number" name="stats[{{ $stats->id }}][kill]" value="{{ $stats->kill }}" class="form-control form-control-sm text-center fw-bold" min="0" required>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <input type="number" name="stats[{{ $stats->id }}][death]"
-                                                                value="{{ $stats->death }}"
-                                                                class="form-control form-control-sm text-center fw-bold text-danger"
-                                                                min="0">
+                                                            <input type="number" name="stats[{{ $stats->id }}][death]" value="{{ $stats->death }}" class="form-control form-control-sm text-center fw-bold text-danger" min="0" required>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <input type="number" name="stats[{{ $stats->id }}][assistance]"
-                                                                value="{{ $stats->assistance }}"
-                                                                class="form-control form-control-sm text-center fw-bold text-info"
-                                                                min="0">
+                                                            <input type="number" name="stats[{{ $stats->id }}][assistance]" value="{{ $stats->assistance }}" class="form-control form-control-sm text-center fw-bold text-info" min="0" required>
                                                         </td>
                                                         <td class="text-center pe-3 align-middle">
-                                                            <input type="number" name="stats[{{ $stats->id }}][score]"
-                                                                value="{{ $stats->score }}"
-                                                                class="form-control form-control-sm text-center fw-bold text-success"
-                                                                min="0">
+                                                            <input type="number" name="stats[{{ $stats->id }}][score]" value="{{ $stats->score }}" class="form-control form-control-sm text-center fw-bold text-success" min="0" required>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -188,11 +171,8 @@
                                                             {{ $stats->player->name ?? 'Desconhecido' }}
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <select name="stats[{{ $stats->id }}][character]"
-                                                                value="{{ $stats->character }}"
-                                                                class="form-select form-select-lg text-center fw-bold shadow-sm cursor-pointer">
-                                                                <option value="" disabled {{ empty($stats->character_id->name) ? 'selected' : '' }}>Selecione o
-                                                                    personagem...</option>
+                                                            <select name="stats[{{ $stats->id }}][character]" class="form-select form-select-lg text-center fw-bold shadow-sm cursor-pointer" required>
+                                                                <option value="" disabled {{ empty($stats->character_id) ? 'selected' : '' }}>Selecione...</option>
                                                                 @foreach ($characters as $character)
                                                                     <option value="{{ $character->id }}" {{ (isset($stats->character_id) && $stats->character_id == $character->id) ? 'selected' : '' }}>
                                                                         {{ $character->name }}
@@ -201,28 +181,16 @@
                                                             </select>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <input type="number" name="stats[{{ $stats->id }}][kill]"
-                                                                value="{{ $stats->kill }}"
-                                                                class="form-control form-control-sm text-center fw-bold"
-                                                                min="0">
+                                                            <input type="number" name="stats[{{ $stats->id }}][kill]" value="{{ $stats->kill }}" class="form-control form-control-sm text-center fw-bold" min="0" required>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <input type="number" name="stats[{{ $stats->id }}][death]"
-                                                                value="{{ $stats->death }}"
-                                                                class="form-control form-control-sm text-center fw-bold text-danger"
-                                                                min="0">
+                                                            <input type="number" name="stats[{{ $stats->id }}][death]" value="{{ $stats->death }}" class="form-control form-control-sm text-center fw-bold text-danger" min="0" required>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <input type="number" name="stats[{{ $stats->id }}][assistance]"
-                                                                value="{{ $stats->assistance }}"
-                                                                class="form-control form-control-sm text-center fw-bold text-info"
-                                                                min="0">
+                                                            <input type="number" name="stats[{{ $stats->id }}][assistance]" value="{{ $stats->assistance }}" class="form-control form-control-sm text-center fw-bold text-info" min="0" required>
                                                         </td>
                                                         <td class="text-center pe-3 align-middle">
-                                                            <input type="number" name="stats[{{ $stats->id }}][score]"
-                                                                value="{{ $stats->score }}"
-                                                                class="form-control form-control-sm text-center fw-bold text-success"
-                                                                min="0">
+                                                            <input type="number" name="stats[{{ $stats->id }}][score]" value="{{ $stats->score }}" class="form-control form-control-sm text-center fw-bold text-success" min="0" required>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -231,7 +199,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 

@@ -1,4 +1,4 @@
-@extends('layouts.player')
+@extends('layouts.app_main')
 
 @section('content')
 <section class="container-fluid bg-dark-layout py-5 min-vh-100 d-flex align-items-center">

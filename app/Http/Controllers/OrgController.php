@@ -24,16 +24,10 @@ class OrgController extends Controller
         $totalSubscribers = $tournaments->sum('current_participants');
         $totalTournaments = $tournaments->count();
 
-
-        // $todayMatches = 0; 
-        // $pendingResults = 0;
-
         return view('org.dashboard', compact(
             'tournaments',
             'totalTournaments',
             'totalSubscribers',
-            // 'todayMatches',
-            // 'pendingResults'
         ));
     }
 
@@ -207,7 +201,7 @@ class OrgController extends Controller
             foreach ($teamA->users as $player) {
                 PlayerInfos::create([
                     'match_id' => $match->id,
-                    'character_id' => 'null',
+                    'character_id' => Null,
                     'user_id' => $player->id,
                     'team_id' => $teamA->id,
                     'kill' => 0,
@@ -215,6 +209,8 @@ class OrgController extends Controller
                     'assistance' => 0,
                     'score' => 0,
                 ]);
+
+                $player->increment('matches');
             }
         }
 
@@ -222,7 +218,7 @@ class OrgController extends Controller
             foreach ($teamB->users as $player) {
                 PlayerInfos::create([
                     'match_id' => $match->id,
-                    'character_id' => 'null',
+                    'character_id' => Null,
                     'user_id' => $player->id,
                     'team_id' => $teamB->id,
                     'kill' => 0,
@@ -230,6 +226,8 @@ class OrgController extends Controller
                     'assistance' => 0,
                     'score' => 0,
                 ]);
+
+                $player->increment('matches');
             }
         }
 
@@ -252,6 +250,25 @@ class OrgController extends Controller
     public function match_destroy($id)
     {
         $match = TournamentMatch::where('id', $id)->firstOrFail();
+
+        if ($match->winner_id) {
+            $team = Team::with('users')->find($match->winner_id);
+
+            foreach ($team->users as $player) {
+                $player->decrement('wins');
+            }
+        }
+
+        $teamA = Team::with('users')->find($match->team_a_id);
+        $teamB = Team::with('users')->find($match->team_b_id);
+
+        foreach ($teamA->users as $player) {
+            $player->decrement('matches');
+        }
+
+        foreach ($teamB->users as $player) {
+            $player->decrement('matches');
+        }
 
         $match->delete();
 
@@ -291,12 +308,21 @@ class OrgController extends Controller
         ]);
 
         $match = TournamentMatch::findOrFail($id);
+        $teamA = Team::with('users')->find($match->team_a_id);
+        $teamB = Team::with('users')->find($match->team_b_id);
 
         $winner_id = null;
         if ($request->score_a > $request->score_b) {
-            $winner_id = $match->team_a_id;
+            $winner_id = $teamA->id;
         } elseif ($request->score_b > $request->score_a) {
-            $winner_id = $match->team_b_id;
+            $winner_id = $teamB->id;
+        }
+
+        if ($winner_id == null) {
+            $team = Team::with('users')->find($winner_id);
+            foreach ($team->users as $player) {
+                $player->increment('wins');
+            }
         }
 
         $match->update([
@@ -320,6 +346,13 @@ class OrgController extends Controller
             }
         }
         return redirect('partida/' . $match->id)->with('success', 'Partida e estatísticas atualizadas com sucesso!');
+    }
+
+    // Events function
+
+    public function event_create()
+    {
+        return view('org.evento-create');
     }
 
 }

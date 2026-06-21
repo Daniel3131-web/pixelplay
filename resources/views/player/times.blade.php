@@ -1,4 +1,4 @@
-@extends('layouts.player')
+@extends('layouts.app_main')
 
 @section('title', 'Pixelplay - Times')
 

@@ -1,5 +1,5 @@
 
-@extends('layouts.main')
+@extends('layouts.guest_main')
 
 @section('title', 'Pixelplay - Landing Page')
 

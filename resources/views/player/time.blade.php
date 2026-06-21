@@ -1,4 +1,4 @@
-@extends('layouts.player')
+@extends('layouts.app_main')
 
 @section('title', 'Pixelplay - ' . $Team->name)
 
@@ -32,7 +32,6 @@
 @section('content')
 
     <section class="container py-5">
-
 
         <div class="row g-4">
             <div class="col-lg-4">
@@ -104,6 +103,18 @@
                             @else
                                 <form action="{{ route('player.time.join', $Team->id) }}" method="POST">
                                     @csrf
+                                    
+                                    {{-- VERIFICAÇÃO DE TIME PRIVADO: Adiciona o campo de senha se não for público --}}
+                                    @if($Team->privacy == 'private')
+                                        <div class="mb-3">
+                                            <label for="team_password" class="form-label text-muted small fw-bold text-uppercase">Senha do Time</label>
+                                            <input type="password" name="password" id="team_password" class="form-control text-center" placeholder="Digite a senha para entrar" required>
+                                            @error('password')
+                                                <span class="text-danger small mt-1 d-block">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    @endif
+
                                     <button type="submit"
                                         class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-bold text-uppercase"
                                         style="font-size: 0.85rem;">
@@ -171,7 +182,6 @@
                 </div>
             </div>
         </div>
-
 
     </section>
 
