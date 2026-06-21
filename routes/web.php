@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\OrgController;
-use App\Http\Controllers\TournamentController;
-use App\Http\Controllers\TeamController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Api\Event\EventController;
+use App\Http\Controllers\Dashboard\ProfileController;
+use App\Http\Controllers\Dashboard\OrgController;
+use App\Http\Controllers\Api\Tournament\TournamentController;
+use App\Http\Controllers\Api\Team\TeamController;
+use App\Http\Controllers\Api\Payment\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Página Inicial do Projeto
