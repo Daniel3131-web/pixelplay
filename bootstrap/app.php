@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return '/dashboard'; // Rota do Organizador
             }
 
-            return '/torneios'; // Rota padrão do Player
+            return '/eventos'; // Rota padrão do Player
         });
 
         $middleware->alias([

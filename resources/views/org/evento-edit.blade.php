@@ -1,7 +1,6 @@
 @extends('layouts.app_main')
 
-@section('title', 'Pixelplay - Criar Evento')
-
+@section('title', 'Pixelplay - Editar Evento')
 
 @section('content')
 
@@ -10,11 +9,12 @@
             <div class="col-md-10 col-lg-8">
 
                 <h2 class="text-center text-uppercase text-white fw-bold mb-5" style="letter-spacing: 2px;">
-                    Criar um Novo Evento
+                    Editar Evento: {{ $event->name }}
                 </h2>
 
-                <form action="{{ route('org.evento.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('org.evento.update', $event->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
 
                     {{-- SEÇÃO: Banner do Evento --}}
                     <div class="mb-4">
@@ -22,23 +22,27 @@
                         <label for="img_input" class="w-100" style="cursor: pointer">
                             <div class="upload-box p-4 rounded border d-flex flex-column align-items-center justify-content-center" style="min-height: 160px; background-color: rgba(255,255,255,0.02); border-style: dashed !important; border-color: rgba(255,255,255,0.15);">
 
-                                <div id="preview_container" class="w-100 text-center">
+                                {{-- Container padrão: Oculta se já houver imagem no banco --}}
+                                <div id="preview_container" class="w-100 text-center {{ $event->img ? 'd-none' : '' }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
                                         class="bi bi-camera mb-2 text-white" viewBox="0 0 16 16">
                                         <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4z" />
                                         <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0" />
                                     </svg>
                                     <div class="small fw-bold text-white text-uppercase mb-0" style="font-size: 0.75rem;">
-                                        Arraste a logo ou o banner do evento aqui
+                                        Arraste a logo ou o banner do evento aqui para alterar
                                     </div>
                                 </div>
 
-                                <div id="image_preview_wrapper" class="d-none align-items-center gap-3 w-100">
-                                    <img id="image_preview" src="#" alt="Preview" class="rounded border shadow-sm"
+                                {{-- Container de Preview: Exibe a imagem atual se existir --}}
+                                <div id="image_preview_wrapper" class="align-items-center gap-3 w-100 {{ $event->img ? 'd-flex' : 'd-none' }}">
+                                    <img id="image_preview" src="{{ $event->img ? asset($event->img) : '#' }}" alt="Preview" class="rounded border shadow-sm"
                                         style="width: 100px; height: 60px; object-fit: cover;">
                                     <div>
-                                        <span class="d-block text-success small fw-bold text-uppercase">Banner Carregado!</span>
-                                        <span id="file_name" class="text-white small text-truncate d-block" style="max-width: 250px;">nome-do-arquivo.jpg</span>
+                                        <span class="d-block text-success small fw-bold text-uppercase">Banner Selecionado</span>
+                                        <span id="file_name" class="text-white small text-truncate d-block" style="max-width: 250px;">
+                                            {{ $event->img ? basename($event->img) : 'nome-do-arquivo.jpg' }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +62,7 @@
                         <div class="col-sm-8">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Nome do Evento:</label>
                             <input type="text" name="name" class="form-control form-white-input"
-                                placeholder="Ex: PixelPlay Gaming Fest 2026" value="{{ old('name') }}" required maxlength="255">
+                                placeholder="Ex: PixelPlay Gaming Fest 2026" value="{{ old('name', $event->name) }}" required maxlength="255">
                             @error('name')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -67,7 +71,7 @@
                         <div class="col-sm-4">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Capacidade Máxima:</label>
                             <input type="number" name="max_participants" class="form-control form-white-input" 
-                                placeholder="Ex: 500" min="1" value="{{ old('max_participants') }}" required>
+                                placeholder="Ex: 500" min="1" value="{{ old('max_participants', $event->max_participants) }}" required>
                             @error('max_participants')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -83,10 +87,10 @@
                         <div class="col-sm-4">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Modalidade:</label>
                             <select name="type" class="form-select form-white-input" required>
-                                <option value="" disabled selected>Selecione...</option>
-                                <option value="online" {{ old('type') == 'online' ? 'selected' : '' }}>100% Online</option>
-                                <option value="presencial" {{ old('type') == 'presencial' ? 'selected' : '' }}>Presencial</option>
-                                <option value="corporativo" {{ old('type') == 'corporativo' ? 'selected' : '' }}>Corporativo / Fechado</option>
+                                <option value="" disabled>Selecione...</option>
+                                <option value="online" {{ old('type', $event->type) == 'online' ? 'selected' : '' }}>100% Online</option>
+                                <option value="presencial" {{ old('type', $event->type) == 'presencial' ? 'selected' : '' }}>Presencial</option>
+                                <option value="corporativo" {{ old('type', $event->type) == 'corporativo' ? 'selected' : '' }}>Corporativo / Fechado</option>
                             </select>
                             @error('type')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
@@ -96,7 +100,7 @@
                         <div class="col-sm-8">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Localização ou Link Principal:</label>
                             <input type="text" name="location" class="form-control form-white-input"
-                                placeholder="Ex: Campus Universitário, Curitiba PR ou Link do Discord Oficial" value="{{ old('location') }}" required>
+                                placeholder="Ex: Campus Universitário, Curitiba PR ou Link do Discord Oficial" value="{{ old('location', $event->location) }}" required>
                             @error('location')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -114,7 +118,7 @@
                                     </svg>
                                 </span>
                                 <input type="url" name="streaming_url" class="form-control form-white-input" 
-                                    placeholder="https://twitch.tv/pixelplay" value="{{ old('streaming_url') }}">
+                                    placeholder="https://twitch.tv/pixelplay" value="{{ old('streaming_url', $event->streaming_url) }}">
                             </div>
                             @error('streaming_url')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
@@ -124,7 +128,7 @@
                         <div class="col-sm-5">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Ingresso Geral do Evento (R$):</label>
                             <input type="number" step="0.01" min="0" name="entrance_fee"
-                                class="form-control form-white-input" placeholder="0.00 (Deixe 0 para Grátis)" value="{{ old('entrance_fee', '0.00') }}" required>
+                                class="form-control form-white-input" placeholder="0.00" value="{{ old('entrance_fee', $event->entrance_fee) }}" required>
                             @error('entrance_fee')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -139,7 +143,8 @@
                     <div class="row g-3 mb-4">
                         <div class="col-sm-4">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Fim das Inscrições:</label>
-                            <input type="date" name="entry_date" class="form-control form-white-input" value="{{ old('entry_date') }}" required>
+                            <input type="date" name="entry_date" class="form-control form-white-input" 
+                                value="{{ old('entry_date', $event->entry_date ? date('Y-m-d', strtotime($event->entry_date)) : '') }}" required>
                             @error('entry_date')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -147,7 +152,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Data de Início:</label>
-                            <input type="date" name="start_date" class="form-control form-white-input" value="{{ old('start_date') }}" required>
+                            <input type="date" name="start_date" class="form-control form-white-input" 
+                                value="{{ old('start_date', $event->start_date ? date('Y-m-d', strtotime($event->start_date)) : '') }}" required>
                             @error('start_date')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -155,7 +161,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Data de Término:</label>
-                            <input type="date" name="end_date" class="form-control form-white-input" value="{{ old('end_date') }}" required>
+                            <input type="date" name="end_date" class="form-control form-white-input" 
+                                value="{{ old('end_date', $event->end_date ? date('Y-m-d', strtotime($event->end_date)) : '') }}" required>
                             @error('end_date')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -165,7 +172,8 @@
                     <div class="row g-3 mb-4">
                         <div class="col-sm-6">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Horário de Abertura dos Portões/Check-in:</label>
-                            <input type="time" name="start_time" class="form-control form-white-input" value="{{ old('start_time') }}" required>
+                            <input type="time" name="start_time" class="form-control form-white-input" 
+                                value="{{ old('start_time', $event->start_time ? date('H:i', strtotime($event->start_time)) : '') }}" required>
                             @error('start_time')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -173,7 +181,8 @@
 
                         <div class="col-sm-6">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Horário Estimado de Encerramento:</label>
-                            <input type="time" name="end_time" class="form-control form-white-input" value="{{ old('end_time') }}" required>
+                            <input type="time" name="end_time" class="form-control form-white-input" 
+                                value="{{ old('end_time', $event->end_time ? date('H:i', strtotime($event->end_time)) : '') }}" required>
                             @error('end_time')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                             @enderror
@@ -184,7 +193,7 @@
                     <div class="mb-5">
                         <label class="form-label small fw-bold text-uppercase text-white mb-2">Descrição Geral e Cronograma de Atividades</label>
                         <textarea name="description" class="form-control textarea-custom" rows="6"
-                            placeholder="Descreva as atrações principais do evento, palestras, estandes, cronograma geral e diretrizes para os participantes..." required>{{ old('description') }}</textarea>
+                            placeholder="Descreva as atrações principais do evento, palestras, estandes, cronograma geral e diretrizes para os participantes..." required>{{ old('description', $event->description) }}</textarea>
                         @error('description')
                             <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                         @enderror
@@ -193,7 +202,7 @@
                     {{-- BOTÃO SUBMIT --}}
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold text-uppercase card-custom">
-                            Publicar Evento
+                            Salvar Alterações
                         </button>
                     </div>
 

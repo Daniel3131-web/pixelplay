@@ -1,4 +1,5 @@
-@extends('layouts.app_main') @section('title', 'Pixelplay - Painel do Organizador')
+@extends('layouts.app_main') 
+@section('title', 'Pixelplay - Painel do Organizador')
 
 @push('styles')
     <link rel="stylesheet" href="/css/player/torneio.css">
@@ -32,88 +33,178 @@
 
     <section class="container py-5">
 
+        {{-- Topo do Painel --}}
         <div class="row align-items-center mb-5 g-3">
             <div class="col-md-8 text-center text-md-start">
-                <h2 class="fw-bold text-white text-uppercase mb-1">Painel do Organizador</h2>
-                <p class="text-white small mb-0">Gerencie seus campeonatos, valide partidas e controle as inscrições da
-                    Pixelplay</p>
+                <h2 class="fw-bold text-white text-uppercase mb-1"> 
+                    <i class="bi bi-speedometer2"></i> Painel do Organizador
+                </h2>
+                <p class="text-white small mb-0">
+                    Gerencie seus campeonatos, valide partidas e controle as inscrições da Pixelplay
+                </p>
             </div>
-            <div class="col-md-4 gap-5 d-flex align-items-center justify-content-between">
-                <div class="row text-center">
-                    <a href="{{ Route('org.torneio.criar') }}"
-                    class="btn btn-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
-                    <i class="bi bi-plus-lg me-1"></i> Novo Torneio
+            
+            {{-- Ações Rápidas (Botões) --}}
+            <div class="col-md-12 gap-3 d-flex flex-wrap align-items-center justify-content-start mt-3">
+                <a href="{{ route('org.evento.criar') }}"
+                    class="btn btn-outline-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
+                    <i class="bi bi-plus-lg me-1"></i> Criar Evento
                 </a>
-                </div>
-                <div class="row text-center">
-                    <a href="{{ Route('org.evento.criar') }}"
-                    class="btn btn-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
-                    <i class="bi bi-plus-lg me-1"></i> Novo Evento
+                
+                <a href="{{ route('org.torneio.criar') }}"
+                    class="btn btn-outline-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
+                    <i class="bi bi-plus-lg me-1"></i> Criar Torneio
                 </a>
+                
+                <a href="{{ route('org.notificacao.criar') }}"
+                    class="btn btn-outline-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
+                    <i class="bi bi-bell-fill me-1"></i> Criar Notificação
+                </a>
+            </div>
+        </div>
+
+        {{-- Cards de Estatísticas --}}
+        <div class="row g-4 mb-5">
+            {{-- Seção Eventos --}}
+            <div class="col-12 mt-2 text-white">
+                <h3><i class="bi bi-calendar-event me-2"></i>Eventos</h3>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
+                    <div>
+                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Seus Eventos</span>
+                        <span class="fw-bold fs-2 text-dark">{{ count($events) }}</span>
+                    </div>
+                    <div class="action-icon bg-primary-subtle text-primary fs-4">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
                 </div>
             </div>
             
-        </div>
-
-        <div class="row g-4 mb-5">
-            <div class="col col-lg">
-                <div
-                    class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
+            <div class="col-md-6">
+                <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
                     <div>
-                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Seus
-                            Torneios</span>
-                        <span class="fw-bold fs-2 text-dark">{{ $totalTournaments ?? 0 }}</span>
+                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Inscrições Ativas (Eventos)</span>
+                        <span class="fw-bold fs-2 text-dark">{{ $events->sum('current_participants') ?? 0 }}</span>
+                    </div>
+                    <div class="action-icon bg-danger-subtle text-danger fs-4">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Seção Torneios --}}
+            <div class="col-12 mt-4 text-white">
+                <h3><i class="bi bi-trophy-fill me-2"></i>Torneios</h3>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
+                    <div>
+                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Seus Torneios</span>
+                        <span class="fw-bold fs-2 text-dark">{{ count($tournaments) ?? 0 }}</span>
                     </div>
                     <div class="action-icon bg-primary-subtle text-primary fs-4">
                         <i class="bi bi-trophy-fill"></i>
                     </div>
                 </div>
             </div>
-
-            <div class="col col-lg">
-                <div
-                    class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
+            
+            <div class="col-md-6">
+                <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
                     <div>
-                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Inscrições
-                            Ativas</span>
-
-                        <span class="fw-bold fs-2 text-dark">{{ $totalSubscribers ?? 0 }}</span>
+                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Inscrições Ativas (Torneios)</span>
+                        <span class="fw-bold fs-2 text-dark">{{ $tournaments->sum('current_participants') ?? 0 }}</span>
                     </div>
-                    <div class="action-icon bg-success-subtle text-success fs-4">
+                    <div class="action-icon bg-danger-subtle text-danger fs-4">
                         <i class="bi bi-people-fill"></i>
                     </div>
                 </div>
             </div>
-
-            {{-- <div class="col-6 col-lg-3">
-                <div
-                    class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
-                    <div>
-                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Partidas
-                            Hoje</span>
-                        <span class="fw-bold fs-2 text-dark">{{ $todayMatches ?? 0 }}</span>
-                    </div>
-                    <div class="action-icon bg-info-subtle text-info fs-4">
-                        <i class="bi bi-controller"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-6 col-lg-3">
-                <div
-                    class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
-                    <div>
-                        <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Resultados
-                            Pendentes</span>
-                        <span class="fw-bold fs-2 text-danger">{{ $pendingResults ?? 0 }}</span>
-                    </div>
-                    <div class="action-icon bg-danger-subtle text-danger fs-4">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                    </div>
-                </div>
-            </div> --}}
         </div>
 
+        {{-- Tabela: Eventos Recentes --}}
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card card-custom border-0 shadow-sm bg-light p-4">
+                    <div class="mb-4">
+                        <h5 class="fw-bold text-uppercase text-secondary mb-1">Seus Eventos Recentes</h5>
+                        <p class="text-muted small mb-0">Acompanhe o andamento dos eventos criados por você</p>
+                    </div>
+
+                    @if(isset($events) && count($events) > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle bg-white rounded shadow-sm border overflow-hidden mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col" class="ps-4">Evento</th>
+                                        <th scope="col" class="text-start">Data de Início</th>
+                                        <th scope="col" class="text-start">Inscritos</th>
+                                        <th scope="col" class="text-start">Status</th>
+                                        <th scope="col" class="text-end pe-4">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($events as $event)
+                                        <tr>
+                                            <td class="ps-4 py-3">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ asset($event->img ?? 'assets/events/default.png') }}"
+                                                        class="me-2 rounded-circle" style="width: 32px; height: 32px;"
+                                                        alt="{{ $event->name }}">
+                                                    <div>
+                                                        <span class="fw-bold d-block text-dark text-uppercase">{{ $event->name }}</span>
+                                                        <span class="text-muted small">ID: #{{ $event->id }}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="text-secondary small fw-medium">
+                                                    <i class="bi bi-calendar-event me-1"></i> {{ $event->start_date }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-dark small fw-bold">
+                                                    {{ $event->current_participants ?? 0 }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if(($event->status ?? 'Aberto') === 'Aberto')
+                                                    <span class="badge bg-success text-uppercase py-1 px-2" style="font-size: 0.65rem;">Ativo</span>
+                                                @else
+                                                    <span class="badge bg-danger text-uppercase py-1 px-2" style="font-size: 0.65rem;">Encerrado</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                <div class="d-flex justify-content-end gap-2">
+                                                    <a href="{{ route('org.evento.edit', $event->id) }}"
+                                                        class="btn btn-sm btn-primary fw-bold text-uppercase px-3">Editar</a>
+                                                    <form action="{{ route('org.evento.destroy', $event->id) }}" method="POST"
+                                                        onsubmit="return confirm('Tem certeza absoluta que deseja deletar este evento?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger fw-bold text-uppercase">Deletar</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-5 border bg-white rounded shadow-sm">
+                            <i class="bi bi-calendar-x text-muted display-4 d-block mb-3"></i>
+                            <h5 class="fw-bold text-secondary mb-2">Nenhum evento criado por você</h5>
+                            <p class="text-muted small mb-0 fw-medium">Clique no botão "Criar Evento" acima para lançar sua primeira atividade.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Tabela: Torneios Recentes --}}
         <div class="row">
             <div class="col-12">
                 <div class="card card-custom border-0 shadow-sm bg-light p-4">
@@ -124,14 +215,13 @@
 
                     @if(isset($tournaments) && count($tournaments) > 0)
                         <div class="table-responsive">
-                            <table
-                                class="table table-hover align-middle bg-white rounded shadow-sm border overflow-hidden mb-0">
+                            <table class="table table-hover align-middle bg-white rounded shadow-sm border overflow-hidden mb-0">
                                 <thead class="table-dark">
                                     <tr>
                                         <th scope="col" class="ps-4">Torneio</th>
-                                        <th scope="col">Data de Início</th>
-                                        <th scope="col">Times</th>
-                                        <th scope="col">Status</th>
+                                        <th scope="col" class="text-start">Data de Início</th>
+                                        <th scope="col" class="text-start">Times</th>
+                                        <th scope="col" class="text-start">Status</th>
                                         <th scope="col" class="text-end pe-4">Ações</th>
                                     </tr>
                                 </thead>
@@ -142,10 +232,9 @@
                                                 <div class="d-flex align-items-center">
                                                     <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}"
                                                         class="me-2 rounded-circle" style="width: 32px; height: 32px;"
-                                                        alt=" {{ $tournament->name }}">
+                                                        alt="{{ $tournament->name }}">
                                                     <div>
-                                                        <span
-                                                            class="fw-bold d-block text-dark text-uppercase">{{ $tournament->name }}</span>
+                                                        <span class="fw-bold d-block text-dark text-uppercase">{{ $tournament->name }}</span>
                                                         <span class="text-muted small">ID: #{{ $tournament->id }}</span>
                                                     </div>
                                                 </div>
@@ -162,38 +251,26 @@
                                             </td>
                                             <td>
                                                 @if($tournament->status === 'Aberto')
-                                                    <span class="badge bg-success text-uppercase py-1 px-2"
-                                                        style="font-size: 0.65rem;">Inscrições Abertas</span>
+                                                    <span class="badge bg-success text-uppercase py-1 px-2" style="font-size: 0.65rem;">Inscrições Abertas</span>
                                                 @elseif($tournament->status === 'Em andamento')
-                                                    <span class="badge bg-warning text-dark text-uppercase py-1 px-2"
-                                                        style="font-size: 0.65rem;">Em Andamento</span>
+                                                    <span class="badge bg-warning text-dark text-uppercase py-1 px-2" style="font-size: 0.65rem;">Em Andamento</span>
                                                 @elseif($tournament->status == 'Agendado')
-                                                    <span class="badge bg-info text-dark text-uppercase py-1 px-2"
-                                                        style="font-size: 0.65rem;">Agendado</span>
+                                                    <span class="badge bg-info text-dark text-uppercase py-1 px-2" style="font-size: 0.65rem;">Agendado</span>
                                                 @else
-                                                    <span class="badge bg-danger text-uppercase py-1 px-2"
-                                                        style="font-size: 0.65rem;">Finalizado</span>
+                                                    <span class="badge bg-danger text-uppercase py-1 px-2" style="font-size: 0.65rem;">Finalizado</span>
                                                 @endif
                                             </td>
                                             <td class="text-end pe-4">
                                                 <div class="d-flex justify-content-end gap-2">
-                                                    <a href="{{ Route('org.torneio.bracket', $tournament->id) }}"
-                                                        class="btn btn-sm btn-outline-dark fw-bold text-uppercase px-2">
-                                                        Partidas
-                                                    </a>
-                                                    <a href="{{ Route('org.torneio.edit', $tournament->id) }}"
-                                                        class="btn btn-sm btn-primary fw-bold text-uppercase px-3">
-                                                        Editar
-                                                    </a>
+                                                    <a href="{{ route('org.torneio.bracket', $tournament->id) }}"
+                                                        class="btn btn-sm btn-outline-dark fw-bold text-uppercase px-2">Partidas</a>
+                                                    <a href="{{ route('org.torneio.edit', $tournament->id) }}"
+                                                        class="btn btn-sm btn-primary fw-bold text-uppercase px-3">Editar</a>
                                                     <form action="{{ route('org.torneio.destroy', $tournament->id) }}" method="POST"
                                                         onsubmit="return confirm('Tem certeza absoluta que deseja deletar o torneio?');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit"
-                                                            class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-bold text-uppercase"
-                                                            style="font-size: 0.85rem;">
-                                                            Deletar
-                                                        </button>
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger fw-bold text-uppercase">Deletar</button>
                                                     </form>
                                                 </div>
                                             </td>
@@ -206,8 +283,7 @@
                         <div class="text-center py-5 border bg-white rounded shadow-sm">
                             <i class="bi bi-trophy text-muted display-4 d-block mb-3"></i>
                             <h5 class="fw-bold text-secondary mb-2">Nenhum torneio criado por você</h5>
-                            <p class="text-muted small mb-0 fw-medium">Clique no botão "Novo Torneio" acima para lançar sua
-                                primeira competição na plataforma.</p>
+                            <p class="text-muted small mb-0 fw-medium">Clique no botão "Criar Torneio" acima para lançar sua primeira competição.</p>
                         </div>
                     @endif
                 </div>

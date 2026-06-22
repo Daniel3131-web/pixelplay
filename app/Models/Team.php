@@ -76,4 +76,18 @@ class Team extends Model
     {
         return $this->belongsToMany(Tournament::class, 'tournament_team', 'team_id', 'tournament_id');
     }
+
+
+    /**
+     *  Verifica se todos os membros tem um ingresso
+     */
+    public function allMembersHaveTickets($eventId)
+    {
+        $membersWithTickets = $this->users()->whereHas('orders', function ($query) use ($eventId) {
+            $query->where('event_id', $eventId)
+                ->where('status', 'pago');
+        })->count();
+
+        return $membersWithTickets === $this->users->count();
+    }
 }

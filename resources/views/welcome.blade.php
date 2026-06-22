@@ -46,12 +46,12 @@
 
         <div class="row mb-5">
             <div class="col-12">
-                <h2 class="text-white mb-4">NA PIXEL PLAY VOCÊ ENCONTRA DIVERSOS TORNEIOS E EVENTOS DOS PRINCIPAIS JOGOS E-SPORTS</h2>
+                <h2 class="text-white mb-4">NA PIXEL PLAY VOCÊ ENCONTRA DIVERSOS EVENTOS E TORNEIOS DOS PRINCIPAIS JOGOS E-SPORTS</h2>
             </div>
         </div>
 
-        <div class="row">
-            <div class=" col-12 carousel slide" id="carouselTorneio" data-bs-ride="carousel">
+        <div class="row justify-content-center">
+            <div class=" col-10 carousel slide" id="carouselTorneio" data-bs-ride="carousel">
 
                 <div class="carousel-indicators">
                     <button type="button" data-bs-target="#carouselTorneio" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -89,7 +89,7 @@
     <section class="container py-5">
         <div class="row">
             <div class="col-12">
-                <h2 class="text-white mb-4">TORNEIOS E EVENTOS DOS PRINCIPAIS JOGOS E-SPORTS</h2>
+                <h2 class="text-white mb-4">EVENTOS E TORNEIOS DOS PRINCIPAIS JOGOS E-SPORTS</h2>
             </div>
         </div>
         <div class="row gy-3">
@@ -124,11 +124,11 @@
     <section class="container-fluid py-5 bg-white">
         <div class="row">
             <div class="col-12">
-                <h2 class="text-white mb-4">CRIE JÁ SEU PRÓPRIO TIME E PARTICIPE DOS TORNEIOS</h2>
+                <h2 class="text-center mb-4">CRIE JÁ SEU PRÓPRIO TIME E PARTICIPE DOS TORNEIOS</h2>
             </div>
         </div>
-        <div class="row gy-3">
-            <div class="col-12">
+        <div class="row gy-3 justify-content-center">
+            <div class="col-10">
                 <div class="row gy-3">
                     <div class="col-md-4">
                         <div class="img img-character"></div>

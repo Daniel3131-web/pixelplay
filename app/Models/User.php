@@ -26,11 +26,19 @@ class User extends Authenticatable
         'img',
         'team_id',
         'role',
+        'events',
         'tournaments',
         'matches',
         'wins',
-        'events'
     ];
+
+    /**
+     * Relacionamento: O User pertence a varias inboxes (notificações).
+     */
+    public function inboxes()
+    {
+        return $this->hasMany(Inbox::class)->latest();
+    }
 
     /**
      * Relacionamento: O User pertence a um Time.
@@ -38,6 +46,27 @@ class User extends Authenticatable
     public function User_Team(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    /**
+     * Relacionamento: Um usuário pode ter várias ordens (ingressos/pagamentos).
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function user_events()
+    {
+        return $this->belongsToMany(Event::class, 'event_user')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+
+    // Verifica se tem ingresso para o Evento
+    public function hasTicketForEvent($eventId)
+    {
+        return $this->orders()->where('event_id', $eventId)->where('status', 'pago')->exists();
     }
 
     /**

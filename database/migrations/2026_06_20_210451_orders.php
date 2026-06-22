@@ -12,12 +12,14 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('tournament_id')->constrained();
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('tournament_id')->nullable()->constrained('tournaments');
+            $table->foreignId('event_id')->nullable()->constrained('events');
             $table->decimal('amount', 8, 2);
             $table->string('status')->default('pendente');
             $table->string('type')->default('online');
             $table->string('metodo')->default('pix'); // 'pix' ou 'card'
+            $table->boolean('is_team_payment')->default(false); 
             $table->boolean('checked_in')->default(false);
             $table->timestamps();
         });

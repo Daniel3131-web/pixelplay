@@ -44,8 +44,7 @@ class DatabaseSeeder extends Seeder
         $eventoOnline = Event::create([
             'user_id'       => 1,
             'name'          => 'PixelPlay Arena Virtual 2026',
-            'slug'          => 'pixelplay-arena-virtual-2026',
-            'max_capacity'  => 2000,
+            'max_participants'  => 2000,
             'type'          => 'online',
             'location'      => 'Discord Oficial da PixelPlay',
             'streaming_url' => 'https://twitch.tv/pixelplay',
@@ -62,8 +61,7 @@ class DatabaseSeeder extends Seeder
         $eventoPresencial = Event::create([
             'user_id'       => 1,
             'name'          => 'PixelPlay Fest Curitiba 2026',
-            'slug'          => 'pixelplay-fest-curitiba-2026',
-            'max_capacity'  => 600,
+            'max_participants'  => 600,
             'type'          => 'presencial',
             'location'      => 'Expo Barigui, Curitiba - PR',
             'streaming_url' => 'https://twitch.tv/pixelplay_stage',

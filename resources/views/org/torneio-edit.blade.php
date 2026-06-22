@@ -12,22 +12,6 @@
                     Editar Torneio: {{ $tournament->name }}
                 </h2>
 
-                <div
-                    class="d-flex justify-content-between align-items-center mb-4 p-3 bg-dark rounded border border-secondary">
-                    <a href="{{ route('org.dashboard') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-
-                    <form action="{{ route('org.torneio.destroy', $tournament->id) }}" method="POST"
-                        onsubmit="return confirm('Tem certeza que deseja excluir este torneio?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger btn-sm">
-                            <i class="bi bi-trash"></i> Excluir Torneio
-                        </button>
-                    </form>
-                </div>
-
                 <form action="{{ route('org.torneio.update', $tournament->id) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
@@ -70,24 +54,31 @@
                     </div>
 
                     <div class="row g-3 mb-4">
+                        <div class="col-sm-4">
+                        <label class="form-label small fw-bold text-uppercase text-white mb-1">Evento:</label>
+                        <select name="event_id" class="form-select form-white-input" required>
+                            <option value="" disabled selected>Selecione...</option>
+                            @foreach ($events as $event)
+                                <option value="{{$event->id}}">{{$event->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
                         <div class="col-sm-8">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Nome do Torneio:</label>
                             <input type="text" name="name" class="form-control form-white-input"
-                                value="{{ $tournament->name }}" required maxlength="255">
+                                placeholder="Ex: Copa Pixelplay Pro" required maxlength="255">
                         </div>
-                        <div class="col-sm-4">
+
+                        <div class="col">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Jogo / Categoria:</label>
                             <select name="category" class="form-select form-white-input" required>
-                                <option value="valorant" {{ $tournament->category == 'valorant' ? 'selected' : '' }}>Valorant
-                                </option>
-                                <option value="cs2" {{ $tournament->category == 'cs2' ? 'selected' : '' }}>Counter-Strike 2
-                                </option>
-                                <option value="lol" {{ $tournament->category == 'lol' ? 'selected' : '' }}>League of Legends
-                                </option>
-                                <option value="mlbb" {{ $tournament->category == 'mlbb' ? 'selected' : '' }}>Mobile Legends
-                                </option>
-                                <option value="ow2" {{ $tournament->category == 'ow2' ? 'selected' : '' }}>Overwatch 2
-                                </option>
+                                <option value="" disabled selected>Selecione...</option>
+                                <option value="valorant">Valorant</option>
+                                {{-- <option value="cs2">Counter-Strike 2</option>
+                                <option value="lol">League of Legends</option>
+                                <option value="mlbb">Mobile Legends</option>
+                                <option value="ow2">Overwatch 2</option> --}}
                             </select>
                         </div>
                     </div>

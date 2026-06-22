@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,7 +23,8 @@ class Event extends Model
         'name',
         'slug',
         'img',
-        'max_capacity',
+        'max_participants',
+        'current_participants',
         'type',
         'location',
         'streaming_url',
@@ -41,9 +44,9 @@ class Event extends Model
     protected $casts = [
         'max_capacity' => 'integer',
         'entrance_fee' => 'decimal:2',
-        'entry_date'   => 'date',
-        'start_date'   => 'date',
-        'end_date'     => 'date',
+        'entry_date' => 'date',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     /**
@@ -54,11 +57,32 @@ class Event extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'event_user')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+
     /**
      * Relacionamento: O Evento possui muitos Torneios.
      */
     public function tournaments(): HasMany
     {
         return $this->hasMany(Tournament::class, 'event_id');
+    }
+
+    protected function startDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->format('d/m/Y'),
+        );
+    }
+
+    protected function endDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->format('d/m/Y'),
+        );
     }
 }

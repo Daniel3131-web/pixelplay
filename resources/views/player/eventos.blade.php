@@ -41,7 +41,8 @@
         <section class="container py-5">
             <div class="row">
                 <div class="col-12">
-                    <div class="scroll-frame z-2 row p-4 g-5 justify-content-center overflow-y-auto" style="max-height: 500px; padding-bottom: 1rem;">
+                    <div class="scroll-frame z-2 row p-4 g-5 justify-content-center overflow-y-auto"
+                        style="max-height: 500px; padding-bottom: 1rem;">
                         @forelse ($events as $event)
                             <div class="col-12 col-md-6"
                                 onclick="window.location.href='{{ route('player.evento.show', $event->id) }}'">
@@ -60,17 +61,36 @@
                                         </div>
                                     </div>
 
-                                    <div class="card-body bg-dark text-white p-4">
+                                    <div class="card-body p-4">
                                         <h5 class="fw-bold text-uppercase mb-3">{{ $event->name }}</h5>
-
-                                        <div class="d-flex justify-content-between text-center pt-3 border-top">
-                                            <div>
-                                                <small class="d-block text-white text-uppercase">Data de Início</small>
-                                                <span class="fw-bold text-secondary">{{ $event->start_date?->format('d/m/Y') }}</span>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="p-3 bg-white rounded-3 h-100 border">
+                                                    <i class="bi bi-calendar-event fs-3 text-primary mb-2"></i>
+                                                    <span class="d-block text-muted fw-bold small">DATA DE INÍCIO</span>
+                                                    <span
+                                                        class="fw-bolder text-dark small">{{ $event->start_date ?? 'A definir' }}</span>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span class="btn btn-sm btn-primary fw-bold px-3">Ver Detalhes</span>
+                                            <div class="col-md-4">
+                                                <div class="p-3 bg-white rounded-3 h-100 border">
+                                                    <i class="bi bi-geo-alt fs-3 text-info mb-2"></i>
+                                                    <span class="d-block text-muted fw-bold small">LOCAL</span>
+                                                    <span class="fw-bolder text-dark small">{{ $event->location ?? 'Online' }}</span>
+                                                </div>
                                             </div>
+                                            <div class="col-md-4">
+                                                <div class="p-3 bg-white rounded-3 h-100 border">
+                                                    <i class="bi bi-people-fill fs-3 text-danger mb-2"></i>
+                                                    <span class="d-block text-muted fw-bold small">CAPACIDADE</span>
+                                                    <span class="fw-bolder text-dark small">
+                                                        {{$event->current_participants ?? '0' }}
+                                                        / {{$event->max_participants ?? 'Ilimitado' }} vagas</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2">
+                                            <span class="btn btn-sm btn-primary fw-bold px-3">Ver Detalhes</span>
                                         </div>
                                     </div>
                                 </div>

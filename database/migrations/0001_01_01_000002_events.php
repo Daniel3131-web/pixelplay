@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,15 +12,16 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            
+
             // Relacionamento: Quem criou o evento (Organizador)
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
             // Informações Básicas e Banner
             $table->string('name', 255);
-            $table->string('slug')->unique(); 
             $table->string('img')->nullable();
-            $table->integer('max_capacity');
+            $table->integer('max_participants');
+            $table->integer('current_participants')->default(0);
+
 
             // Logística e Distribuição
             $table->enum('type', ['online', 'presencial', 'corporativo']);
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->time('end_time');     // Horário estimado de término
 
             // Detalhes do Evento
-            $table->text('description');  
+            $table->text('description');
 
             $table->timestamps();
         });

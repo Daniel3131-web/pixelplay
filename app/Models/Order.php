@@ -15,10 +15,13 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'tournament_id',
+        'event_id',
         'amount',
-        'status',      // 'pendente', 'pago'
-        'type',        // 'online', 'presencial'
-        'checked_in',  // boolean (0 ou 1)
+        'status',
+        'type',
+        'metodo',             // Adicionado (exatamente como está no BD)
+        'is_team_payment',    // Adicionado (Essencial para a lógica do time)
+        'checked_in',
     ];
 
     /**
@@ -26,7 +29,7 @@ class Order extends Model
      */
     protected $casts = [
         'checked_in' => 'boolean',
-        'amount'     => 'decimal:2',
+        'amount' => 'decimal:2',
     ];
 
     /**
@@ -43,6 +46,14 @@ class Order extends Model
     public function tournament()
     {
         return $this->belongsTo(Tournament::class);
+    }
+
+    /**
+     * Relacionamento: Um pedido pertence a um evento.
+     */
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
     }
 
     /**

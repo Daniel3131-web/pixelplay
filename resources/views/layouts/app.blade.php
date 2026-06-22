@@ -20,7 +20,7 @@
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">
-                    <a href="{{ route('player.torneios') }}">
+                    <a href="{{ route('player.eventos') }}">
                         <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
                     </a>
                 </header>

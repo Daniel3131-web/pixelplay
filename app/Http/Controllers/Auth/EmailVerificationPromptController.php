@@ -18,11 +18,11 @@ class EmailVerificationPromptController extends Controller
 
         if ($user->role === 'player') {
             return $request->user()->hasVerifiedEmail()
-                    ? redirect()->intended(route('player.torneios', absolute: false))
+                    ? redirect()->intended(route('player.eventos', absolute: false))
                     : view('auth.verify-email');
         } elseif ($user->role === 'organizador') {
             return $request->user()->hasVerifiedEmail()
-                    ? redirect()->intended(route('player.dashboard', absolute: false))
+                    ? redirect()->intended(route('player.eventos', absolute: false))
                     : view('auth.verify-email');
         }
 

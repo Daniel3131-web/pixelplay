@@ -6,6 +6,8 @@ use App\Http\Controllers\OrgController;
 use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\PaymentController;
+use App\Models\Inbox;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Página Inicial do Projeto
@@ -26,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/partida/{id}', [TournamentController::class, 'show_match'])->name('player.match.show');
 
     // -- Meus Eventos
-    Route::get('/meus-eventos', [EventController::class, 'meusEventos'])->name('player.meus-eventos');
+    Route::get('/meus-eventos', [EventController::class, 'meusEventos'])->name('player.meuseventos');
 
     // --- Gerenciamento de Times ---
     Route::get('/times', [TeamController::class, 'index'])->name('player.times');
@@ -34,7 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/time/store', [TeamController::class, 'store'])->name('player.time.store');
     Route::post('/time/leave', [TeamController::class, 'leave'])->name('player.time.leave');
     Route::get('/time/{id}', [TeamController::class, 'show'])->name('player.time.show');
+    Route::get('/time/{team}/edit', [TeamController::class, 'edit'])->name('player.time.edit');
+    Route::put('/time/{team}/update', [TeamController::class, 'update'])->name('player.time.update');
     Route::post('/time/{team}/join', [TeamController::class, 'join'])->name('player.time.join');
+    Route::put('/time/{id}/{user}', [TeamController::class, 'removeMember'])->name('player.time.remove-member');
 
     // --- Perfil de Usuário ---
     Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.show');
@@ -43,11 +48,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // --- Fluxo de Pagamento Simulado ---
-    Route::get('/pagamento/torneio/{id}', [PaymentController::class, 'checkout'])->name('payment.checkout');
+    Route::get('/pagamento/checkout/{id}/{type}', [PaymentController::class, 'checkout'])->name('payment.checkout');
     Route::post('/pagamento/processar', [PaymentController::class, 'processSimulation'])->name('payment.process');
     Route::get('/pagamento/processando/{orderId}', [PaymentController::class, 'processing'])->name('payment.processing');
     Route::post('/pagamento/confirmar/{orderId}', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
     Route::get('/pagamento/sucesso/{orderId}', [PaymentController::class, 'success'])->name('payment.success');
+
+    // -- Inbox
+    Route::post('/inbox/{id}/read', function ($id) {
+        $message = Inbox::where('user_id', Auth::id())->findOrFail($id);
+        $message->update(['is_read' => true]);
+
+        return redirect()->back()->with('msg', 'Mensagem marcada como lida!');
+    })->name('inbox.read')->middleware('auth');
 
 });
 
@@ -81,6 +94,17 @@ Route::middleware(['auth', 'org'])->group(function () {
     Route::post('/org/partida/{id}/store', [OrgController::class, 'match_store'])->name('org.partida.store');
     Route::delete('/org/partida/{id}/destroy', [OrgController::class, 'match_destroy'])->name('org.partida.destroy');
 
+    // -- Rota de notificação
+    Route::get('/org/notificacao/criar', [OrgController::class, 'notification_create'])->name('org.notificacao.criar');
+    Route::post('/org/notificacao/store', [OrgController::class, 'notification_store'])->name('org.notificacao.store');
+
+    // --- Rota para validação de ingresso
+    Route::get('/validar/{orderId}', [PaymentController::class, 'validateEntry'])
+        ->name('admin.validate.order');
+
+    Route::get('/admin/scanner', function () {
+        return view('admin.scanner');
+    })->name('admin.checkin.scan');
 });
 
 require __DIR__ . '/auth.php';

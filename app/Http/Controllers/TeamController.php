@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class TeamController extends Controller
 {
@@ -17,11 +18,7 @@ class TeamController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $hasTeam = false;
-
-        if ($user->team_id) {
-            $hasTeam = true;
-        }
+        $hasTeam = (bool) $user->team_id;
 
         $search = request('search');
 
@@ -38,78 +35,73 @@ class TeamController extends Controller
         return view('player.times', ['Teams' => $teams, 'search' => $search, 'hasTeam' => $hasTeam]);
     }
 
-    /** 
-     * Sair do time
-    */
-
+    /** * Sair do time
+     */
     public function leave()
     {
         $user = Auth::user();
 
         if (!$user->team_id) {
-            return redirect()->back()->with('error', 'Você não está em nenhum time.');
+            // Ajustado para withErrors para disparar o toast vermelho
+            return redirect()->back()->withErrors(['error' => 'Você não está em nenhum time.']);
         }
 
         $team = Team::findOrFail($user->team_id);
 
         DB::transaction(function () use ($user, $team) {
-            // saindo o líder do time
             if ($team->leader_id === $user->id) {
-                // Busca outro jogador (excluindo o líder atual)
                 $nextLeader = User::where('team_id', $team->id)
-                                  ->where('id', '!=', $user->id)
-                                  ->first();
+                    ->where('id', '!=', $user->id)
+                    ->first();
 
                 if ($nextLeader) {
-                    // passa a liderança
                     $team->update(['leader_id' => $nextLeader->id]);
                 } else {
-                    // Se não houver mais ninguém, deleta o time
                     $team->delete();
                 }
             }
 
-            // Remove o time do usuário atual
             $user->update(['team_id' => null]);
         });
 
-        return redirect()->route('player.times')->with('msg', 'Você saiu do time.');
+        return redirect()->route('player.times')->with('msg', 'Você saiu do time com sucesso.');
     }
 
-    /** 
-     * Entrar no time
-    */
-
+    /** * Entrar no time
+     */
     public function join(Request $request, Team $team)
     {
         $user = Auth::user();
 
         if ($user->team_id == $team->id) {
-            return redirect()->route('player.time.show', $team->id)->with('msg', 'Você já está no time!');
+            return redirect()->route('player.time.show', $team->id)->with('msg', 'Você já está neste time!');
         }
 
         if ($user->team_id) {
-            return back()->with('msg', 'Você já pertence a outra equipe! Saia dela primeiro.');
+            // Ajustado para withErrors
+            return back()->withErrors(['error' => 'Você já pertence a outra equipe! Saia dela primeiro.']);
         }
 
         $team->loadCount('users');
 
         if ($team->users_count >= $team->max_participants) {
-            return back()->with('msg', 'Esse time já está cheio.');
+            // Ajustado para withErrors
+            return back()->withErrors(['error' => 'Este time já está cheio.']);
         }
 
         if ($team->privacy !== 'public') {
             $request->validate(['password' => 'required']);
 
             if (!Hash::check($request->password, $team->password)) {
-                return back()->with('msg', 'Senha incorreta!');
+                // Ajustado para com errors para invalidar o input de senha do front
+                return back()->withErrors(['password' => 'Senha incorreta!']);
             }
         }
 
         $user->team_id = $team->id;
         $user->save();
 
-        return redirect()->route('player.time.show', $team->id)->with('msg', 'Você entrou no time!');
+        return redirect()->route('player.time.show', $team->id)->with('msg', 'Você entrou no time com sucesso!');
     }
 
     public function create()
@@ -117,12 +109,67 @@ class TeamController extends Controller
         return view('player.time-create');
     }
 
+    public function edit(Team $team)
+    {
+        // Garante que apenas o dono/capitão do time possa acessar a tela de edição
+        if ($team->leader_id !== Auth::id()) {
+            abort(403, 'Você não tem permissão para alterar as configurações deste time.');
+        }
+        return view('player.time-edit', compact('team'));
+
+    }
+
+    public function update(Request $request, Team $team)
+    {
+        $request->validate([
+            'name' => 'required|string|min:5|max:255',
+            'acronym' => 'required|string|max:5',
+            'privacy' => 'required|in:public,private',
+            'password' => 'nullable|string|min:8',
+            'description' => 'required|string|max:255',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'name.min' => 'O nome do time deve ter no mínimo 5 caracteres.',
+            'acronym.max' => 'A sigla pode ter no máximo 5 letras.',
+            'password.min' => 'A senha deve conter pelo menos 8 caracteres.',
+            'img.image' => 'O arquivo enviado deve ser uma imagem válida.',
+            'img.max' => 'A imagem não pode ser maior que 2MB.',
+        ]);
+
+        if ($request->hasFile('img')) {
+            if ($team->img && Storage::disk('public')->exists($team->img)) {
+                Storage::disk('public')->delete($team->img);
+            }
+
+            $requestImage = $request->img;
+            $extension = $requestImage->extension();
+            $imageName = md5($requestImage->getClientOriginalName() . strtotime("now")) . "." . $extension;
+            $requestImage->move(public_path('/assets/teams/'), $imageName);
+            $team->img = "/assets/teams/" . $imageName;
+        }
+
+        if ($request->privacy === 'public') {
+            $team->password = null;
+        } elseif ($request->filled('password')) {
+            $team->password = Hash::make($request->password);
+        }
+        // mantendo o hash da senha antiga intacto no banco de dados.
+
+        $team->name = $request->name;
+        $team->acronym = strtoupper($request->acronym);
+        $team->privacy = $request->privacy;
+        $team->description = $request->description;
+
+        $team->save();
+
+        return redirect()->route('player.time.show', $team->id)->with('msg', 'As informações do time foram atualizadas com sucesso!');
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'name' => 'required|string|unique:teams,name|max:255',
             'acronym' => 'required|string|max:5',
@@ -134,10 +181,10 @@ class TeamController extends Controller
         $player = Auth::user();
 
         if ($player->team_id) {
-        return redirect()->back()->with('error', 'Você já pertence a um time!');
+            // Ajustado para com errors
+            return redirect()->back()->withErrors(['error' => 'Você já pertence a um time!']);
         }
 
-        // o DB serve para que tudo aconteçã junto ou falhe junto
         $team = DB::transaction(function () use ($request, $player) {
             $newTeam = new Team;
             $newTeam->name = $request->name;
@@ -150,7 +197,6 @@ class TeamController extends Controller
                 $newTeam->password = Hash::make($request->password);
             }
 
-            // IMAGE UPLOAD
             if ($request->hasFile('img') && $request->file('img')->isValid()) {
                 $requestImage = $request->img;
                 $extension = $requestImage->extension();
@@ -161,14 +207,13 @@ class TeamController extends Controller
 
             $newTeam->save();
 
-            // Vincula o criador ao time que ele acabou de gerar
             $player->team_id = $newTeam->id;
             $player->save();
 
             return $newTeam;
         });
 
-        return redirect()->route('player.time.show', $team->id)->with('msg', 'Time criado com sucesso e você é o capitão!');
+        return redirect()->route('player.time.show', $team->id)->with('msg', 'Time criado com sucesso! Você é o capitão.');
     }
 
     /**
@@ -180,4 +225,22 @@ class TeamController extends Controller
         return view('player.time', ['Team' => $team]);
     }
 
+
+    public function removeMember(int $teamId, User $user)
+    {
+        $team = Team::findOrFail($teamId);
+
+        if (Auth::id() !== $team->leader_id) {
+            abort(403, 'Apenas o líder do time pode remover membros.');
+        }
+
+        if ($user->id === $team->leader_id) {
+            return redirect()->back()->with('error', 'O líder não pode ser removido do time.');
+        }
+
+        $user->team_id = null; 
+        $user->save();
+
+        return redirect()->back()->with('msg', 'Jogador removido do time com sucesso!');
+    }
 }

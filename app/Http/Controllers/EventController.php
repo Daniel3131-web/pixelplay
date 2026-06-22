@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -18,7 +19,7 @@ class EventController extends Controller
 
         $events = Event::when($search, function ($query, $search) {
             return $query->where('name', 'like', "%{$search}%")
-                         ->orWhere('description', 'like', "%{$search}%");
+                ->orWhere('description', 'like', "%{$search}%");
         })->latest()->get();
 
         return view('player.eventos', compact('events', 'search'));
@@ -36,8 +37,19 @@ class EventController extends Controller
 
     public function meusEventos()
 {
-    $events = Auth::user()->events()->latest()->get();
+    $user = Auth::user();
 
-        return view('player.meus-eventos', compact('events'));
-    }
+    $orders = Order::where('user_id', $user->id)
+                   ->where('status', 'pago')
+                   ->with(['event', 'tournament'])
+                   ->get();
+
+    $eventOrders = $orders->filter(fn($order) => $order->event_id !== null);
+    $tournamentOrders = $orders->filter(fn($order) => $order->tournament_id !== null);
+
+    return view('player.meus-eventos', [
+        'eventOrders' => $eventOrders,
+        'tournamentOrders' => $tournamentOrders
+    ]);
+}
 }

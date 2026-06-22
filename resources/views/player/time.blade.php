@@ -36,11 +36,13 @@
         <div class="row g-4">
             <div class="col-lg-4">
                 <div class="card card-custom border-0 shadow-sm bg-light overflow-hidden">
-                    <img src="{{ asset($Team->img) }}" class="w-100" style="height: 160px; object-fit: cover;" alt="{{ $Team->name }}">
+                    <img src="{{ asset($Team->img) }}" class="w-100" style="height: 160px; object-fit: cover;"
+                        alt="{{ $Team->name }}">
 
                     <div class="card-body p-4">
                         <div class="mb-4">
-                            <h3 class="fw-bold text-dark mb-1 text-uppercase">{{ $Team->name }}</h3>
+                            <h3 class="fw-bold text-dark text-uppercase">{{ $Team->name }}</h3>
+                            <h5 class="fw-bold text-dark small mb-1 text-uppercase">Sigla: {{ $Team->acronym }}</h5>
                             <span class="text-muted small fw-bold">ID do Time: #{{ $Team->id }}</span>
                         </div>
 
@@ -76,8 +78,17 @@
                             $isFull = $Team->users_count >= $Team->max_participants;
                         @endphp
 
-                        <div class="pt-2 border-top">
+                        <div class="d-flex flex-column pt-2 gap-2 border-top">
                             @if($isMember)
+                                @if ($Team->leader_id == Auth::id())
+
+                                    <a href="{{ route('player.time.edit', $Team) }}"
+                                        class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-bold text-uppercase"
+                                        style="font-size: 0.85rem;">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Editar time
+                                    </a>
+                                @endif
                                 <form action="{{ route('player.time.leave') }}" method="POST"
                                     onsubmit="return confirm('Tem certeza absoluta que deseja sair deste time?');">
                                     @csrf
@@ -103,12 +114,14 @@
                             @else
                                 <form action="{{ route('player.time.join', $Team->id) }}" method="POST">
                                     @csrf
-                                    
+
                                     {{-- VERIFICAÇÃO DE TIME PRIVADO: Adiciona o campo de senha se não for público --}}
                                     @if($Team->privacy == 'private')
                                         <div class="mb-3">
-                                            <label for="team_password" class="form-label text-muted small fw-bold text-uppercase">Senha do Time</label>
-                                            <input type="password" name="password" id="team_password" class="form-control text-center" placeholder="Digite a senha para entrar" required>
+                                            <label for="team_password"
+                                                class="form-label text-muted small fw-bold text-uppercase">Senha do Time</label>
+                                            <input type="password" name="password" id="team_password"
+                                                class="form-control text-center" placeholder="Digite a senha para entrar" required>
                                             @error('password')
                                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                                             @enderror
@@ -145,6 +158,7 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th scope="col" class="ps-4">Jogador</th>
+                                    <th scope="col" class="ps-4"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -154,25 +168,40 @@
                                             <div class="d-flex align-items-center">
                                                 @if ($member->img)
                                                     <img src="{{ asset($member->img) }}" class="me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary" style="width: 40px; height: 40px;" alt="Foto de Perfil">
-                                                @else
-                                                    <div class="me-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
-                                                        style="width: 40px; height: 40px; font-size: 0.85rem;">
-                                                        {{ strtoupper(substr($member->name, 0, 2)) }}
-                                                    </div>
                                                 @endif
                                                 <div>
                                                     <span class="fw-bold d-block text-dark">
                                                         {{ $member->name }}
                                                         @if($member->id === Auth::id())
-                                                            <span class="badge bg-info text-dark ms-1" style="font-size: 0.65rem;">Você</span>
+                                                            <span class="badge bg-info text-dark ms-1"
+                                                                style="font-size: 0.65rem;">Você</span>
                                                         @endif
                                                         @if($member->id == $Team->leader_id)
-                                                            <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Líder</span>
+                                                            <span class="badge bg-warning text-dark ms-1"
+                                                                style="font-size: 0.65rem;">Líder</span>
                                                         @endif
                                                     </span>
                                                     <span class="text-muted small">Membro</span>
                                                 </div>
                                             </div>
+                                        </td>
+
+                                        <td class="pe-4 py-3 text-end align-middle">
+                                            @if(Auth::id() == $Team->leader_id && $member->id != $Team->leader_id)
+                                                <form action="{{ route('player.time.remove-member', [$Team->id, $member->id]) }}" 
+                                                    method="POST" 
+                                                    class="d-inline" 
+                                                    onsubmit="return confirm('Tem certeza que deseja remover {{ $member->name }} do time?')">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" 
+                                                            class="btn btn-sm btn-outline-danger fw-bold text-uppercase" 
+                                                            style="font-size: 0.7rem;" 
+                                                            onclick="event.stopPropagation();">
+                                                        Remover
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

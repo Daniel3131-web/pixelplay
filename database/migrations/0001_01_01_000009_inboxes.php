@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             //-- Chaves Estrangeiras
             $table->foreignId('user_id')->constrained()->onDelete('cascade');;
+            $table->foreignId('event_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('tournament_id')->nullable()->constrained()->onDelete('cascade');
             //--
             $table->string('title');
