@@ -1,4 +1,3 @@
-
 @extends('layouts.guest_main')
 
 @section('title', 'Pixelplay - Landing Page')
@@ -14,9 +13,9 @@
     <section class="container py-5 position-relative">
 
         <div class="row mb-5 text-center justify-content-center position-absolute top-25 mt-5 w-100 z-1">
-            <div class="col-12 col-md-6"> 
+            <div class="col-12 col-md-6">
                 <h1 class="text-white mb-4">PIXEL PLAY</h1>
-                
+
                 <div class="d-flex flex-column align-items-center gap-2 max-width-buttons mx-auto">
                     <a href="{{ route('login') }}" class="btn btn-primary w-75">Entrar</a>
                     <a href="{{ route('register') }}" class="btn btn-outline-light w-50">Criar conta</a>
@@ -24,17 +23,40 @@
             </div>
         </div>
 
+
+        @php
+
+            $images = range(1, 6);
+
+            shuffle($images);
+
+            $image1 = $images[0];
+            $image2 = $images[1];
+            $image3 = $images[2];
+
+        @endphp
+
         <div class="row gy-3">
             <div class="col-12 col-md-6">
-                <div class="img" id="game-1">Image 1</div>
+                <div class="ratio ratio-1x1 h-100">
+                    <img class="w-100 h-100 object-fit-cover"
+                        src="{{ asset('/assets/landing/landing0' . $image1 . '.png') }}" alt="">
+                </div>
             </div>
+
             <div class="col-12 col-md-6">
-                <div class="row gy-3">
-                    <div class="col-12">
-                        <div class="img" id="game-2">Image 2</div>
+                <div class="row gy-3 h-100">
+                    <div class="col-12 col-sm-6 col-md-12">
+                        <div class="ratio ratio-2x1">
+                            <img class="w-100 h-100 object-fit-cover"
+                                src="{{ asset('/assets/landing/landing0' . $image2 . '.png') }}" alt="">
+                        </div>
                     </div>
-                    <div class="col-12">
-                        <div class="img" id="game-3">Image 3</div>
+                    <div class="col-12 col-sm-6 col-md-12">
+                        <div class="ratio ratio-2x1">
+                            <img class="w-100 h-100 object-fit-cover"
+                                src="{{ asset('/assets/landing/landing0' . $image3 . '.png') }}" alt="">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -46,7 +68,8 @@
 
         <div class="row mb-5">
             <div class="col-12">
-                <h2 class="text-white mb-4">NA PIXEL PLAY VOCÊ ENCONTRA DIVERSOS EVENTOS E TORNEIOS DOS PRINCIPAIS JOGOS E-SPORTS</h2>
+                <h2 class="text-white mb-4">NA PIXEL PLAY VOCÊ ENCONTRA DIVERSOS EVENTOS E TORNEIOS DOS PRINCIPAIS JOGOS
+                    E-SPORTS</h2>
             </div>
         </div>
 
@@ -54,9 +77,12 @@
             <div class=" col-10 carousel slide" id="carouselTorneio" data-bs-ride="carousel">
 
                 <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselTorneio" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselTorneio" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselTorneio" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <button type="button" data-bs-target="#carouselTorneio" data-bs-slide-to="0" class="active"
+                        aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselTorneio" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselTorneio" data-bs-slide-to="2"
+                        aria-label="Slide 3"></button>
                 </div>
 
                 <div class="carousel-inner">
@@ -83,7 +109,7 @@
 
             </div>
         </div>
-        
+
     </section>
 
     <section class="container py-5">
@@ -157,9 +183,9 @@
     <section class="container py-5">
 
         <div class="row mb-5 text-center justify-content-center mt-5 w-100 z-1">
-            <div class="col-12 col-md-6"> 
+            <div class="col-12 col-md-6">
                 <h1 class="text-white mb-4">PIXEL PLAY</h1>
-                
+
                 <div class="d-flex flex-column align-items-center gap-2 max-width-buttons mx-auto">
                     <a href=" {{ route('login') }} " class="btn btn-primary w-75">Entrar</a>
                     <a href=" {{ route('register') }}" class="btn btn-outline-light w-50">Criar conta</a>

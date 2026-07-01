@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,12 +17,26 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo(function (Request $request) {
             $user = $request->user();
 
-            if ($user && $user->role === 'organizador') {
-                return '/dashboard'; // Rota do Organizador
+            if ($user) {
+
+                if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+                    return '/verify-email';
+                }
+
+                
+                if ($user->role === 'organizador') {
+                    return '/dashboard'; 
+                }
+
+                return '/eventos';
             }
 
-            return '/eventos'; // Rota padrão do Player
+            return '/';
         });
+
+        $middleware->web(append: [
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
+        ]);
 
         $middleware->alias([
             'org' => \App\Http\Middleware\EnsureUserIsOrganizer::class,

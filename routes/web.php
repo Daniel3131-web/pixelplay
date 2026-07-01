@@ -7,8 +7,24 @@ use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Inbox;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+// DEV ROUTES
+Route::get('/limpar-tudo', function() {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('route:clear');
+    return 'Laravel atualizado no servidor!';
+});
+
+Route::get('/migrations', function() {
+    Artisan::call('migrate:refresh --seed');
+    return 'Laravel atualizado no servidor!';
+});
+
+
 
 // Página Inicial do Projeto
 Route::get('/', function () {
