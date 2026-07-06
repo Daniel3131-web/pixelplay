@@ -148,7 +148,7 @@
                                 <tbody>
                                     @foreach($events as $event)
                                         <tr>
-                                            <td class="ps-4 py-3">
+                                            <td class="ps-4 py-3" style="cursor: pointer" onclick="window.location.href='{{ route('player.evento.show', $event->id) }}'">
                                                 <div class="d-flex align-items-center">
                                                     <img src="{{ asset($event->img ?? 'assets/events/default.png') }}"
                                                         class="me-2 rounded-circle" style="width: 32px; height: 32px;"
@@ -228,7 +228,7 @@
                                 <tbody>
                                     @foreach($tournaments as $tournament)
                                         <tr>
-                                            <td class="ps-4 py-3">
+                                            <td class="ps-4 py-3" style="cursor: pointer" onclick="window.location.href='{{ route('player.torneio.show', $tournament->id) }}'">
                                                 <div class="d-flex align-items-center">
                                                     <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}"
                                                         class="me-2 rounded-circle" style="width: 32px; height: 32px;"

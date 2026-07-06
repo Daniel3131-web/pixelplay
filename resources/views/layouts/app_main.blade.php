@@ -6,12 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title')</title>
 
-    <link rel="shortcut icon" href="/assets/imgs/Icon-white.png" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('/assets/imgs/Icon-white.png') }}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/css/main.css">
 
     <style>
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #1a1a1f;
+            z-index: 99999; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+
         .sidebar {
             height: 100dvh;
             overflow-y: auto;
@@ -55,22 +76,30 @@
 </head>
 
 <body>
+    <div id="page-loader">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+        <div class="mt-3 text-white-50 fw-bold small text-uppercase tracking-wide">
+            Carregando PixelPlay...
+        </div>
+    </div>
 
     <button class="btn text-white shadow" id="sidebarToggle" style="top: 20px; position: fixed; z-index: 1060;">
         <i class="bi bi-chevron-left" id="sidebarArrow" style="transition: transform 0.3s; display: inline-block;"></i>
     </button>
 
     <aside class="d-flex flex-column p-3 text-white sidebar border-end border-dark shadow">
-
+        
         <div class="nav-wrapper">
-            <div class="d-flex align-items-center gap-3 mb-4 px-2 pt-3 justify-content-center">
+            <div class="d-flex align-items-center justify-content-center">
                 @if(Auth::user()->role == "organizador")
                     <a href="{{ route('org.dashboard') }}">
-                        <img src="{{ asset('/assets/imgs/Icon-white.png') }}" alt="Pixelplay Icon" style="max-height: 150px; width: auto;">
+                        <img src="{{ asset('/assets/imgs/Icon-white.png') }}" alt="Pixelplay Icon" style="max-height: 140px; width: auto;">
                     </a>
                 @else
                     <a href="{{ route('player.eventos') }}">
-                        <img src="{{ asset('/assets/imgs/Icon-white.png') }}" alt="Pixelplay Icon" style="max-height: 150px; width: auto;">
+                        <img src="{{ asset('/assets/imgs/Icon-white.png') }}" alt="Pixelplay Icon" style="max-height: 140px; width: auto;">
                     </a>
                 @endif
             </div>
@@ -99,10 +128,12 @@
                         <i class="bi bi-qr-code fs-5"></i> <span>Validador de Ingressos</span>
                     </a>
                 @endif
-                <a href="{{ route('player.eventos') }}" class="nav-link-custom">
+                <a href="{{ route('player.eventos') }}" 
+                    class="nav-link-custom {{ request()->routeIs('player.eventos') ? 'active' : '' }}">
                     <i class="bi bi-calendar-event fs-5"></i> <span>Eventos</span>
                 </a>
-                <a href="{{ route('player.meuseventos') }}" class="nav-link-custom">
+                <a href="{{ route('player.meuseventos') }}" 
+                    class="nav-link-custom {{ request()->routeIs('player.meuseventos') ? 'active' : '' }}">
                     <i class="bi bi-bookmark-star fs-5"></i> <span>Minhas Inscrições</span>
                 </a>
                 <a href="{{ route('player.times') }}"
@@ -117,9 +148,9 @@
             </nav>
         </div>
 
-        <div class="dropdown border-top border-secondary pt-3 mt-auto">
+        <div class="dropdown border-top py-1 border-secondary">
             <a href="#"
-                class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2 py-2 rounded-3 user-dropdown-toggle"
+                class="d-flex align-items-center text-white p-2 text-decoration-none dropdown-toggle rounded-3 user-dropdown-toggle"
                 data-bs-toggle="dropdown">
                 <div class="position-relative me-2">
                         <img src="{{ asset(Auth::user()->img ?? '/assets/profiles/avatar/default.png') }}" class="rounded-circle border border-2 border-primary" style="width: 38px; height: 38px;" alt="Perfil">
@@ -197,7 +228,7 @@
                 <div class="modal-header border-bottom border-secondary border-opacity-10 p-3">
                     <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-envelope-open text-primary fs-5"></i>
-                        <h5 class="modal-title fw-bold text-uppercase tracking-wide id="inboxModalLabel">Central de Alertas</h5>
+                        <h5 class="modal-title fw-bold text-uppercase tracking-wide" id="inboxModalLabel">Central de Alertas</h5>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -270,8 +301,30 @@
         </div>
     </div>
 
+    <footer class="d-flex justify-content-between p-3">
+        <div class="icon" style="cursor: pointer" onclick="window.location.href='{{ route('landing') }}'"></div>
+        <div class="d-flex flex-column justify-content-center">
+            <p class="border-bottom text-center">&copy;{{ date('Y') }} Todos os direitos reservados</p>
+            <div class="d-flex justify-content-between gap-3">
+                <a class="nav-link" href="{{ route('faq') }}">FAQ:Central de ajuda</a>
+                <a class="nav-link" href="{{ route('contato') }}">Contato</a>
+                <a class="nav-link" href="{{ route('sobre') }}">Sobre nós</a>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+
+        window.addEventListener('load', function () {
+            const loader = document.getElementById('page-loader');
+            loader.classList.add('hidden');
+            
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 1000);
+        });
+
         const toggle = document.getElementById('sidebarToggle');
         const sidebar = document.querySelector('.sidebar');
         const arrow = document.getElementById('sidebarArrow');

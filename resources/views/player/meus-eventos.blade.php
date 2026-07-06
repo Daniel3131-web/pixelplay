@@ -20,7 +20,7 @@
                         <h5 class="fw-bold">{{ $order->event->name }}</h5>
                         <p class="text-secondary small mb-3">
                             <i class="bi bi-calendar-check me-1 text-primary"></i> 
-                            {{ $order->event->start_date }}
+                            {{ $order->event->start_date?->format('d/m/Y') }}
                         </p>
                         <a href="{{ route('payment.success', $order->id) }}" class="btn btn-sm btn-outline-primary w-100 mb-3">Ver Comprovante</a>
                         <a href="{{ route('player.evento.show', $order->event->id) }}" class="btn btn-sm btn-outline-secondary w-100 mb-3">Ver Evento</a>
@@ -63,7 +63,6 @@
     </div>
 </section>
 
-{{-- Estilização para o Scrollbar --}}
 <style>
     .overflow-x-auto::-webkit-scrollbar { height: 6px; }
     .overflow-x-auto::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }

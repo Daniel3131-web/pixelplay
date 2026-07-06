@@ -37,8 +37,11 @@
 
             <div class="col-lg-4">
                 <div class="card card-custom border-0 shadow-sm bg-light overflow-hidden">
-                    <div class="w-100 bg-dark"
-                        style="height: 100px; background: linear-gradient(135deg, #1e1e2f 0%, #0d6efd 100%);"></div>
+                    @if ($team)
+                        <img class="w-100 bg-dark" src="{{ asset($team->img) }}" style="max-height: 200px; object-fit: cover;"></img>
+                    @else
+                        <div class="w-100 bg-dark" style="height: 200px; background: linear-gradient(135deg, #1e1e2f 0%, #0d6efd 100%);"></div>
+                    @endif
 
                     <div class="card-body p-4 pt-0">
                         <div class="d-flex justify-content-center mb-3" style="margin-top: -55px;">

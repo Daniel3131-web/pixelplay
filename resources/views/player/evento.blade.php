@@ -5,12 +5,29 @@
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        .hover-scale { transition: transform 0.2s ease-in-out; }
-        .hover-scale:hover { transform: scale(1.02); }
-        .scroll-frame::-webkit-scrollbar { width: 8px; }
-        .scroll-frame::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
-        .scroll-frame::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 8px; }
-        .scroll-frame::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        .scroll-frame::-webkit-scrollbar {
+            width: var(--sb-size);
+        }
+
+        .scroll-frame::-webkit-scrollbar-track {
+            background: var(--sb-track-color);
+            border-radius: 3px;
+        }
+
+        .scroll-frame::-webkit-scrollbar-thumb {
+            background: var(--sb-thumb-color);
+            border-radius: 3px;
+        }
+
     </style>
 @endpush
 
@@ -18,11 +35,28 @@
     <section class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-11">
+
+                <div class="mb-3 d-flex justify-content-between">
+                    <a href="/eventos" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">
+                        <i class="bi bi-arrow-left"></i> Eventos
+                    </a>
+                    @if (Auth::user()->role == "organizador")
+                        <a href="{{ route('org.evento.edit', $event->id) }}"" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">Editar Evento</a>
+                    @endif
+                </div>
+
                 <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                    
+
                     <div class="position-relative">
                         <img src="{{ asset($event->img ?? 'assets/events/default.png') }}" class="card-img-top"
                             alt="{{ $event->name }}" style="height: 350px; object-fit: cover;">
+                        <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
+                            @if($event->end_date > now())
+                                <span class="badge bg-success text-uppercase p-2" style="font-size: 1rem;">Ativo</span>
+                            @else
+                                <span class="badge bg-danger text-uppercase p-2" style="font-size: 1rem;">Finalizado</span>
+                            @endif
+                        </div>
                     </div>
 
                     <div class="card-body bg-white p-4 p-md-5">
@@ -31,7 +65,8 @@
                             <h2 class="fw-bolder mb-0 text-dark">{{ $event->name }}</h2>
                         </div>
 
-                        <div class="p-4 bg-light rounded-4 mb-5 border d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                        <div
+                            class="p-4 bg-light rounded-4 mb-5 border d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                             <div>
                                 <h4 class="fw-bold mb-1">Participe do Evento</h4>
                                 <span class="text-muted">Taxa de entrada:
@@ -43,18 +78,24 @@
 
                             <div class="w-100 d-flex flex-column flex-md-row gap-2" style="max-width: 400px;">
                                 @if($event->streaming_url)
-                                    <a href="{{ $event->streaming_url }}" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2">
-                                        <i class="bi bi-broadcast"></i> Assistir
+                                    <a href="{{ $event->streaming_url }}" target="_blank"
+                                        class="btn btn-outline-danger w-100 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2">
+                                        <i class="bi bi-broadcast"></i> Assistir!
                                     </a>
                                 @endif
-                                
+
                                 @if($event->users->contains(auth()->id()))
                                     <button class="btn btn-secondary w-100 py-3 fw-bold shadow-sm" disabled>
-                                        <i class="bi bi-check-circle"></i> Já Inscrito
+                                        <i class="bi bi-check-circle"></i> Já Inscrito!
+                                    </button>
+                                @elseif($event->entry_date < now() or $event->end_date < now())
+                                    <button class="btn btn-secondary w-100 py-3 fw-bold shadow-sm" disabled>
+                                        <i class="bi bi-check-circle"></i> Inscrições encerradas!
                                     </button>
                                 @else
-                                    <a href="{{ route('payment.checkout', [$event->id, 'event']) }}" class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2">
-                                        <i class="bi bi-ticket-perforated"></i> Inscrever-se
+                                    <a href="{{ route('payment.checkout', [$event->id, 'event']) }}"
+                                        class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2">
+                                        <i class="bi bi-ticket-perforated"></i> Inscrever-se!
                                     </a>
                                 @endif
                             </div>
@@ -65,7 +106,8 @@
                                 <div class="p-3 bg-white rounded-3 h-100 border">
                                     <i class="bi bi-calendar-event fs-3 text-primary mb-2"></i>
                                     <span class="d-block text-muted fw-bold small">DATA DE INÍCIO</span>
-                                    <span class="fw-bolder text-dark">{{ $event->start_date ?? 'A definir' }}</span>
+                                    <span
+                                        class="fw-bolder text-dark">{{ $event->start_date?->format('d/m/Y') ?? 'A definir' }}</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -79,7 +121,8 @@
                                 <div class="p-3 bg-white rounded-3 h-100 border">
                                     <i class="bi bi-people-fill fs-3 text-danger mb-2"></i>
                                     <span class="d-block text-muted fw-bold small">CAPACIDADE</span>
-                                    <span class="fw-bolder text-dark"> {{$event->current_participants ?? '0' }} / {{$event->max_participants ?? 'Ilimitado' }} vagas</span>
+                                    <span class="fw-bolder text-dark"> {{$event->current_participants ?? '0' }} /
+                                        {{$event->max_participants ?? 'Ilimitado' }} vagas</span>
                                 </div>
                             </div>
                         </div>
@@ -98,34 +141,43 @@
                                     <i class="bi bi-joystick"></i> Torneios do Evento
                                 </h5>
                             </div>
-                            
+
                             <div class="row p-4 p-md-5 g-4 overflow-y-auto scroll-frame" style="max-height: 400px;">
                                 @forelse ($event->tournaments as $tournament)
-                                    <div class="col-12 col-md-6" onclick="window.location.href='/torneio/{{ $tournament->id }}'" style="cursor: pointer">
-                                        <div class="card tournament-card h-100 rounded-4 overflow-hidden border shadow-sm hover-scale">
+                                    <div class="col-12 col-md-6" onclick="window.location.href='/torneio/{{ $tournament->id }}'"
+                                        style="cursor: pointer">
+                                        <div
+                                            class="card tournament-card h-100 rounded-4 overflow-hidden border shadow-sm hover-scale">
                                             <div class="position-relative">
-                                                <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}" class="card-img-top" alt="{{ $tournament->name }}" style="height: 150px; object-fit: cover;">
-                                                {{-- <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between align-items-start">
-                                                    @if ($tournament->live)
-                                                        <span class="badge bg-danger shadow d-flex align-items-center gap-1 px-2 py-1 rounded-pill">
-                                                            <i class="bi bi-broadcast"></i> LIVE
-                                                        </span>
+                                                <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}"
+                                                    class="card-img-top" alt="{{ $tournament->name }}"
+                                                    style="height: 150px; object-fit: cover;">
+                                                <div
+                                                    class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
+                                                    @if($tournament->end_date > now())
+                                                        <span class="badge bg-success text-uppercase p-2"
+                                                            style="font-size: 0.65rem;">Ativo</span>
                                                     @else
-                                                        <div></div>
+                                                        <span class="badge bg-danger text-uppercase p-2"
+                                                            style="font-size: 0.65rem;">Finalizado</span>
                                                     @endif
-                                                    <span class="badge bg-dark shadow px-2 py-1 rounded-pill">{{ $tournament->status }}</span>
-                                                </div> --}}
+                                                </div>
+
                                             </div>
                                             <div class="card-body bg-white p-3">
                                                 <h6 class="fw-bold text-uppercase mb-3 text-dark">{{ $tournament->name }}</h6>
                                                 <div class="d-flex justify-content-between text-center pt-2 border-top">
                                                     <div>
-                                                        <small class="d-block text-muted text-uppercase" style="font-size: 0.7rem">Vagas</small>
-                                                        <span class="fw-bold small text-dark">{{ $tournament->current_participants }}/{{ $tournament->max_participants }}</span>
+                                                        <small class="d-block text-muted text-uppercase"
+                                                            style="font-size: 0.7rem">Vagas</small>
+                                                        <span
+                                                            class="fw-bold small text-dark">{{ $tournament->current_participants }}/{{ $tournament->max_participants }}</span>
                                                     </div>
                                                     <div>
-                                                        <small class="d-block text-muted text-uppercase" style="font-size: 0.7rem">Premiação</small>
-                                                        <span class="fw-bold text-success small">R$ {{ number_format($tournament->awards, 2, ',', '.') }}</span>
+                                                        <small class="d-block text-muted text-uppercase"
+                                                            style="font-size: 0.7rem">Premiação</small>
+                                                        <span class="fw-bold text-success small">R$
+                                                            {{ number_format($tournament->awards, 2, ',', '.') }}</span>
                                                     </div>
                                                 </div>
                                             </div>

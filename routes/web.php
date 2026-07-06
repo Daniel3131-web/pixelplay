@@ -29,7 +29,19 @@ Route::get('/migrations', function() {
 // Página Inicial do Projeto
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('landing');
+
+Route::get('/faq', function () {
+    return view('faq');
+})->name('faq');
+
+Route::get('/contato', function () {
+    return view('contato');
+})->name('contato');
+
+Route::get('/sobre', function () {
+    return view('sobre');
+})->name('sobre');
 
 // ==========================================
 // ROTAS PROTEGIDAS (Apenas Usuários Logados)

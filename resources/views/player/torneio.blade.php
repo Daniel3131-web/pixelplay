@@ -13,34 +13,31 @@
     <section class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-11">
+
+                <div class="mb-3 d-flex justify-content-between">
+                    <a href="/evento/{{ $Tournament->event_id }}" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">
+                        <i class="bi bi-arrow-left"></i> Ir para o Evento
+                    </a>
+                    @if (Auth::user()->role == "organizador")
+                        <div>
+                            <a href="{{ route('org.torneio.bracket', $Tournament->id) }}"" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">Editar Partidas</a>
+                            <a href="{{ route('org.torneio.edit', $Tournament->id) }}"" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">Editar Torneio</a>
+                        </div>
+                    @endif
+                </div>
+
                 <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
                     <div class="position-relative">
                         <img src="{{ asset($Tournament->img ?? 'assets/tournaments/default.png') }}" class="card-img-top"
                             alt="{{ $Tournament->name }}" style="height: 350px; object-fit: cover;">
-                        {{-- <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
-                            @if ($Tournament->live)
-                                <span
-                                    class="badge bg-danger fs-6 shadow d-flex align-items-center gap-2 px-3 py-2 rounded-pill">
-                                    <i class="bi bi-broadcast"></i> AO VIVO
-                                </span>
+                        <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
+                            @if($Tournament->end_date > now())
+                                <span class="badge bg-success text-uppercase p-2" style="font-size: 1rem;">Ativo</span>
                             @else
-                                <div></div>
+                                <span class="badge bg-danger text-uppercase p-2" style="font-size: 1rem;">Finalizado</span>
                             @endif
-
-                            @php
-                                $statusColors = [
-                                    'Aberto' => 'bg-success',
-                                    'Agendado' => 'bg-info text-dark',
-                                    'Em andamento' => 'bg-warning text-dark',
-                                    'Finalizado' => 'bg-secondary'
-                                ];
-                                $colorClass = $statusColors[$Tournament->status] ?? 'bg-primary';
-                            @endphp
-                            <span class="badge {{ $colorClass }} fs-6 shadow px-3 py-2 rounded-pill">
-                                {{ $Tournament->status }}
-                            </span>
-                        </div> --}}
+                        </div>
                     </div>
 
                     
@@ -72,36 +69,40 @@
                             @php
                                 $Team = Auth()->user()->User_Team;
                             @endphp
-
+                            
                             <div class="w-100" style="max-width: 250px;">
                                 @if($Tournament->current_participants >= $Tournament->max_participants || $Tournament->status == 'Finalizado')
                                     <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
-                                        <i class="bi bi-slash-circle"></i> Vagas Esgotadas.
+                                        <i class="bi bi-slash-circle"></i> Vagas Esgotadas!
+                                    </button>
+                                @elseif($Tournament->entry_date < now() or $Tournament->end_date < now())
+                                    <button class="btn btn-secondary w-100 py-3 fw-bold shadow-sm" disabled>
+                                        <i class="bi bi-check-circle"></i> Inscrições encerradas!
                                     </button>
                                 @elseif (!$Team)
                                     <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
-                                        <i class="bi bi-slash-circle"></i> Você precisa de um time.
+                                        <i class="bi bi-slash-circle"></i> Você precisa de um time!
                                     </button>
                                 @elseif ($Team->leader_id != Auth()->user()->id)
                                     <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
-                                        <i class="bi bi-slash-circle"></i> Apenas o líder pode registrar.
+                                        <i class="bi bi-slash-circle"></i> Apenas o líder pode registrar!
                                     </button>
                                 @elseif (count($Team->users) < 5)
                                     <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
-                                        <i class="bi bi-check-circle"></i> Seu time precisa de 5 players.
+                                        <i class="bi bi-check-circle"></i> Seu time precisa de 5 players!
                                     </button>
                                 @elseif ($Tournament->teams->contains('id', $Team->id))
                                     <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
-                                        <i class="bi bi-check-circle"></i> Time já registrado.
+                                        <i class="bi bi-check-circle"></i> Time já registrado!
                                     </button>
                                 @elseif (!$Team->allMembersHaveTickets($Tournament->event_id))
                                     <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
-                                        <i class="bi bi-exclamation-triangle"></i> Membros sem ingresso do evento.
+                                        <i class="bi bi-exclamation-triangle"></i> Membros sem ingresso do evento!
                                     </button>
                                 @else
                                     <a href="{{ Route('payment.checkout', [$Tournament->id, 'tournament']) }}"
                                         class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2">
-                                        <i class="bi bi-ticket-perforated"></i> Comprar Ingresso
+                                        <i class="bi bi-ticket-perforated"></i> Comprar Ingresso!
                                     </a>
                                 @endif
                             </div>

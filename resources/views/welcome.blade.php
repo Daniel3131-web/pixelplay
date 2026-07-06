@@ -6,7 +6,18 @@
     <link rel="stylesheet" href="/css/landing.css">
 @endpush
 
+
 @section('content')
+
+
+    <style>
+        body {
+            background-color: var(--a2-color);
+            >main {
+                opacity: 1;
+            }
+        }
+    </style>
 
     <section class="container py-5 position-relative hero-section">
 
@@ -80,16 +91,16 @@
 
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="{{ asset('/assets/landing/events/event01.png') }}" class="d-block w-100 img-carousel-custom"
-                            alt="Torneio 1">
+                        <img src="{{ asset('/assets/landing/events/event01.png') }}"
+                            class="d-block w-100 img-carousel-custom" alt="Torneio 1">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('/assets/landing/events/event02.png') }}" class="d-block w-100 img-carousel-custom"
-                            alt="Torneio 2">
+                        <img src="{{ asset('/assets/landing/events/event02.png') }}"
+                            class="d-block w-100 img-carousel-custom" alt="Torneio 2">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('/assets/landing/events/event03.png') }}" class="d-block w-100 img-carousel-custom"
-                            alt="Torneio 3">
+                        <img src="{{ asset('/assets/landing/events/event03.png') }}"
+                            class="d-block w-100 img-carousel-custom" alt="Torneio 3">
                     </div>
                 </div>
 
@@ -180,7 +191,7 @@
         </div>
     </section>
 
-    <section class="container py-5 video" style="background-image: url('{{ asset('/assets/landing/video.gif') }}')">
+    <section class="container-fluid py-5 video" style="background-image: url('{{ asset('/assets/landing/video.gif') }}'); height: 75vh;">
 
         <div class="row mb-5 text-center justify-content-center mt-5 w-100 z-1 position-relative">
             <div class="col-12 col-md-6 z-2">

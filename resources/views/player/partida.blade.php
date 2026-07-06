@@ -13,11 +13,11 @@
         <div class="row justify-content-center">
             <div class="col-md-11">
 
-                {{-- <div class="mb-3">
-                    <a href="/torneio/{{ $Match->tournament_id }}" class="text-decoration-none text-white fw-bold">
-                        <i class="bi bi-arrow-left"></i> Voltar para o Torneio
+                <div class="mb-3">
+                    <a href="/torneio/{{ $Match->tournament_id }}" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">
+                        <i class="bi bi-arrow-left"></i> Ir para o Torneio
                     </a>
-                </div> --}}
+                </div>
 
                 <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
@@ -25,17 +25,6 @@
                         <img src="{{ asset($Match->tournament->img ?? 'assets/tournaments/default.png') }}" class="w-100"
                             alt="{{ $Match->name ?? 'Partida' }}" style="height: 250px; object-fit: cover;">
                         <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
-                            {{-- @if ($Match->live)
-                                <span
-                                    class="badge bg-danger fs-6 shadow d-flex align-items-center gap-2 px-3 py-2 rounded-pill">
-                                    <i class="bi bi-broadcast"></i> AO VIVO
-                                </span>
-                            @else
-                                <span class="badge bg-secondary fs-6 shadow px-3 py-2 rounded-pill">
-                                    FINALIZADA
-                                </span>
-                            @endif --}}
-
                             <span class="badge bg-white text-dark fs-6 shadow px-3 py-2 rounded-pill">
                                 {{ $Match->stage }}
                             </span>

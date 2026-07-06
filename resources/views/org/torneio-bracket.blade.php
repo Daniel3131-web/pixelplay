@@ -12,34 +12,25 @@
     <section class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-11">
+
+                <div class="mb-3">
+                    <a href="/torneio/{{ $Tournament->id }}" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">
+                        <i class="bi bi-arrow-left"></i> Ir para o Torneio
+                    </a>
+                </div>
+
                 <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
                     <div class="position-relative">
                         <img src="{{ asset($Tournament->img ?? 'assets/tournaments/default.png') }}" class="card-img-top"
                             alt="{{ $Tournament->name }}" style="height: 350px; object-fit: cover;">
-                        {{-- <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
-                            @if ($Tournament->live)
-                                <span
-                                    class="badge bg-danger fs-6 shadow d-flex align-items-center gap-2 px-3 py-2 rounded-pill">
-                                    <i class="bi bi-broadcast"></i> AO VIVO
-                                </span>
+                        <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
+                            @if($Tournament->end_date > now())
+                                <span class="badge bg-success text-uppercase p-2" style="font-size: 1rem;">Ativo</span>
                             @else
-                                <div></div>
+                                <span class="badge bg-danger text-uppercase p-2" style="font-size: 1rem;">Finalizado</span>
                             @endif
-
-                            @php
-                                $statusColors = [
-                                    'Aberto' => 'bg-success',
-                                    'Agendado' => 'bg-info text-dark',
-                                    'Em andamento' => 'bg-warning text-dark',
-                                    'Finalizado' => 'bg-secondary'
-                                ];
-                                $colorClass = $statusColors[$Tournament->status] ?? 'bg-primary';
-                            @endphp
-                            <span class="badge {{ $colorClass }} fs-6 shadow px-3 py-2 rounded-pill">
-                                {{ $Tournament->status }}
-                            </span>
-                        </div> --}}
+                        </div>
                     </div>
 
                     <div class="card-body bg-white p-4 p-md-5">
@@ -77,7 +68,8 @@
                                             <div class="bracket-round__matches">
                                                 @foreach($Tournament->matches->where('stage', $fase)->sortBy('order_of_keys') as $match)
 
-                                                    <div class="bracket-match" onclick="window.location.href=('{{ Route('player.match.show', $match->id) }}')">
+                                                    <div class="bracket-match"
+                                                        onclick="window.location.href=('{{ Route('player.match.show', $match->id) }}')">
                                                         @php
                                                             $isWinnerA = $match->winner_id && $match->winner_id === $match->team_a_id;
                                                             $isLoserA = $match->winner_id && $match->winner_id !== $match->team_a_id;
