@@ -9,6 +9,7 @@ use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use function Symfony\Component\Clock\now;
 
 class PaymentController extends Controller
 {
@@ -24,25 +25,45 @@ class PaymentController extends Controller
                 return redirect()->back()->withErrors(['error' => 'Desculpe, este evento já está lotado.']);
             }
 
+            // Verifica se o prazo limite de inscrições já passou
+            if (isset($event->entry_date) && $event->entry_date < now()) {
+                return redirect()->back()->withErrors(['error' => 'Desculpe, o prazo para inscrições neste evento já encerrou.']);
+            }
+
+            // Verifica se o evento em si já acabou (caso você ainda precise dessa validação)
+            if (isset($event->end_date) && $event->end_date < now()) {
+                return redirect()->back()->withErrors(['error' => 'Desculpe, este evento já foi encerrado.']);
+            }
+
+            // Verifica se o usuário já possui inscrição/ingresso para este evento
+            if ($event->users()->where('user_id', $user->id)->exists()) {
+                return redirect()->back()->withErrors(['error' => 'Você já está inscrito neste evento!']);
+            }
+
             return view('payment.checkout', ['eventId' => $id]);
         }
 
         if ($type === 'tournament') {
             $tournament = Tournament::findOrFail($id);
 
-            // Validação A: Verifica se o torneio já atingiu o limite máximo de times
+            // Validação A: Verifica se o torneio já atingiu o limite máximo
             if (isset($tournament->max_participants) && $tournament->current_participants >= $tournament->max_participants) {
                 return redirect()->back()->withErrors(['error' => 'Desculpe, este torneio já atingiu o limite máximo de times inscritos.']);
             }
 
+            //  Validação: Verifica se o prazo de inscrição já passou
+            if (isset($tournament->entry_date) && $tournament->entry_date < now()) {
+                return redirect()->back()->withErrors(['error' => 'Desculpe, o prazo para inscrições neste torneio já encerrou.']);
+            }
+
             $team = $user->User_Team;
 
-            // Validação B: Verifica se o usuário sequer possui um time
+            // Validação B: Verifica se o usuário possui um time
             if (!$team) {
                 return redirect()->back()->withErrors(['error' => 'Você precisa estar em um time para se inscrever neste torneio.']);
             }
 
-            // Validação C: Verifica se quem está tentando comprar é o Líder do time
+            // Validação C: Verifica se quem está tentando comprar é o Líder
             if ($team->leader_id !== $user->id) {
                 return redirect()->back()->withErrors(['error' => 'Acesso negado: Apenas o líder do time pode realizar a inscrição e o pagamento.']);
             }
@@ -50,6 +71,11 @@ class PaymentController extends Controller
             // Validação D: Verifica se o time possui exatamente 5 membros
             if ($team->users()->count() !== 5) {
                 return redirect()->back()->withErrors(['error' => 'Seu time precisa ter exatamente 5 membros ativos para participar deste torneio.']);
+            }
+
+            // Validação: Verifica se o time JÁ está inscrito neste torneio
+            if ($tournament->teams()->where('team_id', $team->id)->exists()) {
+                return redirect()->back()->withErrors(['error' => 'O seu time já está inscrito neste torneio!']);
             }
 
             return view('payment.checkout', ['tournamentId' => $id]);

@@ -115,7 +115,7 @@
                 <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
                     <div>
                         <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Inscrições Ativas (Torneios)</span>
-                        <span class="fw-bold fs-2 text-dark">{{ $tournaments->sum('current_participants') ?? 0 }}</span>
+                        <span class="fw-bold fs-2 text-dark">{{ $tournaments->sum('current_participants') * 5 ?? 0 }}</span>
                     </div>
                     <div class="action-icon bg-danger-subtle text-danger fs-4">
                         <i class="bi bi-people-fill"></i>

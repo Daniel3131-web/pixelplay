@@ -104,7 +104,7 @@ class OrgController extends Controller
             $newTournament->start_time = $request->start_time;
             $newTournament->end_time = $request->end_time;
             $newTournament->entry_date = $request->entry_date;
-            $newTournament->status = 'Agendado';
+            // $newTournament->status = 'Agendado';
 
             if ($request->hasFile('img') && $request->file('img')->isValid()) {
                 $requestImage = $request->img;
@@ -120,7 +120,7 @@ class OrgController extends Controller
             return $newTournament;
         });
 
-        return redirect()->route('org.dashboard')
+        return redirect()->route('player.torneio.show', $tournament->id)
             ->with('success', 'Torneio criado com sucesso!');
     }
 
@@ -185,7 +185,7 @@ class OrgController extends Controller
 
         $tournament->save();
 
-        return redirect()->route('org.dashboard')
+        return redirect()->route('player.torneio.show', $tournament->id)
             ->with('success', 'Torneio atualizado com sucesso!');
     }
 

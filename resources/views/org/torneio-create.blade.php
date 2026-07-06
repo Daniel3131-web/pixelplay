@@ -107,14 +107,14 @@
                                 (R$):</label>
                             <input type="number" step="0.01" min="0" name="entrance_fee"
                                 class="form-control form-white-input" placeholder="0.00 (Deixe 0 para Grátis)" value="0.00"
-                                required>
+                                required required maxlength="4">
                         </div>
 
                         <div class="col-sm-6">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Premiação Total
                                 (R$):</label>
                             <input type="number" step="0.01" min="0" name="awards" class="form-control form-white-input"
-                                placeholder="Ex: 500.00" required maxlength="8">
+                                placeholder="Ex: 500.00" required maxlength="4">
                         </div>
                     </div>
 
