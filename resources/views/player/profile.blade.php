@@ -42,16 +42,7 @@
 
                     <div class="card-body p-4 pt-0">
                         <div class="d-flex justify-content-center mb-3" style="margin-top: -55px;">
-                            @if ($user->img)
-                                <img src="{{ asset($user->img) }}"
-                                    class="me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
-                                    style="width: 128px; height: 128px;" alt="Foto de Perfil">
-                            @else
-                                <div class="me-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
-                                    style="width: 128px; height: 128px; font-size: 0.85rem;">
-                                    {{ strtoupper(substr($user->name, 0, 2)) }}
-                                </div>
-                            @endif
+                            <img src="{{ asset($user->img ?? '/assets/profiles/avatar/default.png') }}" class="me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary" style="width: 128px; height: 128px;" alt="Foto de Perfil">
                         </div>
 
                         <div class="text-center mb-4">

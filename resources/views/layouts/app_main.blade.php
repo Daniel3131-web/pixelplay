@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title')</title>
 
-    <link rel="shortcut icon" href="/assets/imgs/icon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/assets/imgs/Icon-white.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/css/main.css">
@@ -42,7 +42,6 @@
             flex: 1 0 auto;
         }
 
-        /* Estilo customizado para os itens do inbox dentro do modal */
         .inbox-item {
             background-color: #1a1a1f !important;
             transition: background-color 0.2s ease;
@@ -64,9 +63,16 @@
     <aside class="d-flex flex-column p-3 text-white sidebar border-end border-dark shadow">
 
         <div class="nav-wrapper">
-            <div class="d-flex align-items-center gap-3 mb-4 px-2 pt-3">
-                <i class="bi {{ Auth::user()->role == 'organizador' ? 'bi-shield-lock-fill text-primary' : 'bi-controller text-primary' }} fs-3 me-2"></i>
-                <span class="fs-4 fw-bold">Pixelplay</span>
+            <div class="d-flex align-items-center gap-3 mb-4 px-2 pt-3 justify-content-center">
+                @if(Auth::user()->role == "organizador")
+                    <a href="{{ route('org.dashboard') }}">
+                        <img src="{{ asset('/assets/imgs/Icon-white.png') }}" alt="Pixelplay Icon" style="max-height: 150px; width: auto;">
+                    </a>
+                @else
+                    <a href="{{ route('player.eventos') }}">
+                        <img src="{{ asset('/assets/imgs/Icon-white.png') }}" alt="Pixelplay Icon" style="max-height: 150px; width: auto;">
+                    </a>
+                @endif
             </div>
 
             <hr class="opacity-25 my-2">
@@ -116,15 +122,7 @@
                 class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2 py-2 rounded-3 user-dropdown-toggle"
                 data-bs-toggle="dropdown">
                 <div class="position-relative me-2">
-                    @if (Auth::user()->img)
-                        <img src="{{ Auth::user()->img }}" class="rounded-circle border border-2 border-primary"
-                            style="width: 38px; height: 38px;" alt="Perfil">
-                    @else
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
-                            style="width: 38px; height: 38px;">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                        </div>
-                    @endif
+                        <img src="{{ asset(Auth::user()->img ?? '/assets/profiles/avatar/default.png') }}" class="rounded-circle border border-2 border-primary" style="width: 38px; height: 38px;" alt="Perfil">
                 </div>
                 <div class="d-flex flex-column text-start lh-sm">
                     <strong class="fs-6 text-truncate" style="max-width: 120px;">{{ Auth::user()->name }}</strong>

@@ -17,6 +17,17 @@
                     @csrf
                     @method('PUT')
 
+                    {{-- Exibição de Erros de Validação --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger mb-4">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="mb-4">
                         <h5 class="text-uppercase text-white mb-3 fw-bold">Banner da Competição</h5>
                         <label for="img_input" class="w-100" style="cursor: pointer">
@@ -55,111 +66,91 @@
 
                     <div class="row g-3 mb-4">
                         <div class="col-sm-4">
-                        <label class="form-label small fw-bold text-uppercase text-white mb-1">Evento:</label>
-                        <select name="event_id" class="form-select form-white-input" required>
-                            <option value="" disabled selected>Selecione...</option>
-                            @foreach ($events as $event)
-                                <option value="{{$event->id}}">{{$event->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Evento:</label>
+                            <select name="event_id" class="form-select form-white-input" required>
+                                <option value="" disabled>Selecione...</option>
+                                @foreach ($events as $event)
+                                    <option value="{{ $event->id }}" {{ old('event_id', $tournament->event_id) == $event->id ? 'selected' : '' }}>
+                                        {{ $event->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <div class="col-sm-8">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Nome do Torneio:</label>
                             <input type="text" name="name" class="form-control form-white-input"
-                                placeholder="Ex: Copa Pixelplay Pro" required maxlength="255">
+                                value="{{ old('name', $tournament->name) }}" placeholder="Ex: Copa Pixelplay Pro" required
+                                maxlength="255">
                         </div>
 
                         <div class="col">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Jogo / Categoria:</label>
                             <select name="category" class="form-select form-white-input" required>
-                                <option value="" disabled selected>Selecione...</option>
-                                <option value="valorant">Valorant</option>
-                                {{-- <option value="cs2">Counter-Strike 2</option>
-                                <option value="lol">League of Legends</option>
-                                <option value="mlbb">Mobile Legends</option>
-                                <option value="ow2">Overwatch 2</option> --}}
+                                <option value="" disabled>Selecione...</option>
+                                <option value="valorant" {{ old('category', $tournament->category) == 'valorant' ? 'selected' : '' }}>Valorant</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
-                        <div class="col-sm-6">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Máximo de
-                                Equipes:</label>
+                        <div class="col-sm-12">
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Máximo de Equipes:</label>
                             <select name="max_participants" class="form-select form-white-input" required>
-                                <option value="4" {{ $tournament->max_participants == 4 ? 'selected' : '' }}>4 Equipes
-                                </option>
-                                <option value="8" {{ $tournament->max_participants == 8 ? 'selected' : '' }}>8 Equipes
-                                </option>
-                                <option value="16" {{ $tournament->max_participants == 16 ? 'selected' : '' }}>16 Equipes
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-sm-6">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Status:</label>
-                            <select name="status" class="form-select form-white-input" required>
-                                <option value="Agendado" {{ $tournament->status == 'Agendado' ? 'selected' : '' }}>Agendado
-                                </option>
-                                <option value="Aberto" {{ $tournament->status == 'Aberto' ? 'selected' : '' }}>Aberto</option>
+                                <option value="4" {{ old('max_participants', $tournament->max_participants) == 4 ? 'selected' : '' }}>4 Equipes</option>
+                                <option value="8" {{ old('max_participants', $tournament->max_participants) == 8 ? 'selected' : '' }}>8 Equipes</option>
+                                <option value="16" {{ old('max_participants', $tournament->max_participants) == 16 ? 'selected' : '' }}>16 Equipes</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-sm-6">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Taxa de Inscrição
-                                (R$):</label>
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Taxa de Inscrição (R$):</label>
                             <input type="number" step="0.01" name="entrance_fee" class="form-control form-white-input"
-                                value="{{ $tournament->entrance_fee }}" required>
+                                value="{{ old('entrance_fee', $tournament->entrance_fee) }}" required>
                         </div>
                         <div class="col-sm-6">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Premiação Total
-                                (R$):</label>
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Premiação Total (R$):</label>
                             <input type="number" step="0.01" name="awards" class="form-control form-white-input"
-                                value="{{ $tournament->awards }}" required>
+                                value="{{ old('awards', $tournament->awards) }}" required>
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-sm-4">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Limite de
-                                Inscrição:</label>
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Fim das inscrições:</label>
                             <input type="date" name="entry_date" class="form-control form-white-input"
-                                value="{{ $tournament->entry_date }}" required>
+                                value="{{ old('entry_date', $tournament->entry_date ? \Carbon\Carbon::parse($tournament->entry_date)->format('Y-m-d') : '') }}" required>
                         </div>
                         <div class="col-sm-4">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Data de Início:</label>
                             <input type="date" name="start_date" class="form-control form-white-input"
-                                value="{{ $tournament->start_date }}" required>
+                                value="{{ old('start_date', $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('Y-m-d') : '') }}" required>
                         </div>
                         <div class="col-sm-4">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Data de Término:</label>
                             <input type="date" name="end_date" class="form-control form-white-input"
-                                value="{{ $tournament->end_date }}" required>
+                                value="{{ old('end_date', $tournament->end_date ? \Carbon\Carbon::parse($tournament->end_date)->format('Y-m-d') : '') }}" required>
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-sm-6">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Horário de
-                                Início:</label>
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Horário de Início:</label>
                             <input type="time" name="start_time" class="form-control form-white-input"
-                                value="{{ $tournament->start_time }}" required>
+                                value="{{ old('start_time', $tournament->start_time ? \Carbon\Carbon::parse($tournament->start_time)->format('H:i') : '') }}" required>
                         </div>
                         <div class="col-sm-6">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Horário de
-                                Término:</label>
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Horário de Término:</label>
                             <input type="time" name="end_time" class="form-control form-white-input"
-                                value="{{ $tournament->end_time }}" required>
+                                value="{{ old('end_time', $tournament->end_time ? \Carbon\Carbon::parse($tournament->end_time)->format('H:i') : '') }}" required>
                         </div>
                     </div>
 
                     <div class="mb-5">
-                        <label class="form-label small fw-bold text-uppercase text-white mb-2">Descrição e
-                            Regulamento</label>
-                        <textarea name="description" class="form-control textarea-custom" rows="5"
-                            required>{{ $tournament->description }}</textarea>
+                        <label class="form-label small fw-bold text-uppercase text-white mb-2">Descrição e Regulamento</label>
+                        <textarea name="description" class="form-control textarea-custom" rows="5" required>{{ old('description', $tournament->description) }}</textarea>
                     </div>
 
                     <div class="mt-4 pt-3 border-top text-center">

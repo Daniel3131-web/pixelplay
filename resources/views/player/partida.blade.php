@@ -13,11 +13,11 @@
         <div class="row justify-content-center">
             <div class="col-md-11">
 
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <a href="/torneio/{{ $Match->tournament_id }}" class="text-decoration-none text-white fw-bold">
                         <i class="bi bi-arrow-left"></i> Voltar para o Torneio
                     </a>
-                </div>
+                </div> --}}
 
                 <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
@@ -25,7 +25,7 @@
                         <img src="{{ asset($Match->tournament->img ?? 'assets/tournaments/default.png') }}" class="w-100"
                             alt="{{ $Match->name ?? 'Partida' }}" style="height: 250px; object-fit: cover;">
                         <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
-                            @if ($Match->live)
+                            {{-- @if ($Match->live)
                                 <span
                                     class="badge bg-danger fs-6 shadow d-flex align-items-center gap-2 px-3 py-2 rounded-pill">
                                     <i class="bi bi-broadcast"></i> AO VIVO
@@ -34,9 +34,9 @@
                                 <span class="badge bg-secondary fs-6 shadow px-3 py-2 rounded-pill">
                                     FINALIZADA
                                 </span>
-                            @endif
+                            @endif --}}
 
-                            <span class="badge bg-info text-dark fs-6 shadow px-3 py-2 rounded-pill">
+                            <span class="badge bg-white text-dark fs-6 shadow px-3 py-2 rounded-pill">
                                 {{ $Match->stage }}
                             </span>
                         </div>
@@ -109,9 +109,7 @@
                         <div>
                             <h4 class="fw-bold mb-3"><i class="bi bi-map-fill"></i> Mapa da partida:
                                 {{ $Match->map->name ?? 'Desconhecido' }}</h4>
-
-
-                            <img src="{{ $Match->map->img ?? 'https://static.wikia.nocookie.net/valorant/images/6/61/Loading_Screen_Abyss.png/revision/latest?cb=20240730145619' }}"
+                            <img src="{{ asset($Match->map->img ?? '') }}"
                                 class="img-fluid mb-5" style="height: 320px; width: 640px;"
                                 alt="{{ $Match->map->name ?? 'Desconhecido' }}">
 
@@ -137,7 +135,7 @@
                                                     <th scope="col" class="text-center">KILLS (K)</th>
                                                     <th scope="col" class="text-center">DEATHS (D)</th>
                                                     <th scope="col" class="text-center">ASSISTS (A)</th>
-                                                    <th scope="col" class="text-end pe-3">PONTUAÇÃO</th>
+                                                    <th scope="col" class="text-center pe-3">PONTUAÇÃO</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -145,18 +143,19 @@
                                                     <tr onclick="window.location.href='{{ route('profile.show', $stats->player->id) }}'"
                                                         style="cursor: pointer">
                                                         <td class="ps-3 fw-bold text-dark">
-                                                            <img src="{{ asset($stats->player->img ?? 'assets/players/default.png') }}"
+                                                            <img src="{{ asset($stats->player->img ?? '/assets/profiles/avatar/default.png') }}"
                                                                 class="rounded-circle me-2" style="height: 32px; width: 32px;"
                                                                 alt="{{ $stats->player->name }}">
                                                             {{ $stats->player->name ?? 'Desconhecido' }}
                                                         </td>
-                                                        <td class="text-center fw-bold">
+                                                        <td class="text-start fw-bold">
+                                                            <img src="{{ asset($stats->character->img ?? "Desconhecido") }}" alt="{{ $stats->character->name ?? "Desconhecido" }}">
                                                             {{ $stats->character->name ?? 'Desconhecido'}}
                                                         </td>
                                                         <td class="text-center fw-bold">{{ $stats->kill }}</td>
                                                         <td class="text-center fw-bold text-danger">{{ $stats->death }}</td>
                                                         <td class="text-center fw-bold text-info">{{ $stats->assistance }}</td>
-                                                        <td class="text-end pe-3 fw-bold text-success">{{ $stats->score }}</td>
+                                                        <td class="text-center pe-3 fw-bold text-success">{{ $stats->score }}</td>
                                                     </tr>
                                                 @empty
                                                     <tr>
@@ -188,7 +187,7 @@
                                                     <th scope="col" class="text-center">KILLS (K)</th>
                                                     <th scope="col" class="text-center">DEATHS (D)</th>
                                                     <th scope="col" class="text-center">ASSISTS (A)</th>
-                                                    <th scope="col" class="text-end pe-3">PONTUAÇÃO</th>
+                                                    <th scope="col" class="text-center pe-3">PONTUAÇÃO</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -196,18 +195,19 @@
                                                     <tr onclick="window.location.href='{{ route('profile.show', $stats->player->id) }}'"
                                                         style="cursor: pointer">
                                                         <td class="ps-3 fw-bold text-dark">
-                                                            <img src="{{ asset($stats->player->img ?? 'assets/players/default.png') }}"
+                                                            <img src="{{ asset($stats->player->img ?? '/assets/profiles/avatar/default.png') }}"
                                                                 class="rounded-circle me-2" style="height: 32px; width: 32px;"
                                                                 alt="{{ $stats->player->name }}">
                                                             {{ $stats->player->name ?? 'Desconhecido' }}
                                                         </td>
-                                                        <td class="text-center fw-bold">
+                                                        <td class="text-start fw-bold">
+                                                            <img src="{{ asset($stats->character->img ?? "Desconhecido") }}" alt="{{ $stats->character->name ?? "Desconhecido" }}">
                                                             {{ $stats->character->name ?? 'Desconhecido'}}
                                                         </td>
                                                         <td class="text-center fw-bold">{{ $stats->kill }}</td>
                                                         <td class="text-center fw-bold text-danger">{{ $stats->death }}</td>
                                                         <td class="text-center fw-bold text-info">{{ $stats->assistance }}</td>
-                                                        <td class="text-end pe-3 fw-bold text-success">{{ $stats->score }}</td>
+                                                        <td class="text-center pe-3 fw-bold text-success">{{ $stats->score }}</td>
                                                     </tr>
                                                 @empty
                                                     <tr>

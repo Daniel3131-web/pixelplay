@@ -161,7 +161,7 @@
                                             </td>
                                             <td>
                                                 <span class="text-secondary small fw-medium">
-                                                    <i class="bi bi-calendar-event me-1"></i> {{ $event->start_date }}
+                                                    <i class="bi bi-calendar-event me-1"></i> {{ $event->start_date?->format('d/m/Y') }}
                                                 </span>
                                             </td>
                                             <td>
@@ -170,10 +170,10 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                @if(($event->status ?? 'Aberto') === 'Aberto')
+                                                @if($event->end_date > now())
                                                     <span class="badge bg-success text-uppercase py-1 px-2" style="font-size: 0.65rem;">Ativo</span>
                                                 @else
-                                                    <span class="badge bg-danger text-uppercase py-1 px-2" style="font-size: 0.65rem;">Encerrado</span>
+                                                    <span class="badge bg-danger text-uppercase py-1 px-2" style="font-size: 0.65rem;">Finalizado</span>
                                                 @endif
                                             </td>
                                             <td class="text-end pe-4">
@@ -241,7 +241,7 @@
                                             </td>
                                             <td>
                                                 <span class="text-secondary small fw-medium">
-                                                    <i class="bi bi-calendar-event me-1"></i> {{ $tournament->start_date }}
+                                                    <i class="bi bi-calendar-event me-1"></i>{{ $tournament->start_date?->format('d/m/Y') }}
                                                 </span>
                                             </td>
                                             <td>
@@ -250,12 +250,8 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                @if($tournament->status === 'Aberto')
-                                                    <span class="badge bg-success text-uppercase py-1 px-2" style="font-size: 0.65rem;">Inscrições Abertas</span>
-                                                @elseif($tournament->status === 'Em andamento')
-                                                    <span class="badge bg-warning text-dark text-uppercase py-1 px-2" style="font-size: 0.65rem;">Em Andamento</span>
-                                                @elseif($tournament->status == 'Agendado')
-                                                    <span class="badge bg-info text-dark text-uppercase py-1 px-2" style="font-size: 0.65rem;">Agendado</span>
+                                                @if($tournament->end_date > now())
+                                                    <span class="badge bg-success text-uppercase py-1 px-2" style="font-size: 0.65rem;">Ativo</span>
                                                 @else
                                                     <span class="badge bg-danger text-uppercase py-1 px-2" style="font-size: 0.65rem;">Finalizado</span>
                                                 @endif

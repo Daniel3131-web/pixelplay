@@ -18,7 +18,7 @@
                     <div class="position-relative">
                         <img src="{{ asset($Tournament->img ?? 'assets/tournaments/default.png') }}" class="card-img-top"
                             alt="{{ $Tournament->name }}" style="height: 350px; object-fit: cover;">
-                        <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
+                        {{-- <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
                             @if ($Tournament->live)
                                 <span
                                     class="badge bg-danger fs-6 shadow d-flex align-items-center gap-2 px-3 py-2 rounded-pill">
@@ -40,7 +40,7 @@
                             <span class="badge {{ $colorClass }} fs-6 shadow px-3 py-2 rounded-pill">
                                 {{ $Tournament->status }}
                             </span>
-                        </div>
+                        </div> --}}
                     </div>
 
                     
@@ -123,16 +123,7 @@
                                                     onclick="window.location.href='/profile/{{ $member->id }}'">
                                                     <td class="ps-4 py-3">
                                                         <div class="d-flex align-items-center">
-                                                            @if ($member->img)
-                                                                <img src="{{ asset($member->img) }}"
-                                                                    class="me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
-                                                                    style="width: 40px; height: 40px;" alt="Foto de Perfil">
-                                                            @else
-                                                                <div class="me-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary"
-                                                                    style="width: 40px; height: 40px; font-size: 0.85rem;">
-                                                                    {{ strtoupper(substr($member->name, 0, 2)) }}
-                                                                </div>
-                                                            @endif
+                                                                <img src="{{ asset($member->img ?? '/assets/profiles/avatar/default.png') }}" class="me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-primary" style="width: 40px; height: 40px;" alt="Foto de Perfil">
                                                             <div>
                                                                 <span class="fw-bold d-block text-dark">
                                                                     {{ $member->name }}

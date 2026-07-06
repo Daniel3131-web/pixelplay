@@ -366,7 +366,7 @@ class OrgController extends Controller
             $winner_id = $teamB->id;
         }
 
-        if ($winner_id == null) {
+        if ($winner_id != null) {
             $team = Team::with('users')->find($winner_id);
             foreach ($team->users as $player) {
                 $player->increment('wins');

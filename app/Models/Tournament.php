@@ -28,23 +28,15 @@ class Tournament extends Model
         'start_time',
         'end_time',
         'entry_date',
-        'status',
+        // 'status',
         'img'
     ];
 
-    protected function startDate(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d/m/Y'),
-        );
-    }
-
-    protected function endDate(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d/m/Y'),
-        );
-    }
+    protected $casts = [
+        'entry_date' => 'date:d/m/Y',
+        'start_date' => 'date:d/m/Y',
+        'end_date' => 'date:d/m/Y',
+    ];
 
     /**
      * Relacionamento: Um torneio possui muitas partidas.

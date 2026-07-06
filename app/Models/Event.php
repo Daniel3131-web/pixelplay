@@ -37,16 +37,12 @@ class Event extends Model
         'description',
     ];
 
-    /**
-     * O uso do cast 'date' transforma automaticamente as colunas em objetos Carbon.
-     * Isso permite que você use métodos como ->format('d/m/Y') ou ->diffForHumans() no Blade.
-     */
     protected $casts = [
         'max_capacity' => 'integer',
         'entrance_fee' => 'decimal:2',
-        'entry_date' => 'date',
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'entry_date' => 'date:d/m/Y',
+        'start_date' => 'date:d/m/Y',
+        'end_date'   => 'date:d/m/Y',
     ];
 
     /**
@@ -72,17 +68,4 @@ class Event extends Model
         return $this->hasMany(Tournament::class, 'event_id');
     }
 
-    protected function startDate(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d/m/Y'),
-        );
-    }
-
-    protected function endDate(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d/m/Y'),
-        );
-    }
 }

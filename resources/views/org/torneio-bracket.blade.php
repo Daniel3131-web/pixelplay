@@ -17,7 +17,7 @@
                     <div class="position-relative">
                         <img src="{{ asset($Tournament->img ?? 'assets/tournaments/default.png') }}" class="card-img-top"
                             alt="{{ $Tournament->name }}" style="height: 350px; object-fit: cover;">
-                        <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
+                        {{-- <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
                             @if ($Tournament->live)
                                 <span
                                     class="badge bg-danger fs-6 shadow d-flex align-items-center gap-2 px-3 py-2 rounded-pill">
@@ -39,7 +39,7 @@
                             <span class="badge {{ $colorClass }} fs-6 shadow px-3 py-2 rounded-pill">
                                 {{ $Tournament->status }}
                             </span>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="card-body bg-white p-4 p-md-5">

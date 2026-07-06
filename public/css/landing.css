@@ -15,17 +15,46 @@ body {
     border-radius: 0.5rem;
 }
 
-.img-carousel {
+.img-hero {
+    background-position: center;
+    background-size: cover;
+    background-color: var(--a2-color);
     min-height: 350px;
     height: 100%;
 }
 
+
 .img-game {
-    min-height: 50px;
+    background-position: center;
+    background-size: contain;
+    background-color: white;
+    min-height: 100px;
     height: 100%;
+}
+
+.img-carousel-custom {
+    height: 400px; 
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+}
+
+@media (max-width: 767.98px) {
+    .img-carousel-custom {
+        height: 250px; 
+    }
 }
 
 .img-character {
+    background-position: center;
+    background-size: contain;
+    background-color: white;
     min-height: 350px;
     height: 100%;
 }
+
+.video {
+    background-position: center;
+    background-size: cover;
+}
+

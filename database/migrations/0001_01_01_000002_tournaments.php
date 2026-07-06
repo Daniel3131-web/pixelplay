@@ -30,8 +30,8 @@ return new class extends Migration {
             $table->integer('current_participants')->default(0);
 
             //-- Status
-            $table->boolean('live')->default(false);
-            $table->enum('status', ['Aberto', 'Agendado', 'Em andamento', 'Finalizado'])->default('Agendado');
+            // $table->boolean('live')->default(false);
+            // $table->enum('status', ['Aberto', 'Agendado', 'Em andamento', 'Finalizado'])->default('Agendado');
 
             //-- Link de Transmissão Específico do Torneio
             $table->string('streaming_url')->nullable();

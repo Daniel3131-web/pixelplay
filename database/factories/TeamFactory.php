@@ -20,22 +20,22 @@ class TeamFactory extends Factory
     public function definition(): array
     {
         $realTeams = [
-            ['name' => 'LOUD', 'acronym' => 'LLL', 'img' => 'teams/loud.png'],
-            ['name' => 'FURIA Esports', 'acronym' => 'FUR', 'img' => 'teams/furia.png'],
-            ['name' => 'MIBR', 'acronym' => 'MBR', 'img' => 'teams/mibr.png'],
-            ['name' => 'Sentinels', 'acronym' => 'SEN', 'img' => 'teams/sentinels.png'],
-            ['name' => 'Fnatic', 'acronym' => 'FNC', 'img' => 'teams/fnatic.png'],
-            ['name' => 'Paper Rex', 'acronym' => 'PRX', 'img' => 'teams/prx.png'],
-            ['name' => 'Team Vitality', 'acronym' => 'VIT', 'img' => 'teams/vitality.png'],
-            ['name' => 'G2 Esports', 'acronym' => 'G2', 'img' => 'teams/g2.png'],
-            ['name' => 'DRX', 'acronym' => 'DRX', 'img' => 'teams/drx.png'],
-            ['name' => 'Natus Vincere', 'acronym' => 'NAVI', 'img' => 'teams/navi.png'],
-            ['name' => '100 Thieves', 'acronym' => '100T', 'img' => 'teams/100t.png'],
-            ['name' => 'Cloud9', 'acronym' => 'C9', 'img' => 'teams/c9.png'],
-            ['name' => 'NRG Esports', 'acronym' => 'NRG', 'img' => 'teams/nrg.png'],
-            ['name' => 'Team Liquid', 'acronym' => 'TL', 'img' => 'teams/tl.png'],
-            ['name' => 'ZETA DIVISION', 'acronym' => 'ZETA', 'img' => 'teams/zeta.png'],
-            ['name' => 'T1 Esports', 'acronym' => 'T1', 'img' => 'teams/t1.png'],
+            ['name' => 'LOUD', 'acronym' => 'LLL', 'img' => 'assets/teams/loud.png'],
+            ['name' => 'FURIA Esports', 'acronym' => 'FUR', 'img' => 'assets/teams/furia.png'],
+            ['name' => 'MIBR', 'acronym' => 'MBR', 'img' => 'assets/teams/mibr.png'],
+            ['name' => 'Sentinels', 'acronym' => 'SEN', 'img' => 'assets/teams/sentinels.png'],
+            ['name' => 'Fnatic', 'acronym' => 'FNC', 'img' => 'assets/teams/fnatic.png'],
+            ['name' => 'Paper Rex', 'acronym' => 'PRX', 'img' => 'assets/teams/prx.png'],
+            ['name' => 'Team Vitality', 'acronym' => 'VIT', 'img' => 'assets/teams/vitality.png'],
+            ['name' => 'G2 Esports', 'acronym' => 'G2', 'img' => 'assets/teams/g2.png'],
+            ['name' => 'DRX', 'acronym' => 'DRX', 'img' => 'assets/teams/drx.png'],
+            ['name' => 'Natus Vincere', 'acronym' => 'NAVI', 'img' => 'assets/teams/navi.png'],
+            ['name' => '100 Thieves', 'acronym' => '100T', 'img' => 'assets/teams/100t.png'],
+            ['name' => 'Cloud9', 'acronym' => 'C9', 'img' => 'assets/teams/c9.png'],
+            ['name' => 'NRG Esports', 'acronym' => 'NRG', 'img' => 'assets/teams/nrg.png'],
+            ['name' => 'Team Liquid', 'acronym' => 'TL', 'img' => 'assets/teams/liquid.png'],
+            ['name' => 'ZETA DIVISION', 'acronym' => 'ZETA', 'img' => 'assets/teams/zeta.png'],
+            ['name' => 'T1 Esports', 'acronym' => 'T1', 'img' => 'assets/teams/t1.png'],
         ];
 
 
@@ -67,7 +67,7 @@ class TeamFactory extends Factory
             'acronym' => $selectedTeam['acronym'],
             'privacy'     => $selectedTeam['privacy'],
             'password' => $selectedTeam['password'],
-            'img'     => 'assets/teams/default.png'
+            'img'     => $selectedTeam['img']
             
         ];
     }

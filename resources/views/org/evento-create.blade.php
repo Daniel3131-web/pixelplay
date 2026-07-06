@@ -84,9 +84,9 @@
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Modalidade:</label>
                             <select name="type" class="form-select form-white-input" required>
                                 <option value="" disabled selected>Selecione...</option>
-                                <option value="online" {{ old('type') == 'online' ? 'selected' : '' }}>100% Online</option>
+                                {{-- <option value="online" {{ old('type') == 'online' ? 'selected' : '' }}>100% Online</option> --}}
                                 <option value="presencial" {{ old('type') == 'presencial' ? 'selected' : '' }}>Presencial</option>
-                                <option value="corporativo" {{ old('type') == 'corporativo' ? 'selected' : '' }}>Corporativo / Fechado</option>
+                                {{-- <option value="corporativo" {{ old('type') == 'corporativo' ? 'selected' : '' }}>Corporativo / Fechado</option> --}}
                             </select>
                             @error('type')
                                 <span class="text-danger small mt-1 d-block">{{ $message }}</span>

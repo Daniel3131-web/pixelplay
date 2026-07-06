@@ -75,7 +75,7 @@ class PaymentController extends Controller
 
         if ($request->tournament_id) {
             $tournament = Tournament::findOrFail($request->tournament_id);
-            // Multiplica o valor unitário por 5 (time completo)
+            // Multiplica o valor unitário por 5 
             $amount = $tournament->entrance_fee * 5;
             $isTeamPayment = true;
         } elseif ($request->event_id) {
@@ -90,7 +90,7 @@ class PaymentController extends Controller
             'event_id' => $request->event_id,
             'amount' => $amount,
             'status' => 'pendente',
-            'metodo' => $request->metodo, // Mudou de 'method' para 'metodo'
+            'metodo' => $request->metodo,
             'is_team_payment' => $isTeamPayment
         ]);
         return redirect()->route('payment.processing', $order->id);

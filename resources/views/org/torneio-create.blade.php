@@ -90,21 +90,13 @@
                     </div>
 
                     <div class="row g-3 mb-4">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Máximo de
                                 Equipes:</label>
                             <select name="max_participants" class="form-select form-white-input" required>
                                 <option value="4" selected>4 Equipes</option>
                                 <option value="8">8 Equipes</option>
                                 <option value="16">16 Equipes</option>
-                            </select>
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Status Inicial:</label>
-                            <select name="status" class="form-select form-white-input" required>
-                                <option value="Agendado" selected>Agendado</option>
-                                <option value="Aberto">Aberto (Inscrições Imediatas)</option>
                             </select>
                         </div>
                     </div>
@@ -132,7 +124,7 @@
 
                     <div class="row g-3 mb-4">
                         <div class="col-sm-4">
-                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Limite de
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Fim das
                                 Inscrição:</label>
                             <input type="date" name="entry_date" class="form-control form-white-input" required>
                         </div>

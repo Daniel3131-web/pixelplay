@@ -44,13 +44,12 @@
                     <div class="scroll-frame z-2 row p-4 g-5 justify-content-center overflow-y-auto"
                         style="max-height: 500px; padding-bottom: 1rem;">
                         @forelse ($events as $event)
-                            <div class="col-12 col-md-6"
+                            <div class="col-lg-6 col-md-12"
                                 onclick="window.location.href='{{ route('player.evento.show', $event->id) }}'">
                                 <div class="card event-card h-100 rounded-4 overflow-hidden">
                                     <div class="position-relative">
-                                        <img src="{{ asset($event->img ?? 'assets/events/default.png') }}" class="card-img-top"
-                                            alt="{{ $event->name }}" style="height: 180px; object-fit: cover;">
-                                        <div class="position-absolute top-0 start-0 p-3">
+                                        <img src="{{ asset($event->img ?? 'assets/events/default.png') }}" class="card-img-top" alt="{{ $event->name }}" style="height: 180px; object-fit: cover;">
+                                        {{-- <div class="position-absolute top-0 start-0 p-3">
                                             @if (isset($event->live) && $event->live)
                                                 <span class="badge bg-danger mb-2 d-block"><i class="bi bi-broadcast"></i>
                                                     LIVE</span>
@@ -58,7 +57,7 @@
                                             @if (isset($event->status))
                                                 <span class="badge bg-dark">{{ $event->status }}</span>
                                             @endif
-                                        </div>
+                                        </div> --}}
                                     </div>
 
                                     <div class="card-body p-4">
@@ -69,7 +68,7 @@
                                                     <i class="bi bi-calendar-event fs-3 text-primary mb-2"></i>
                                                     <span class="d-block text-muted fw-bold small">DATA DE INÍCIO</span>
                                                     <span
-                                                        class="fw-bolder text-dark small">{{ $event->start_date ?? 'A definir' }}</span>
+                                                        class="fw-bolder text-dark small">{{ $event->start_date?->format('d/m/Y') ?? 'A definir' }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">

@@ -2,20 +2,18 @@
 
 @section('title', 'Pixelplay - Landing Page')
 
-
 @push('styles')
     <link rel="stylesheet" href="/css/landing.css">
 @endpush
 
 @section('content')
 
+    <section class="container py-5 position-relative hero-section">
 
-    <section class="container py-5 position-relative">
-
-        <div class="row mb-5 text-center justify-content-center position-absolute top-25 mt-5 w-100 z-1">
+        <div
+            class="row mb-5 text-center justify-content-center position-absolute top-50 start-50 translate-middle w-100 z-3">
             <div class="col-12 col-md-6">
                 <h1 class="text-white mb-4">PIXEL PLAY</h1>
-
                 <div class="d-flex flex-column align-items-center gap-2 max-width-buttons mx-auto">
                     <a href="{{ route('login') }}" class="btn btn-primary w-75">Entrar</a>
                     <a href="{{ route('register') }}" class="btn btn-outline-light w-50">Criar conta</a>
@@ -23,39 +21,34 @@
             </div>
         </div>
 
-
         @php
 
-            $images = range(1, 6);
+            $images1 = range(1, 4);
+            shuffle($images1);
+            $image1 = $images1[0];
 
-            shuffle($images);
-
-            $image1 = $images[0];
-            $image2 = $images[1];
-            $image3 = $images[2];
-
+            $images2 = range(1, 4);
+            shuffle($images2);
+            $image2 = $images2[1];
+            $image3 = $images2[2];
         @endphp
 
-        <div class="row gy-3">
+        <div class="row g-3 hero-grid">
             <div class="col-12 col-md-6">
-                <div class="ratio ratio-1x1 h-100">
-                    <img class="w-100 h-100 object-fit-cover"
-                        src="{{ asset('/assets/landing/landing0' . $image1 . '.png') }}" alt="">
-                </div>
+                <div class="img img-hero"
+                    style="background-image: url({{ asset('/assets/landing/hero/tall0' . $image1 . '.png') }})"></div>
             </div>
 
             <div class="col-12 col-md-6">
-                <div class="row gy-3 h-100">
-                    <div class="col-12 col-sm-6 col-md-12">
-                        <div class="ratio ratio-2x1">
-                            <img class="w-100 h-100 object-fit-cover"
-                                src="{{ asset('/assets/landing/landing0' . $image2 . '.png') }}" alt="">
+                <div class="row g-3 h-100 content-stack">
+                    <div class="col-12 h-50-custom">
+                        <div class="img img-hero"
+                            style="background-image: url({{ asset('/assets/landing/hero/landing0' . $image2 . '.png') }})">
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-12">
-                        <div class="ratio ratio-2x1">
-                            <img class="w-100 h-100 object-fit-cover"
-                                src="{{ asset('/assets/landing/landing0' . $image3 . '.png') }}" alt="">
+                    <div class="col-12 h-50-custom">
+                        <div class="img img-hero"
+                            style="background-image: url({{ asset('/assets/landing/hero/landing0' . $image3 . '.png') }})">
                         </div>
                     </div>
                 </div>
@@ -67,7 +60,7 @@
     <section class="container py-5">
 
         <div class="row mb-5">
-            <div class="col-12">
+            <div class="col-12 text-center">
                 <h2 class="text-white mb-4">NA PIXEL PLAY VOCÊ ENCONTRA DIVERSOS EVENTOS E TORNEIOS DOS PRINCIPAIS JOGOS
                     E-SPORTS</h2>
             </div>
@@ -87,13 +80,16 @@
 
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <div class="img img-carousel d-block">Image 1</div>
+                        <img src="{{ asset('/assets/landing/events/event01.png') }}" class="d-block w-100 img-carousel-custom"
+                            alt="Torneio 1">
                     </div>
                     <div class="carousel-item">
-                        <div class="img img-carousel d-block">Image 2</div>
+                        <img src="{{ asset('/assets/landing/events/event02.png') }}" class="d-block w-100 img-carousel-custom"
+                            alt="Torneio 2">
                     </div>
                     <div class="carousel-item">
-                        <div class="img img-carousel d-block">Image 3</div>
+                        <img src="{{ asset('/assets/landing/events/event03.png') }}" class="d-block w-100 img-carousel-custom"
+                            alt="Torneio 3">
                     </div>
                 </div>
 
@@ -114,34 +110,33 @@
 
     <section class="container py-5">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 text-center">
                 <h2 class="text-white mb-4">EVENTOS E TORNEIOS DOS PRINCIPAIS JOGOS E-SPORTS</h2>
             </div>
         </div>
         <div class="row gy-3">
             <div class="col-12 col-md-6">
-                <div class="row gy-3">
-                    <div class="col-12">
-                        <div class="img img-game"></div>
+                <div class="row gy-3 flex-column align-items-center">
+                    <div class="col-md-8">
+                        <div class="img img-game "
+                            style="background-image: url('{{ asset('/assets/landing/game01.png') }}')"></div>
                     </div>
-                    <div class="col-12">
-                        <div class="img img-game"></div>
+                    <div class="col-md-8">
+                        <div class="img img-game "
+                            style="background-image: url('{{ asset('/assets/landing/game02.png') }}')"></div>
                     </div>
-                    <div class="col-12">
-                        <div class="img img-game"></div>
-                    </div>
+
                 </div>
             </div>
             <div class="col-12 col-md-6">
-                <div class="row gy-3">
-                    <div class="col-12">
-                        <div class="img img-game"></div>
+                <div class="row gy-3 flex-column align-items-center">
+                    <div class="col-md-8">
+                        <div class="img img-game"
+                            style="background-image: url('{{ asset('/assets/landing/game03.png') }}')"></div>
                     </div>
-                    <div class="col-12">
-                        <div class="img img-game"></div>
-                    </div>
-                    <div class="col-12">
-                        <div class="img img-game"></div>
+                    <div class="col-md-8">
+                        <div class="img img-game"
+                            style="background-image: url('{{ asset('/assets/landing/game04.png') }}')"></div>
                     </div>
                 </div>
             </div>
@@ -155,37 +150,41 @@
         </div>
         <div class="row gy-3 justify-content-center">
             <div class="col-10">
-                <div class="row gy-3">
-                    <div class="col-md-4">
-                        <div class="img img-character"></div>
+                <div class="row gy-3 justify-content-center">
+                    <div class="col-md-3">
+                        <div class="img img-character"
+                            style="background-image: url('{{ asset('/assets/landing/character01.png') }}')"></div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="img img-character"></div>
+                    <div class="col-md-3">
+                        <div class="img img-character"
+                            style="background-image: url('{{ asset('/assets/landing/character02.png') }}')"></div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="img img-character"></div>
+                    <div class="col-md-3">
+                        <div class="img img-character"
+                            style="background-image: url('{{ asset('/assets/landing/character03.png') }}')"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-10">
                 <div class="row justify-content-center gy-3">
-                    <div class="col-md-4">
-                        <div class="img img-character"></div>
+                    <div class="col-md-3">
+                        <div class="img img-character"
+                            style="background-image: url('{{ asset('/assets/landing/character04.png') }}')"></div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="img img-character"></div>
+                    <div class="col-md-3">
+                        <div class="img img-character"
+                            style="background-image: url('{{ asset('/assets/landing/character05.png') }}')"></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="container py-5">
+    <section class="container py-5 video" style="background-image: url('{{ asset('/assets/landing/video.gif') }}')">
 
-        <div class="row mb-5 text-center justify-content-center mt-5 w-100 z-1">
-            <div class="col-12 col-md-6">
+        <div class="row mb-5 text-center justify-content-center mt-5 w-100 z-1 position-relative">
+            <div class="col-12 col-md-6 z-2">
                 <h1 class="text-white mb-4">PIXEL PLAY</h1>
-
                 <div class="d-flex flex-column align-items-center gap-2 max-width-buttons mx-auto">
                     <a href=" {{ route('login') }} " class="btn btn-primary w-75">Entrar</a>
                     <a href=" {{ route('register') }}" class="btn btn-outline-light w-50">Criar conta</a>

@@ -104,9 +104,8 @@
                                     <div class="col-12 col-md-6" onclick="window.location.href='/torneio/{{ $tournament->id }}'" style="cursor: pointer">
                                         <div class="card tournament-card h-100 rounded-4 overflow-hidden border shadow-sm hover-scale">
                                             <div class="position-relative">
-                                                <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}"
-                                                    class="card-img-top" alt="{{ $tournament->name }}" style="height: 150px; object-fit: cover;">
-                                                <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between align-items-start">
+                                                <img src="{{ asset($tournament->img ?? 'assets/tournaments/default.png') }}" class="card-img-top" alt="{{ $tournament->name }}" style="height: 150px; object-fit: cover;">
+                                                {{-- <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between align-items-start">
                                                     @if ($tournament->live)
                                                         <span class="badge bg-danger shadow d-flex align-items-center gap-1 px-2 py-1 rounded-pill">
                                                             <i class="bi bi-broadcast"></i> LIVE
@@ -115,7 +114,7 @@
                                                         <div></div>
                                                     @endif
                                                     <span class="badge bg-dark shadow px-2 py-1 rounded-pill">{{ $tournament->status }}</span>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                             <div class="card-body bg-white p-3">
                                                 <h6 class="fw-bold text-uppercase mb-3 text-dark">{{ $tournament->name }}</h6>
