@@ -67,7 +67,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-sm-4">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Evento:</label>
-                            <select name="event_id" class="form-select form-white-input" required>
+                            <select name="event_id" class="bg-dark text-white form-select form-white-input" disabled>
                                 <option value="" disabled>Selecione...</option>
                                 @foreach ($events as $event)
                                     <option value="{{ $event->id }}" {{ old('event_id', $tournament->event_id) == $event->id ? 'selected' : '' }}>
@@ -75,6 +75,7 @@
                                     </option>
                                 @endforeach
                             </select>
+                            <input type="hidden" name="event_id" value="{{ old('event_id', $tournament->event_id) }}">
                         </div>
 
                         <div class="col-sm-8">
@@ -86,21 +87,33 @@
 
                         <div class="col">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Jogo / Categoria:</label>
-                            <select name="category" class="form-select form-white-input" required>
+                            <select name="category" class="bg-dark text-white  form-select form-white-input" disabled>
                                 <option value="" disabled>Selecione...</option>
                                 <option value="valorant" {{ old('category', $tournament->category) == 'valorant' ? 'selected' : '' }}>Valorant</option>
                             </select>
+                            <input type="hidden" name="category" value="{{ old('category', $tournament->category) }}">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Tipo do torneio:</label>
+                            <select name="tournament_type" class="bg-dark text-white form-select form-white-input" disabled>
+                                <option value="" disabled selected>Selecione...</option>
+                                <option value="simples" {{ old('tournament_type', $tournament->tournament_type) == 'simples' ? 'selected' : '' }}>Mata-Mata Simples (Eliminação Única)</option>
+                                <option value="duplo"  {{ old('tournament_type', $tournament->tournament_type) == 'duplo' ? 'selected' : '' }}>Dupla Eliminação (Chave dos Vencedores e Repescagem)</option>
+                            </select>
+                            <input type="hidden" name="tournament_type" value="{{ old('tournament_type', $tournament->tournament_type) }}">
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-sm-12">
                             <label class="form-label small fw-bold text-uppercase text-white mb-1">Máximo de Equipes:</label>
-                            <select name="max_participants" class="form-select form-white-input" required>
+                            <select name="max_participants" class="bg-dark text-white form-select form-white-input" disabled>
                                 <option value="4" {{ old('max_participants', $tournament->max_participants) == 4 ? 'selected' : '' }}>4 Equipes</option>
                                 <option value="8" {{ old('max_participants', $tournament->max_participants) == 8 ? 'selected' : '' }}>8 Equipes</option>
                                 <option value="16" {{ old('max_participants', $tournament->max_participants) == 16 ? 'selected' : '' }}>16 Equipes</option>
                             </select>
+                            <input type="hidden" name="max_participants" value="{{ old('max_participants', $tournament->max_participants) }}">
                         </div>
                     </div>
 

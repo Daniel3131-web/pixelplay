@@ -1,26 +1,23 @@
 /* Container principal com rolagem horizontal */
 .bracket-wrapper {
-    z-index: 2;
-    overflow-x: auto;
-    padding-bottom: 20px;
+    min-width: 80%;
 }
 
-.bracket-wrapper {
+.bracket-container {
     --sb-track-color: #232E33;
     --sb-thumb-color: #ffffff;
     --sb-size: 3px;
 }
-
-.bracket-wrapper::-webkit-scrollbar { height: var(--sb-size); }
-.bracket-wrapper::-webkit-scrollbar-track { background: var(--sb-track-color); border-radius: 3px; }
-.bracket-wrapper::-webkit-scrollbar-thumb { background: var(--sb-thumb-color); border-radius: 3px; }
+.bracket-container::-webkit-scrollbar { height: var(--sb-size); }
+.bracket-container::-webkit-scrollbar-track { background: var(--sb-track-color); border-radius: 3px; }
+.bracket-container::-webkit-scrollbar-thumb { background: var(--sb-thumb-color); border-radius: 3px; }
 
 .bracket-container {
     display: flex;
+    overflow-x: auto;
     align-items: stretch;
     gap: 1rem;
-    min-width: 900px;
-    padding: 3rem;
+    padding: 5rem;
     background-color: #1f1f1f; /* Ajuste conforme seu design */
     border-radius: 2rem;
 }

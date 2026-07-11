@@ -22,6 +22,7 @@ class Tournament extends Model
         'max_participants',
         'current_participants',
         'bracket_generated_at',
+        'tournament_type',
         'entrance_fee',
         'awards',
         'start_date',

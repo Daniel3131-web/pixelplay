@@ -162,6 +162,42 @@ class OrgController extends Controller
         return redirect()->back()->with('msg', 'Chaveamento gerado com sucesso para o formato ' . $tournament->tournament_type . '!');
     }
 
+    /**
+     * Rota de Teste: Vincula times ao torneio para testar o chaveamento.
+     */
+    public function attachTestTeams(Request $request, int $id)
+    {
+        $tournament = Tournament::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $teamIds = $request->input('team_ids');
+
+        if (empty($teamIds)) {
+            $needed = $tournament->max_participants;
+            $teamIds = Team::limit($needed)->pluck('id')->toArray();
+            
+            if (count($teamIds) < $needed) {
+                return redirect()->back()->withErrors([
+                    'error' => "Você precisa ter pelo menos {$needed} times cadastrados no banco de dados global para preencher automaticamente."
+                ]);
+            }
+        }
+
+        $tournament->teams()->syncWithoutDetaching($teamIds);
+
+        if ($tournament->event) {
+            $totalInscritos = $tournament->event->tournaments()->withCount('teams')->get()->sum('teams_count');
+            $tournament->event->update(['current_participants' => $totalInscritos]);
+        }
+
+        $count = $tournament->teams()->count();
+
+        $tournament->current_participants = $count;
+
+        return redirect()->back()->with('msg', "Times vinculados com sucesso! O torneio agora tem {$count}/{$tournament->max_participants} times.");
+    }
+
     public function tournament_create()
     {
 
@@ -171,7 +207,7 @@ class OrgController extends Controller
 
         return view('org.torneio-create', ['events' => $events]);
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
@@ -191,6 +227,7 @@ class OrgController extends Controller
             'end_time' => 'required',
             'entry_date' => 'required|date|before_or_equal:start_date',
             'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tournament_type' => 'required|in:simples,duplo'
         ]);
 
         $organizer = Auth::user();
@@ -211,7 +248,7 @@ class OrgController extends Controller
             $newTournament->start_time = $request->start_time;
             $newTournament->end_time = $request->end_time;
             $newTournament->entry_date = $request->entry_date;
-            // $newTournament->status = 'Agendado';
+            $newTournament->tournament_type = $request->tournament_type;
 
             if ($request->hasFile('img') && $request->file('img')->isValid()) {
                 $requestImage = $request->img;
@@ -478,7 +515,7 @@ class OrgController extends Controller
             // Define o status da partida com base na decisão do organizador
             $match_status = ($request->is_wo == '1') ? 'W.O.' : 'Finalizada';
 
-            // Avançar o time
+            // Avançar o time (e, se for Upper Bracket de um torneio duplo, manda o perdedor pra Lower)
             $this->next($match, $request->winner_id);
 
         } else {
@@ -522,7 +559,7 @@ class OrgController extends Controller
 
     private function next(TournamentMatch $match, int $winnerId)
     {
-        // Se for a Grand Fina o torneio acabou não há para onde avançar.
+        // Se for a Grand Final o torneio acabou, não há para onde avançar.
         if ($match->bracket_type === 'grand_final') {
             return;
         }
@@ -549,7 +586,7 @@ class OrgController extends Controller
                     $slotProximoJogo => $winnerId
                 ]);
 
-                // Criaa estatísticas para os jogadores do time que avançou nessa nova partida
+                // Cria as estatísticas para os jogadores do time que avançou nessa nova partida
                 $this->gerarSlotsEstatisticasProximoJogo($proximoJogo, $winnerId);
             } else {
                 // Se não achou próximo jogo na Upper e o torneio for "duplo", ele vai para a Grand Final
@@ -563,20 +600,44 @@ class OrgController extends Controller
                     $this->gerarSlotsEstatisticasProximoJogo($grandFinal, $winnerId);
                 }
             }
+
+            // Em torneios de dupla eliminação, o time que perdeu na Upper
+            // não é eliminado: ele cai para a posição correspondente na Lower Bracket.
+            if ($match->tournament && $match->tournament->tournament_type === 'duplo') {
+                $loserId = ($winnerId == $match->team_a_id) ? $match->team_b_id : $match->team_a_id;
+
+                if ($loserId) {
+                    $this->moverPerdedorParaLower($match, (int) $loserId);
+                }
+            }
         }
 
-        // Lógica para Chave Inferior (Lower Bracket)
+        // 2. Lógica para Chave Inferior (Lower Bracket)
         if ($match->bracket_type === 'lower') {
-            // Na lower, a estrutura de rodadas pode variar dependendo de como você renderiza,
+
+            // A Lower Bracket NÃO reduz o número de jogos a cada rodada.
+            // Rodadas ímpares (1, 3, 5...) alimentam a rodada seguinte de forma "flat"
+            // (mesma posição, pois a próxima rodada ainda vai receber novos perdedores
+            // da Upper para completar os confrontos).
+            // Rodadas pares (2, 4, 6...) são as que já receberam esses novos perdedores;
+            // a rodada seguinte é de "consolidação" e reduz pela metade, igual à Upper.
+            if ($match->round % 2 !== 0) {
+                $proximaPosicaoLower = $match->bracket_position;
+                $slotProximoJogoLower = 'team_a_id';
+            } else {
+                $proximaPosicaoLower = (int) ceil($match->bracket_position / 2);
+                $slotProximoJogoLower = ($match->bracket_position % 2 !== 0) ? 'team_a_id' : 'team_b_id';
+            }
+
             $proximoJogoLower = TournamentMatch::where('tournament_id', $match->tournament_id)
                 ->where('bracket_type', 'lower')
                 ->where('round', $proximaRodada)
-                ->where('bracket_position', $proximaPosicao)
+                ->where('bracket_position', $proximaPosicaoLower)
                 ->first();
 
             if ($proximoJogoLower) {
                 $proximoJogoLower->update([
-                    $slotProximoJogo => $winnerId
+                    $slotProximoJogoLower => $winnerId
                 ]);
                 $this->gerarSlotsEstatisticasProximoJogo($proximoJogoLower, $winnerId);
             } else {
@@ -590,6 +651,46 @@ class OrgController extends Controller
                     $this->gerarSlotsEstatisticasProximoJogo($grandFinal, $winnerId);
                 }
             }
+        }
+    }
+
+    /**
+     * Envia o time que perdeu uma partida da Upper Bracket para a posição
+     * correspondente da Lower Bracket (repescagem).
+     *
+     * Regra (derivada da forma como generateBracket() monta as rodadas da Lower):
+     * - Perdedores da Rodada 1 da Upper caem juntos na Rodada 1 da Lower
+     *   (dois perdedores de partidas adjacentes se enfrentam, mesma lógica de
+     *   pareamento por posição usada na Upper).
+     * - Perdedores das demais rodadas da Upper (round > 1) entram na Lower na
+     *   rodada "par" correspondente (round 2*(rodadaUpper-1)), ocupando o Time B
+     *   do confronto, enquanto o Time A é o vencedor que já avançou dentro da
+     *   própria Lower Bracket, na mesma posição.
+     */
+    private function moverPerdedorParaLower(TournamentMatch $match, int $loserId)
+    {
+        $rodadaUpper = $match->round;
+        $posicaoUpper = $match->bracket_position;
+
+        if ($rodadaUpper === 1) {
+            $rodadaLower = 1;
+            $posicaoLower = (int) ceil($posicaoUpper / 2);
+            $slot = ($posicaoUpper % 2 !== 0) ? 'team_a_id' : 'team_b_id';
+        } else {
+            $rodadaLower = 2 * ($rodadaUpper - 1);
+            $posicaoLower = $posicaoUpper;
+            $slot = 'team_b_id';
+        }
+
+        $jogoLower = TournamentMatch::where('tournament_id', $match->tournament_id)
+            ->where('bracket_type', 'lower')
+            ->where('round', $rodadaLower)
+            ->where('bracket_position', $posicaoLower)
+            ->first();
+
+        if ($jogoLower) {
+            $jogoLower->update([$slot => $loserId]);
+            $this->gerarSlotsEstatisticasProximoJogo($jogoLower, $loserId);
         }
     }
 

@@ -32,16 +32,13 @@
             </div>
         </div>
 
-        @php
-
-            $images1 = range(1, 4);
-            shuffle($images1);
-            $image1 = $images1[0];
-
-            $images2 = range(1, 4);
-            shuffle($images2);
-            $image2 = $images2[1];
-            $image3 = $images2[2];
+       @php
+            $images = range(1, 4);
+            shuffle($images);
+            
+            $image1 = $images[0];
+            $image2 = $images[1];
+            $image3 = $images[2];
         @endphp
 
         <div class="row g-3 hero-grid">

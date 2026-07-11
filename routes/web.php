@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // DEV ROUTES
-Route::get('/limpar-tudo', function() {
+Route::get('/limpar-tudo', function () {
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
     return 'Laravel atualizado no servidor!';
 });
 
-Route::get('/migrations', function() {
+Route::get('/migrations', function () {
     Artisan::call('migrate:refresh --seed');
     Artisan::call('db:seed --class=ReportsDemoSeeder');
     return 'Laravel atualizado no servidor!';
@@ -98,6 +98,9 @@ Route::middleware('auth')->group(function () {
 // ROTAS DO ORGANIZADOR (Logado + Role Org)
 // ==========================================
 Route::middleware(['auth', 'org'])->group(function () {
+
+    // Rota de teste para anexar times ao torneio
+    Route::post('/org/tournament/{id}/attach-test-teams', [OrgController::class, 'attachTestTeams'])->name('org.tournament.attachTeamsTest');
 
     // Painel Principal
     Route::get('/dashboard', [OrgController::class, 'index'])->name('org.dashboard');

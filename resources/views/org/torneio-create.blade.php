@@ -93,7 +93,7 @@
                             <select name="tournament_type" class="form-select form-white-input" required>
                                 <option value="" disabled selected>Selecione...</option>
                                 <option value="simples">Mata-Mata Simples (Eliminação Única)</option>
-                                <option value="dupla">Dupla Eliminação (Chave dos Vencedores e Repescagem)</option>
+                                <option value="duplo">Dupla Eliminação (Chave dos Vencedores e Repescagem)</option>
                             </select>
                         </div>
                     </div>
