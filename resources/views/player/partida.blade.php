@@ -26,7 +26,7 @@
                             alt="{{ $Match->name ?? 'Partida' }}" style="height: 250px; object-fit: cover;">
                         <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
                             <span class="badge bg-white text-dark fs-6 shadow px-3 py-2 rounded-pill">
-                                {{ $Match->stage }}
+                                Round {{ $Match->round }}
                             </span>
                         </div>
                     </div>
@@ -34,15 +34,15 @@
                     <div class="card-body bg-white p-4 p-md-5">
 
                         @if (auth()->check() && auth()->user()->role == 'organizador')
-                            <div class="row align-items-center mb-5 pb-5 border-bottom text-center">
-                                <div class="col">
-                                    <a href="{{ Route('org.partida.edit', $Match->id) }}"
-                                        class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-bold text-uppercase"
-                                        style="font-size: 0.85rem;">
-                                        <i class="bi bi-pencil-square"></i> Editar a Partida
-                                    </a>
+                            <div class="row align-items-center justify-content-center mb-5 pb-5 border-bottom text-center">
+                                <div class="col-md-6">
+                                    @if ($Match->team_b_id && $Match->team_a_id && !$Match->winner_id && $Match->match_status !== 'Finalizada' && $Match->match_status !== 'W.O.')                                        
+                                        <a href="{{ Route('org.partida.edit', $Match->id) }}" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-bold text-uppercase" style="font-size: 0.85rem;"> <i class="bi bi-pencil-square"></i> Editar a Partida</a>
+                                    @else
+                                        <p class="btn btn-secondary w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-bold text-uppercase">Impossivel editar essa partida</p>
+                                    @endif
                                 </div>
-                                <div class="col">
+                                {{-- <div class="col">
                                     <form action="{{ route('org.partida.destroy', $Match->id) }}" method="POST"
                                         onsubmit="return confirm('Tem certeza absoluta que deseja deletar a partida?');">
                                         @csrf
@@ -53,7 +53,7 @@
                                             <i class="bi bi-trash-fill"></i> Deletar a Partida
                                         </button>
                                     </form>
-                                </div>
+                                </div> --}}
                             </div>
                         @endif
 
@@ -68,7 +68,9 @@
                                     style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #f8f9fa;">
                                 <h3 class="fw-bolder text-dark text-truncate">{{ $Match->teamA->name ?? 'A definir' }}</h3>
                                 @if($Match->winner_id && $Match->winner_id == $Match->team_a_id)
-                                    <span class="badge bg-success mt-2 px-3 py-1">VENCEDOR</span>
+                                    <span class="badge bg-success mt-2 px-3 py-1 fs-6">
+                                        VENCEDOR {{ $Match->match_status === 'W.O.' || $Match->is_wo ? '(W.O.)' : '' }}
+                                    </span>
                                 @endif
                             </div>
 
@@ -89,7 +91,9 @@
                                     style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #f8f9fa;">
                                 <h3 class="fw-bolder text-dark text-truncate">{{ $Match->teamB->name ?? 'A definir' }}</h3>
                                 @if($Match->winner_id && $Match->winner_id == $Match->team_b_id)
-                                    <span class="badge bg-success mt-2 px-3 py-1">VENCEDOR</span>
+                                    <span class="badge bg-success mt-2 px-3 py-1 fs-6">
+                                        VENCEDOR {{ $Match->match_status === 'W.O.' || $Match->is_wo ? '(W.O.)' : '' }}
+                                    </span>
                                 @endif
                             </div>
                         </div>

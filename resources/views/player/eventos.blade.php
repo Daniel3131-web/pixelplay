@@ -54,8 +54,7 @@
                     <div class="scroll-frame z-2 row p-4 g-5 justify-content-center overflow-y-auto"
                         style="max-height: 500px; padding-bottom: 1rem;">
                         @forelse ($events as $event)
-                            <div class="col-lg-6 col-md-12"
-                                onclick="window.location.href='{{ route('player.evento.show', $event->id) }}'">
+                            <div class="col-lg-6 col-md-12" onclick="window.location.href='{{ route('player.evento.show', $event->id) }}'">
                                 <div class="card event-card h-100 rounded-4 overflow-hidden">
                                     <div class="position-relative">
                                         <img src="{{ asset($event->img ?? 'assets/events/default.png') }}" class="card-img-top"
@@ -69,7 +68,7 @@
                                                     style="font-size: 0.65rem;">Finalizado</span>
                                             @endif
                                         </div>
-
+                                    </div>
                                         <div class="card-body p-4">
                                             <h5 class="fw-bold text-uppercase mb-3">{{ $event->name }}</h5>
                                             <div class="row">

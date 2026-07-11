@@ -29,30 +29,137 @@ class OrgController extends Controller
         ));
     }
 
-    public function bracket($id)
+    public function bracket(int $id)
     {
-        $tournament = Tournament::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->with('matches')
-            ->firstOrFail();
-
-        $fases = [];
-        $max = $tournament->max_participants;
-
-        if ($max == 4) {
-            $fases = ['Semi Final', 'Final'];
-        } elseif ($max == 8) {
-            $fases = ['Quartas de Final', 'Semi Final', 'Final'];
-        } elseif ($max == 16) {
-            $fases = ['Oitavas de Final', 'Quartas de Final', 'Semi Final', 'Final'];
-        } else {
-            $fases = ['Fase Inicial', 'Semi Final', 'Final']; // Fallback
-        }
+        $tournament = Tournament::where('id', $id)->where('user_id', Auth::id())->with('matches.teamA', 'matches.teamB')->firstOrFail();
 
         return view('org.torneio-bracket', [
             'Tournament' => $tournament,
-            'fases' => $fases
         ]);
+    }
+
+    public function generateBracket(int $id)
+    {
+        $tournament = Tournament::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        //  para não gerar duplicado
+        if ($tournament->bracket_generated_at) {
+            return redirect()->back()->withErrors(['error' => 'O chaveamento para este torneio já foi gerado.']);
+        }
+
+        $teamCount = $tournament->teams()->count();
+
+        // (potências de 2)
+        if (!in_array($teamCount, [4, 8, 16])) {
+            return redirect()->back()->withErrors(['error' => 'O torneio precisa ter exatamente 4, 8 ou 16 times confirmados.']);
+        }
+
+        DB::transaction(function () use ($tournament, $teamCount) {
+            // Embaralha as equipes para o sorteio inicial
+            $teams = $tournament->teams->shuffle()->all();
+            $jogosNaRodada1 = $teamCount / 2;
+
+            // CHAVE SUPERIOR (UPPER BRACKET) - Comum para Simples e Duplo
+
+            // Criação da Rodada 1 com os times sorteados
+            for ($pos = 1; $pos <= $jogosNaRodada1; $pos++) {
+                $teamA = array_shift($teams);
+                $teamB = array_shift($teams);
+
+                $match = TournamentMatch::create([
+                    'tournament_id' => $tournament->id,
+                    'bracket_type' => 'upper',
+                    'round' => 1,
+                    'bracket_position' => $pos,
+                    'match_status' => 'Pendente',
+                    'team_a_id' => $teamA->id,
+                    'team_b_id' => $teamB->id,
+                ]);
+
+                // Registra os slots de estatísticas para os jogadores do Time A
+                if ($teamA && $teamA->users) {
+                    foreach ($teamA->users as $player) {
+                        PlayerInfos::create([
+                            'user_id' => $player->id,
+                            'team_id' => $teamA->id,
+                            'match_id' => $match->id,
+                        ]);
+                    }
+                }
+
+                // Registra os slots de estatísticas para os jogadores do Time B
+                if ($teamB && $teamB->users) {
+                    foreach ($teamB->users as $player) {
+                        PlayerInfos::create([
+                            'user_id' => $player->id,
+                            'team_id' => $teamB->id,
+                            'match_id' => $match->id,
+                        ]);
+                    }
+                }
+
+            }
+
+            //Criação das rodadas seguintes da Upper (vazias, aguardando avanço)
+            $proximosJogosUpper = $jogosNaRodada1 / 2;
+            $rodadaUpper = 2;
+            while ($proximosJogosUpper >= 1) {
+                for ($pos = 1; $pos <= $proximosJogosUpper; $pos++) {
+                    TournamentMatch::create([
+                        'tournament_id' => $tournament->id,
+                        'bracket_type' => 'upper',
+                        'round' => $rodadaUpper,
+                        'bracket_position' => $pos,
+                        'match_status' => 'Pendente',
+                    ]);
+                }
+                $proximosJogosUpper /= 2;
+                $rodadaUpper++;
+            }
+
+            // ESTRUTURA SE FOR DUPLA ELIMINAÇÃO 
+            if ($tournament->tournament_type === 'duplo') {
+
+                // O número de rodadas da Lower é sempre o dobro das rodadas da Upper menos 2
+                // exemplo para 8 times: Upper tem 3 rodadas. Lower tem 4 rodadas de jogos
+                $totalRodadasLower = ($tournament->max_participants == 16) ? 6 : (($tournament->max_participants == 8) ? 4 : 2);
+
+                $jogosNaRodadaLower = $jogosNaRodada1 / 2; // Começa com metade dos jogos da Rodada 1 Upper
+
+                for ($r = 1; $r <= $totalRodadasLower; $r++) {
+                    // em torneios de dupla eliminação, o número de jogos na Lower diminui apenas a cada duas rodadas
+                    if ($r > 1 && $r % 2 != 0) {
+                        $jogosNaRodadaLower /= 2;
+                    }
+
+                    for ($pos = 1; $pos <= max(1, $jogosNaRodadaLower); $pos++) {
+                        TournamentMatch::create([
+                            'tournament_id' => $tournament->id,
+                            'bracket_type' => 'lower',
+                            'round' => $r,
+                            'bracket_position' => $pos,
+                            'match_status' => 'Pendente',
+                        ]);
+                    }
+                }
+
+                TournamentMatch::create([
+                    'tournament_id' => $tournament->id,
+                    'bracket_type' => 'grand_final',
+                    'round' => 1,
+                    'bracket_position' => 1,
+                    'match_status' => 'Pendente',
+                ]);
+            }
+
+            $tournament->update([
+                'bracket_generated_at' => now()
+            ]);
+        });
+
+        return redirect()->back()->with('msg', 'Chaveamento gerado com sucesso para o formato ' . $tournament->tournament_type . '!');
     }
 
     public function tournament_create()
@@ -124,7 +231,7 @@ class OrgController extends Controller
             ->with('success', 'Torneio criado com sucesso!');
     }
 
-    public function tournament_edit($id)
+    public function tournament_edit(int $id)
     {
         $user = Auth::user();
         $events = Event::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
@@ -133,7 +240,7 @@ class OrgController extends Controller
         return view('org.torneio-edit', ['tournament' => $tournament, 'events' => $events]);
     }
 
-    public function tournament_update(Request $request, $id)
+    public function tournament_update(Request $request, int $id)
     {
         $tournament = Tournament::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
@@ -189,7 +296,7 @@ class OrgController extends Controller
             ->with('success', 'Torneio atualizado com sucesso!');
     }
 
-    public function tournament_destroy($id)
+    public function tournament_destroy(int $id)
     {
         $tournament = Tournament::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
@@ -205,14 +312,14 @@ class OrgController extends Controller
         return redirect()->route('org.dashboard')->with('msg', 'Torneio removido com sucesso!');
     }
 
-    public function match_create($id)
+    public function match_create(int $id)
     {
         $tournament = Tournament::where('id', $id)->with('teams')->firstOrFail();
         $teams = $tournament->teams;
         return view('org.partida-create', ['tournament' => $tournament, 'teams' => $teams]);
     }
 
-    public function match_store(Request $request, $id)
+    public function match_store(Request $request, int $id)
     {
         $tournament = Tournament::where('id', $id)
             ->where('user_id', Auth::id())
@@ -283,7 +390,7 @@ class OrgController extends Controller
             ->with('success', 'Partida criada com sucesso!');
     }
 
-    public function match_view($id)
+    public function match_view(int $id)
     {
         $match = TournamentMatch::with([
             'tournament',
@@ -295,7 +402,7 @@ class OrgController extends Controller
         return view('org.partida-view', ['Match' => $match]);
     }
 
-    public function match_destroy($id)
+    public function match_destroy(int $id)
     {
         $match = TournamentMatch::where('id', $id)->firstOrFail();
 
@@ -323,7 +430,7 @@ class OrgController extends Controller
         return redirect()->route('org.dashboard')->with('msg', 'Partida removida com sucesso!');
     }
 
-    public function match_edit($id)
+    public function match_edit(int $id)
     {
         $match = TournamentMatch::with([
             'tournament',
@@ -341,59 +448,167 @@ class OrgController extends Controller
         return view('org.partida-edit', ['Match' => $match, 'maps' => $maps, 'characters' => $characters]);
     }
 
-    public function match_update(Request $request, $id)
+    public function match_update(Request $request, int $id)
     {
         $request->validate([
-            'score_a' => 'required|integer|min:0',
-            'score_b' => 'required|integer|min:0',
+            'score_a' => 'nullable|integer|min:0',
+            'score_b' => 'nullable|integer|min:0',
             'map_id' => 'nullable|exists:maps,id',
+            'winner_id' => 'nullable|exists:teams,id',
+            'is_wo' => 'nullable|boolean',
             'stats' => 'nullable|array',
-            'stats.*.kill' => 'required|integer|min:0',
-            'stats.*.death' => 'required|integer|min:0',
-            'stats.*.assistance' => 'required|integer|min:0',
-            'stats.*.score' => 'required|integer|min:0',
-            'stats.*.character' => 'required|integer|min:0',
+            'stats.*.kill' => 'nullable|integer|min:0',
+            'stats.*.death' => 'nullable|integer|min:0',
+            'stats.*.assistance' => 'nullable|integer|min:0',
+            'stats.*.score' => 'nullable|integer|min:0',
+            'stats.*.character' => 'nullable|integer|min:0',
         ]);
 
         $match = TournamentMatch::findOrFail($id);
-        $teamA = Team::with('users')->find($match->team_a_id);
-        $teamB = Team::with('users')->find($match->team_b_id);
 
-        $winner_id = null;
-        if ($request->score_a > $request->score_b) {
-            $winner_id = $teamA->id;
-        } elseif ($request->score_b > $request->score_a) {
-            $winner_id = $teamB->id;
-        }
-
-        if ($winner_id != null) {
-            $team = Team::with('users')->find($winner_id);
-            foreach ($team->users as $player) {
-                $player->increment('wins');
+        // Se o resultado já foi encerrado anteriormente, evita reprocessar vitórias
+        if (!$match->winner_id && $request->winner_id) {
+            $team = Team::with('users')->find($request->winner_id);
+            if ($team && $team->users) {
+                foreach ($team->users as $player) {
+                    $player->increment('wins');
+                }
             }
+
+            // Define o status da partida com base na decisão do organizador
+            $match_status = ($request->is_wo == '1') ? 'W.O.' : 'Finalizada';
+
+            // Avançar o time
+            $this->next($match, $request->winner_id);
+
+        } else {
+            // Mantém o status atual ou define como Em Andamento se apenas salvou dados parciais
+            $match_status = $match->winner_id ? $match->match_status : 'Em Andamento';
         }
 
+        // Atualização da Partida
         $match->update([
             'score_a' => $request->score_a,
             'score_b' => $request->score_b,
             'map_id' => $request->map_id,
-            'winner_id' => $winner_id
+            'winner_id' => $request->winner_id ?: $match->winner_id,
+            'match_status' => $match_status,
         ]);
 
+        // Atualização das estatísticas individuais dos jogadores
         if ($request->has('stats')) {
             foreach ($request->stats as $statId => $statData) {
+
+                $updateData = [
+                    'kill' => $statData['kill'],
+                    'death' => $statData['death'],
+                    'assistance' => $statData['assistance'],
+                    'score' => $statData['score'],
+                ];
+
+                if (isset($statData['character'])) {
+                    $updateData['character_id'] = $statData['character'];
+                }
+
                 PlayerInfos::where('id', $statId)
                     ->where('match_id', $match->id)
-                    ->update([
-                        'kill' => $statData['kill'],
-                        'death' => $statData['death'],
-                        'assistance' => $statData['assistance'],
-                        'score' => $statData['score'],
-                        'character_id' => $statData['character'],
-                    ]);
+                    ->update($updateData);
             }
         }
-        return redirect('partida/' . $match->id)->with('success', 'Partida e estatísticas atualizadas com sucesso!');
+
+        // Redireciona de volta para a visualização da partida usando sua rota nomeada do painel
+        return redirect()->route('player.match.show', $match->id)->with('msg', 'Partida e estatísticas atualizadas com sucesso!');
+    }
+
+    private function next(TournamentMatch $match, int $winnerId)
+    {
+        // Se for a Grand Fina o torneio acabou não há para onde avançar.
+        if ($match->bracket_type === 'grand_final') {
+            return;
+        }
+
+        $proximaRodada = $match->round + 1;
+        $proximaPosicao = (int) ceil($match->bracket_position / 2);
+
+        // Determina se o time entra no Slot A ou Slot B do próximo jogo
+        // Posição ímpar (1, 3, 5...) vira Time A. Posição par (2, 4, 6...) vira Time B.
+        $slotProximoJogo = ($match->bracket_position % 2 !== 0) ? 'team_a_id' : 'team_b_id';
+
+        // 1. Lógica para Chave Superior (Upper Bracket)
+        if ($match->bracket_type === 'upper') {
+
+            // Busca se existe a próxima partida na Upper
+            $proximoJogo = TournamentMatch::where('tournament_id', $match->tournament_id)
+                ->where('bracket_type', 'upper')
+                ->where('round', $proximaRodada)
+                ->where('bracket_position', $proximaPosicao)
+                ->first();
+
+            if ($proximoJogo) {
+                $proximoJogo->update([
+                    $slotProximoJogo => $winnerId
+                ]);
+
+                // Criaa estatísticas para os jogadores do time que avançou nessa nova partida
+                $this->gerarSlotsEstatisticasProximoJogo($proximoJogo, $winnerId);
+            } else {
+                // Se não achou próximo jogo na Upper e o torneio for "duplo", ele vai para a Grand Final
+                $grandFinal = TournamentMatch::where('tournament_id', $match->tournament_id)
+                    ->where('bracket_type', 'grand_final')
+                    ->first();
+
+                if ($grandFinal) {
+                    // O campeão da Upper costuma ser o Time A da Grand Final
+                    $grandFinal->update(['team_a_id' => $winnerId]);
+                    $this->gerarSlotsEstatisticasProximoJogo($grandFinal, $winnerId);
+                }
+            }
+        }
+
+        // Lógica para Chave Inferior (Lower Bracket)
+        if ($match->bracket_type === 'lower') {
+            // Na lower, a estrutura de rodadas pode variar dependendo de como você renderiza,
+            $proximoJogoLower = TournamentMatch::where('tournament_id', $match->tournament_id)
+                ->where('bracket_type', 'lower')
+                ->where('round', $proximaRodada)
+                ->where('bracket_position', $proximaPosicao)
+                ->first();
+
+            if ($proximoJogoLower) {
+                $proximoJogoLower->update([
+                    $slotProximoJogo => $winnerId
+                ]);
+                $this->gerarSlotsEstatisticasProximoJogo($proximoJogoLower, $winnerId);
+            } else {
+                // Se a Lower acabou, o vencedor vai para a Grand Final como Time B (Desafiante)
+                $grandFinal = TournamentMatch::where('tournament_id', $match->tournament_id)
+                    ->where('bracket_type', 'grand_final')
+                    ->first();
+
+                if ($grandFinal) {
+                    $grandFinal->update(['team_b_id' => $winnerId]);
+                    $this->gerarSlotsEstatisticasProximoJogo($grandFinal, $winnerId);
+                }
+            }
+        }
+    }
+
+    /**
+     * Função auxiliar para já deixar os registros de PlayerInfos prontos para o próximo jogo
+     */
+    private function gerarSlotsEstatisticasProximoJogo(TournamentMatch $nextMatch, int $teamId)
+    {
+        $team = Team::with('users')->find($teamId);
+        if ($team && $team->users) {
+            foreach ($team->users as $player) {
+                // Evita duplicar se rodar o update duas vezes
+                PlayerInfos::firstOrCreate([
+                    'match_id' => $nextMatch->id,
+                    'user_id' => $player->id,
+                    'team_id' => $teamId,
+                ]);
+            }
+        }
     }
 
     // Events function
@@ -453,14 +668,14 @@ class OrgController extends Controller
             ->with('success', 'Evento publicado com sucesso!');
     }
 
-    public function event_edit($id)
+    public function event_edit(int $id)
     {
         $event = Event::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
         return view('org.evento-edit', compact('event'));
     }
 
-    public function event_update(Request $request, $id)
+    public function event_update(Request $request, int $id)
     {
         $event = Event::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
@@ -516,7 +731,7 @@ class OrgController extends Controller
             ->with('success', 'Evento atualizado com sucesso!');
     }
 
-    public function event_destroy($id)
+    public function event_destroy(int $id)
     {
         $event = Event::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 

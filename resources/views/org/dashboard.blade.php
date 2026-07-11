@@ -60,13 +60,18 @@
                     class="btn btn-outline-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
                     <i class="bi bi-bell-fill me-1"></i> Criar Notificação
                 </a>
+
+                <a href="{{ route('org.reports.index') }}"
+                    class="btn btn-outline-primary btn-lg fs-6 fw-bold text-uppercase shadow-sm py-2 px-4 card-custom">
+                    <i class="bi bi-file-earmark-zip me-1"></i> Relatorios
+                </a>
             </div>
         </div>
 
         {{-- Cards de Estatísticas --}}
-        <div class="row g-4 mb-5">
+        {{--<div class="row g-4 mb-5">
             {{-- Seção Eventos --}}
-            <div class="col-12 mt-2 text-white">
+           {{-- <div class="col-12 mt-2 text-white">
                 <h3><i class="bi bi-calendar-event me-2"></i>Eventos</h3>
             </div>
             
@@ -95,7 +100,7 @@
             </div>
 
             {{-- Seção Torneios --}}
-            <div class="col-12 mt-4 text-white">
+            {{--<div class="col-12 mt-4 text-white">
                 <h3><i class="bi bi-trophy-fill me-2"></i>Torneios</h3>
             </div>
             
@@ -115,14 +120,14 @@
                 <div class="card stat-card-org border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center justify-content-between">
                     <div>
                         <span class="d-block text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Inscrições Ativas (Torneios)</span>
-                        <span class="fw-bold fs-2 text-dark">{{ $tournaments->sum('current_participants') * 5 ?? 0 }}</span>
+                        <span class="fw-bold fs-2 text-dark">{{ $tournaments->sum('current_participants') ?? 0 }}</span>
                     </div>
                     <div class="action-icon bg-danger-subtle text-danger fs-4">
                         <i class="bi bi-people-fill"></i>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>--}}
 
         {{-- Tabela: Eventos Recentes --}}
         <div class="row mb-5">
@@ -258,8 +263,6 @@
                                             </td>
                                             <td class="text-end pe-4">
                                                 <div class="d-flex justify-content-end gap-2">
-                                                    <a href="{{ route('org.torneio.bracket', $tournament->id) }}"
-                                                        class="btn btn-sm btn-outline-dark fw-bold text-uppercase px-2">Partidas</a>
                                                     <a href="{{ route('org.torneio.edit', $tournament->id) }}"
                                                         class="btn btn-sm btn-primary fw-bold text-uppercase px-3">Editar</a>
                                                     <form action="{{ route('org.torneio.destroy', $tournament->id) }}" method="POST"

@@ -29,6 +29,10 @@ return new class extends Migration {
             $table->integer('max_participants')->default(4);
             $table->integer('current_participants')->default(0);
 
+            // -- Boolean para ver se já gerou o chavemanto do torneio
+            $table->timestamp('bracket_generated_at')->nullable();
+            // -- O tipo do torneio duplo ou simples.
+            $table->enum('tournament_type', ['simples', 'duplo'])->default('simples');
             //-- Status
             // $table->boolean('live')->default(false);
             // $table->enum('status', ['Aberto', 'Agendado', 'Em andamento', 'Finalizado'])->default('Agendado');

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,13 +18,19 @@ return new class extends Migration
             $table->foreignId('map_id')->nullable()->constrained();
             $table->foreignId('team_a_id')->nullable()->constrained('teams');
             $table->foreignId('team_b_id')->nullable()->constrained('teams');
-            $table->foreignId('winner_id')->nullable()->constrained('teams');;
-            //--
+            $table->foreignId('winner_id')->nullable()->constrained('teams');
+            //-- Pontuação
             $table->integer('score_a')->nullable();
             $table->integer('score_b')->nullable();
-            $table->enum('stage', ['Oitavas de Final','Quartas de Final', 'Semi Final', 'Final']);
-            $table->string('order_of_keys');
-            $table->enum('match_status', ['Agendada', 'Em Andamento', 'Finalizada', 'W.O.'])->default('Agendada');
+            // --- CONTROLE DOS TORNEIOS DUPLOS ---
+            // Identifica o lado da chave: 'upper' (superior), 'lower' (inferior) ou 'grand_final'
+            $table->enum('bracket_type', ['upper', 'lower', 'grand_final'])->default('upper');
+
+            // Controla a rodada e a posição do jogo (Ex: Rodada 1, Jogo 4)
+            $table->integer('round')->default(1);
+            $table->integer('bracket_position')->default(1);
+
+            $table->string('match_status')->default('Pendente');
             //-- Tempo e data
             $table->timestamps();
         });

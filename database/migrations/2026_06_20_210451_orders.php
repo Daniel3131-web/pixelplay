@@ -12,9 +12,9 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('tournament_id')->nullable()->constrained('tournaments');
-            $table->foreignId('event_id')->nullable()->constrained('events');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('tournament_id')->nullable()->constrained('tournaments')->cascadeOnDelete();
+            $table->foreignId('event_id')->nullable()->constrained('events')->cascadeOnDelete();
             $table->decimal('amount', 8, 2);
             $table->string('status')->default('pendente');
             $table->string('type')->default('online');

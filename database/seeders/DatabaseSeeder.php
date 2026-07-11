@@ -4,65 +4,67 @@ namespace Database\Seeders;
 
 use App\Models\Character;
 use App\Models\Map;
-use App\Models\PlayerInfos;
 use App\Models\User;
 use App\Models\Team;
 use App\Models\Event;
 use App\Models\Tournament;
-use App\Models\TournamentMatch;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Collection;
 
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
+    // --- Configurações do Evento Principal ---
+    private const MAIN_STATUS_WEIGHTS = [
+        'confirmado' => 85,
+        'cancelado'  => 10,
+        'ausente'    => 5,
+    ];
+
+    // --- Configurações da Massa de Testes (Dashboard/Relatórios) ---
+    private const TOTAL_DEMO_EVENTS = 5;
+    private const PLAYER_POOL_SIZE = 80;
+    private const DEMO_TEAMS_PER_TOURNAMENT = 8;
+    private const DEMO_STATUS_WEIGHTS = [
+        'confirmado' => 75,
+        'cancelado'  => 15,
+        'ausente'    => 10,
+    ];
+
     public function run(): void
     {
+        // -----------------------------------------------------------------
+        // 1. INICIALIZAÇÃO DE GLOBAIS E USUÁRIOS ADMINISTRATIVOS
+        // -----------------------------------------------------------------
         Map::factory()->createAll();
         Character::factory()->createAll();
 
-        // 1. Criar os Usuários base (O Organizador assume ID 1)
-        User::factory()->create(['name' => 'Organizador', 'email' => 'organizador@gmail.com', 'role' => 'organizador', 'password' => bcrypt('1234')]);
-        User::factory()->create(['name' => 'Player', 'email' => 'player@gmail.com', 'role' => 'player', 'password' => bcrypt('1234')]);
+        // O Organizador assume ID 1 se o banco estiver limpo
+        $organizer = User::where('role', 'organizador')->first()
+            ?? User::factory()->create([
+                'name' => 'Organizador', 
+                'email' => 'organizador@gmail.com', 
+                'role' => 'organizador', 
+                'password' => bcrypt('1234')
+            ]);
 
+        User::factory()->create([
+            'name' => 'Player', 
+            'email' => 'player@gmail.com', 
+            'role' => 'player', 
+            'password' => bcrypt('1234')
+        ]);
 
-
-        // // Criar times iniciais do ecossistema
-        // $teams = Team::factory()->count(16)->create();
-
-        // foreach ($teams as $team) {
-        //     $players = User::factory()->count(5)->create(['team_id' => $team->id]);
-        //     $team->update(['leader_id' => $players->first()->id]);
-        // }
-
-        // =================================================================
-        // 2. CRIAÇÃO DOS EVENTOS (GUARDA-CHUVA)
-        // =================================================================
-
-        // // Evento 1: Grande festival Online
-        // $eventoOnline = Event::create([
-        //     'user_id'       => 1,
-        //     'name'          => 'PixelPlay Arena Virtual 2026',
-        //     'max_participants'  => 2000,
-        //     'type'          => 'online',
-        //     'location'      => 'Discord Oficial da PixelPlay',
-        //     'streaming_url' => 'https://twitch.tv/pixelplay',
-        //     'entrance_fee'  => 0.00,
-        //     'entry_date'    => now()->addDays(2),
-        //     'start_date'    => now()->addDays(5),
-        //     'end_date'      => now()->addDays(10),
-        //     'start_time'    => '13:00:00',
-        //     'end_time'      => '22:00:00',
-        //     'description'   => 'A primeira grande call do ano! Vários torneios simultâneos com transmissão ao vivo.'
-        // ]);
-
-        // Evento 2: Evento Presencial físico
+        // -----------------------------------------------------------------
+        // 2. PARTE 1: EVENTO PRINCIPAL PRESENCIAL
+        // -----------------------------------------------------------------
         $eventoPresencial = Event::create([
-            'user_id' => 1,
+            'user_id' => $organizer->id,
             'name' => 'PixelPlay Fest Curitiba 2026',
             'max_participants' => 600,
-            'current_participants' => 500,
+            'current_participants' => 0,
             'type' => 'presencial',
             'location' => 'Expo Barigui, Curitiba - PR',
             'streaming_url' => 'https://twitch.tv/pixelplay_stage',
@@ -75,153 +77,115 @@ class DatabaseSeeder extends Seeder
             'description' => 'O reencontro do cenário paranaense de e-sports. Stands, arena freeplay e a grande decisão no palco.'
         ]);
 
-        // =================================================================
-        // 3. VINCULAR OS TORNEIOS AOS SEUS RESPECTIVOS EVENTOS
-        // =================================================================
+        // Cria o torneio de 16 times limpo para testar o botão
+        $this->createTournamentWithBracket(
+            event: $eventoPresencial,
+            name: 'Campeonato de Inverno',
+            category: 'valorant',
+            teamCount: 16,
+            statusWeights: self::MAIN_STATUS_WEIGHTS
+        );
 
-        // Passamos o ID do evento correspondente como o 4º parâmetro
-        // $this->createTournament('Torneio de Abertura (Finalizado)', 'valorant', 'Finalizado', $eventoOnline->id);
-        // $this->createTournament('Liga de Verão (Em andamento)', 'cs2', 'Em andamento', $eventoOnline->id);
-        $this->createTournament('Campeonato de Inverno', 'valorant', $eventoPresencial->id);
+        // -----------------------------------------------------------------
+        // 3. PARTE 2: GERAR DADOS DE RELATÓRIO
+        // -----------------------------------------------------------------
+        $playerPool = User::factory()->count(self::PLAYER_POOL_SIZE)->create(['role' => 'player']);
+
+        $demoEvents = Event::factory()
+            ->count(self::TOTAL_DEMO_EVENTS)
+            ->create(['user_id' => $organizer->id]);
+
+        foreach ($demoEvents as $index => $event) {
+            $this->seedEventRegistrations($event, $playerPool);
+
+            // Cria os torneios demo com 8 times, também limpos para testes
+            $this->createTournamentWithBracket(
+                event: $event,
+                name: 'Torneio Demo Valorant ' . ($index + 1),
+                category: 'valorant', 
+                teamCount: self::DEMO_TEAMS_PER_TOURNAMENT,
+                statusWeights: self::DEMO_STATUS_WEIGHTS
+            );
+        }
     }
 
-    // // Método atualizado para receber o evento_id
-    private function createTournament(string $name, string $category, int $eventId): void
-    {
+    /**
+     * Cria o torneio e popula apenas os times, sem gerar partidas.
+     */
+    private function createTournamentWithBracket(
+        Event $event, 
+        string $name, 
+        string $category, 
+        int $teamCount, 
+        array $statusWeights
+    ): void {
         $tournament = Tournament::factory()->create([
-            'event_id' => $eventId,
+            'event_id' => $event->id,
             'name' => $name,
             'category' => $category,
-            'max_participants' => 16,
-            'current_participants' =>  16,
-            // 'status' => $status,
-            'user_id' => 1,
-            'streaming_url' => 'https://twitch.tv/pixelplay_' . $category
+            'max_participants' => $teamCount,
+            'current_participants' => $teamCount,
+            'user_id' => $event->user_id,
+            'streaming_url' => 'https://twitch.tv/pixelplay_' . $category,
+            'bracket_generated_at' => null // Nulo para o botão aparecer na interface
         ]);
 
-
-        // Criar times iniciais do ecossistema
-        $teams = Team::factory()->count(16)->create();
+        $teams = Team::factory()->count($teamCount)->create();
 
         foreach ($teams as $team) {
             $players = User::factory()->count(5)->create(['team_id' => $team->id]);
             $team->update(['leader_id' => $players->first()->id]);
+            
             $tournament->teams()->attach($team->id, [
                 'created_at' => now(),
                 'status' => 'confirmado'
             ]);
+
+            foreach ($players as $player) {
+                $event->users()->syncWithoutDetaching([
+                    $player->id => ['status' => $this->sortearStatus($statusWeights)],
+                ]);
+            }
         }
 
-        // ------------------------------------------------
-        // OITAVAS DE FINAL — 8 partidas
-        // ------------------------------------------------
-        $classificadosQuartas = [];
-
-        for ($i = 0; $i < 8; $i++) {
-            $teamA = $teams->get($i * 2);
-            $teamB = $teams->get(($i * 2) + 1);
-            $winner = fake()->randomElement([$teamA, $teamB]);
-
-            $match = TournamentMatch::factory()->create([
-                'tournament_id' => $tournament->id,
-                'team_a_id' => $teamA->id,
-                'team_b_id' => $teamB->id,
-                'winner_id' => $winner->id,
-                'stage' => 'Oitavas de Final',
-                'order_of_keys' => $i + 1,
-                'match_status' => 'Finalizada',
-            ]);
-
-            $this->seedMatchStats($match, $teamA, $teamB);
-            $classificadosQuartas[] = $winner;
-        }
-
-        // ------------------------------------------------
-        // QUARTAS DE FINAL — 4 partidas
-        // ------------------------------------------------
-        $classificadosSemis = [];
-
-        for ($i = 0; $i < 4; $i++) {
-            $teamA = $classificadosQuartas[$i * 2];
-            $teamB = $classificadosQuartas[($i * 2) + 1];
-            $winner = fake()->randomElement([$teamA, $teamB]);
-
-            $match = TournamentMatch::factory()->create([
-                'tournament_id' => $tournament->id,
-                'team_a_id' => $teamA->id,
-                'team_b_id' => $teamB->id,
-                'winner_id' => $winner->id,
-                'stage' => 'Quartas de Final',
-                'order_of_keys' => $i + 1,
-                'match_status' => 'Finalizada',
-            ]);
-
-            $this->seedMatchStats($match, $teamA, $teamB);
-            $classificadosSemis[] = $winner;
-        }
-
-        // ------------------------------------------------
-        // SEMIFINAIS — 2 partidas
-        // ------------------------------------------------
-        $classificadosFinal = [];
-
-        for ($i = 0; $i < 2; $i++) {
-            $teamA = $classificadosSemis[$i * 2];
-            $teamB = $classificadosSemis[($i * 2) + 1];
-            $winner = fake()->randomElement([$teamA, $teamB]);
-
-            $match = TournamentMatch::factory()->create([
-                'tournament_id' => $tournament->id,
-                'team_a_id' => $teamA->id,
-                'team_b_id' => $teamB->id,
-                'winner_id' => $winner->id,
-                'stage' => 'Semi Final',
-                'order_of_keys' => $i + 1,
-                'match_status' => 'Finalizada',
-            ]);
-
-            $this->seedMatchStats($match, $teamA, $teamB);
-            $classificadosFinal[] = $winner;
-        }
-
-        // ------------------------------------------------
-        // GRANDE FINAL — 1 partida
-        // ------------------------------------------------
-        $teamA = $classificadosFinal[0];
-        $teamB = $classificadosFinal[1];
-        $campeao = fake()->randomElement([$teamA, $teamB]);
-
-        $match = TournamentMatch::factory()->create([
-            'tournament_id' => $tournament->id,
-            'team_a_id' => $teamA->id,
-            'team_b_id' => $teamB->id,
-            'winner_id' => $campeao->id,
-            'stage' => 'Final',
-            'order_of_keys' => 1,
-            'match_status' => 'Finalizada',
-        ]);
-        $this->seedMatchStats($match, $teamA, $teamB);
+        $this->updateEventParticipantsCount($event);
     }
 
-    private function seedMatchStats(TournamentMatch $match, Team $teamA, Team $teamB): void
+    private function seedEventRegistrations(Event $event, Collection $playerPool): void
     {
-        $playersA = User::where('team_id', $teamA->id)->get();
-        $playersB = User::where('team_id', $teamB->id)->get();
+        $minimo = (int) ($playerPool->count() * 0.4);
+        $amostra = $playerPool->random(random_int($minimo, $playerPool->count()));
 
-        foreach ($playersA as $player) {
-            PlayerInfos::factory()->create([
-                'match_id' => $match->id,
-                'team_id' => $teamA->id,
-                'user_id' => $player->id,
+        foreach ($amostra as $player) {
+            $event->users()->syncWithoutDetaching([
+                $player->id => ['status' => $this->sortearStatus(self::DEMO_STATUS_WEIGHTS)],
             ]);
         }
 
-        foreach ($playersB as $player) {
-            PlayerInfos::factory()->create([
-                'match_id' => $match->id,
-                'team_id' => $teamB->id,
-                'user_id' => $player->id,
-            ]);
+        $this->updateEventParticipantsCount($event);
+    }
+
+    private function updateEventParticipantsCount(Event $event): void
+    {
+        $confirmados = $event->users()
+            ->wherePivot('status', 'confirmado')
+            ->count();
+
+        $event->update(['current_participants' => $confirmados]);
+    }
+
+    private function sortearStatus(array $weights): string
+    {
+        $sorteio = random_int(1, 100);
+        $acumulado = 0;
+
+        foreach ($weights as $status => $peso) {
+            $acumulado += $peso;
+            if ($sorteio <= $acumulado) {
+                return $status;
+            }
         }
+
+        return 'confirmado';
     }
 }

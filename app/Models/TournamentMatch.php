@@ -21,10 +21,12 @@ class TournamentMatch extends Model
         'team_b_id',
         'score_a',
         'score_b',
-        'winner_id',
-        'stage',
-        'order_of_keys',
+        'bracket_type',
+        'round',
+        'bracket_position',
         'match_status',
+        'winner_id',
+        'is_wo'
     ];
 
     /**

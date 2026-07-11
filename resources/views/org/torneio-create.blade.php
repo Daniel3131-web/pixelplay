@@ -87,6 +87,15 @@
                                 <option value="ow2">Overwatch 2</option> --}}
                             </select>
                         </div>
+
+                        <div class="col">
+                            <label class="form-label small fw-bold text-uppercase text-white mb-1">Tipo do torneio:</label>
+                            <select name="tournament_type" class="form-select form-white-input" required>
+                                <option value="" disabled selected>Selecione...</option>
+                                <option value="simples">Mata-Mata Simples (Eliminação Única)</option>
+                                <option value="dupla">Dupla Eliminação (Chave dos Vencedores e Repescagem)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="row g-3 mb-4">

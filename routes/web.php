@@ -6,6 +6,7 @@ use App\Http\Controllers\OrgController;
 use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
 use App\Models\Inbox;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,7 @@ Route::get('/limpar-tudo', function() {
 
 Route::get('/migrations', function() {
     Artisan::call('migrate:refresh --seed');
+    Artisan::call('db:seed --class=ReportsDemoSeeder');
     return 'Laravel atualizado no servidor!';
 });
 
@@ -100,6 +102,10 @@ Route::middleware(['auth', 'org'])->group(function () {
     // Painel Principal
     Route::get('/dashboard', [OrgController::class, 'index'])->name('org.dashboard');
 
+    // -- Report --
+    Route::get('/relatorios', [ReportController::class, 'index'])->name('org.reports.index');
+    Route::get('/relatorios/exportar', [ReportController::class, 'export'])->name('org.reports.export');
+
     // --- Controle de Eventos (CRUD) ---
     Route::get('/org/evento/criar', [OrgController::class, 'event_create'])->name('org.evento.criar');
     Route::post('/org/evento/store', [OrgController::class, 'event_store'])->name('org.evento.store');
@@ -110,7 +116,7 @@ Route::middleware(['auth', 'org'])->group(function () {
     // --- Controle de Torneios (CRUD e Chaves) ---
     Route::get('/org/torneio/criar', [OrgController::class, 'tournament_create'])->name('org.torneio.criar');
     Route::post('/org/torneio/store', [OrgController::class, 'tournament_store'])->name('org.torneio.store');
-    Route::get('/org/torneio/{id}/chaveamento', [OrgController::class, 'bracket'])->name('org.torneio.bracket');
+    Route::post('/org/tournament/{id}/generate-bracket', [OrgController::class, 'generateBracket'])->name('org.tournament.generate-bracket');
     Route::get('/org/torneio/{id}/edit', [OrgController::class, 'tournament_edit'])->name('org.torneio.edit');
     Route::put('/org/torneio/{id}/update', [OrgController::class, 'tournament_update'])->name('org.torneio.update');
     Route::delete('/org/torneio/{id}/destroy', [OrgController::class, 'tournament_destroy'])->name('org.torneio.destroy');

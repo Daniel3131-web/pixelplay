@@ -14,14 +14,34 @@
         <div class="row justify-content-center">
             <div class="col-md-11">
 
-                <div class="mb-3 d-flex justify-content-between">
-                    <a href="/evento/{{ $Tournament->event_id }}" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">
-                        <i class="bi bi-arrow-left"></i> Ir para o Evento
-                    </a>
-                    @if (Auth::user()->role == "organizador")
-                        <div>
-                            <a href="{{ route('org.torneio.bracket', $Tournament->id) }}"" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">Editar Partidas</a>
-                            <a href="{{ route('org.torneio.edit', $Tournament->id) }}"" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-2">Editar Torneio</a>
+                <div class="row g-2 align-items-center mb-3 text-center text-md-start">
+                    <div class="col-12 col-md-auto me-auto">
+                        <a href="/evento/{{ $Tournament->event_id }}" class="btn btn-sm btn-outline-light fw-bold text-uppercase w-100-mobile px-3 py-2">
+                            <i class="bi bi-arrow-left"></i> Ir para o Evento
+                        </a>
+                    </div>
+
+                    {{-- Área do Organizador --}}
+                    @if (Auth::check() && Auth::user()->role == "organizador")
+                        <div class="col-12 col-md-auto d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                            
+                            @if(!$Tournament->bracket_generated_at)
+                                <form action="{{ route('org.tournament.generate-bracket', $Tournament->id) }}" method="POST" class="m-0 w-100">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-light fw-bold text-uppercase w-100 px-3 py-2">
+                                        <i class="bi bi-diagram-3-fill"></i> Gerar Chaveamento
+                                    </button>
+                                </form>
+                            @else
+                                <span class="btn btn-sm btn-outline-light fw-bold text-uppercase px-3 py-2 text-wrap">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Chaveamento em andamento
+                                </span>
+                            @endif
+
+                            <a href="{{ route('org.torneio.edit', $Tournament->id) }}" class="btn btn-sm btn-outline-light fw-bold text-uppercase px-3 py-2">
+                                <i class="bi bi-pencil-square"></i> Editar Torneio
+                            </a>
+                            
                         </div>
                     @endif
                 </div>
@@ -161,183 +181,94 @@
                                 </table>
                             </div>
                         </div>
-
-                        {{-- Outras seções como Data, Categoria, Premiação, Sobre e Chaveamento mantidas iguais --}}
-
-                        
-
-
-
                         <!-- INÍCIO DO BRACKET (CHAVEAMENTO) -->
-
                         <div>
-
                             <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
-
                                 <i class="bi bi-diagram-3-fill"></i> Chaveamento
-
                             </h5>
-
-
-
+                            
                             @if($Tournament->matches->isEmpty())
 
                                 <div class="text-center py-5 px-4 bg-light rounded-4 border">
 
                                     <div class="mb-3">
-
                                         <i class="bi bi-diagram-3 text-muted display-4"></i>
-
                                     </div>
 
                                     <h5 class="fw-bold text-dark mb-2">Aguardando definição dos confrontos</h5>
-
-                                    <p class="text-muted mb-0 mx-auto" style="max-width: 500px;">
-
-                                        O chaveamento oficial e os confrontos deste torneio ainda serão gerados.
-
-                                    </p>
-
+                                    <p class="text-muted mb-0 mx-auto" style="max-width: 500px;"> O chaveamento oficial e os confrontos deste torneio ainda serão gerados.</p>
                                 </div>
 
                             @else
 
                                 <div class="bracket-wrapper">
-
-                                    <div class="bracket-container">
-
-
+                                <div class="bracket-container">
+                                    
+                                    @if($Tournament->tournament_type == 'simples')
 
                                         @php
-
-                                            if ($Tournament->max_participants == '4') {
-
-                                                $fases = ['Semi Final', 'Final'];
-
-                                            } elseif ($Tournament->max_participants == '8') {
-
-                                                $fases = ['Quartas de Final', 'Semi Final', 'Final'];
-
-                                            } else {
-
-                                                $fases = ['Oitavas de Final', 'Quartas de Final', 'Semi Final', 'Final'];
-
-                                            }
-
+                                            $upperRounds = $Tournament->matches->where('bracket_type', 'upper')->groupBy('round')->sortKeys();
                                         @endphp
 
-
-
-                                        @foreach($fases as $fase)
-
+                                        @foreach($upperRounds as $roundNumber => $matches)
                                             <div class="bracket-round">
-
-                                                <div class="bracket-round__title">{{ $fase }}</div>
-
-
+                                                <div class="bracket-round__title">Rodada {{ $roundNumber }}</div>
 
                                                 <div class="bracket-round__matches">
+                                                    @foreach($matches->sortBy('bracket_position') as $match)
 
-                                                    @foreach($Tournament->matches->where('stage', $fase)->sortBy('order_of_keys') as $match)
-
-
-
-                                                        <div class="bracket-match"
-                                                            onclick="window.location.href=('{{ Route('player.match.show', $match->id) }}')">
-
-
-
+                                                        <div class="bracket-match"onclick="window.location.href=('{{ Route('player.match.show', $match->id) }}')">
                                                             @php
-
                                                                 $isWinnerA = $match->winner_id && $match->winner_id === $match->team_a_id;
-
                                                                 $isLoserA = $match->winner_id && $match->winner_id !== $match->team_a_id;
-
                                                                 $statusClassA = $isWinnerA ? 'bracket-slot--winner' : ($isLoserA ? 'bracket-slot--loser' : '');
-
                                                             @endphp
 
                                                             <div class="bracket-slot {{ $statusClassA }}">
-
                                                                 @if($match->teamA)
-
-                                                                    <img src="{{ asset($match->teamA->img) }}" width="32" height="32" class="rounded-circle me-1" alt="Logo">
-                                                                    
-                                                                    <span class="bracket-slot__name">{{ $match->teamA->acronym }}</span>
-
+                                                                    <img src="{{ asset($match->teamA->img) }}" width="20" height="20"
+                                                                        class="rounded-circle me-1" alt="Logo">
+                                                                    <span class="bracket-slot__name">{{ $match->teamA->name }}</span>
                                                                 @else
-
                                                                     <span class="bracket-slot__name text-muted fst-italic">A definir</span>
-
                                                                 @endif
-
-
 
                                                                 @if($isWinnerA)
-
                                                                     <span class="bracket-slot__score text-success fw-bold">W</span>
-
                                                                 @endif
-
                                                             </div>
-
-
 
                                                             @php
-
                                                                 $isWinnerB = $match->winner_id && $match->winner_id === $match->team_b_id;
-
                                                                 $isLoserB = $match->winner_id && $match->winner_id !== $match->team_b_id;
-
                                                                 $statusClassB = $isWinnerB ? 'bracket-slot--winner' : ($isLoserB ? 'bracket-slot--loser' : '');
-
                                                             @endphp
-
+                                                            
                                                             <div class="bracket-slot {{ $statusClassB }}">
-
                                                                 @if($match->teamB)
-
-                                                                    <img src="{{ asset($match->teamB->img) }}" width="32" height="32"
+                                                                    <img src="{{ asset($match->teamB->img) }}" width="20" height="20"
                                                                         class="rounded-circle me-1" alt="Logo">
-
-                                                                    <span class="bracket-slot__name">{{ $match->teamB->acronym }}</span>
-
-                                                                    
+                                                                    <span class="bracket-slot__name">{{ $match->teamB->name }}</span>
                                                                 @else
-
                                                                     <span class="bracket-slot__name text-muted fst-italic">A definir</span>
-
                                                                 @endif
-
-
 
                                                                 @if($isWinnerB)
-
                                                                     <span class="bracket-slot__score text-success fw-bold">W</span>
-
                                                                 @endif
-
                                                             </div>
-
-
 
                                                         </div>
 
-
-
                                                     @endforeach
-
                                                 </div>
-
                                             </div>
-
                                         @endforeach
 
-
-
-                                    </div>
-
-                            </div>@endif
+                                    @endif
+                                </div>
+                            </div>
+                            @endif
 
 
 

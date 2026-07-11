@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="{{ asset('/css/main.css') }}">
     
     <link rel="shortcut icon" href="{{ asset('/assets/imgs/Icon-white.png') }}" type="image/x-icon">
     
@@ -58,7 +58,7 @@
     </main>
 
     <footer class="d-flex justify-content-between p-3">
-        <div class="icon" style="cursor: pointer" onclick="window.location.href='{{ route('landing') }}'"></div>
+        <img class="icon" style="cursor: pointer" onclick="window.location.href='{{ route('landing') }}'"></div>
         <div class="d-flex flex-column justify-content-center">
             <p class="border-bottom text-center">&copy;{{ date('Y') }} Todos os direitos reservados</p>
             <div class="d-flex justify-content-between gap-3">
@@ -78,7 +78,7 @@
             
             setTimeout(() => {
                 loader.style.display = 'none';
-            }, 1000);
+            }, 300);
         });
     </script>
 
