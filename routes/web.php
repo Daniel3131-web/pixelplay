@@ -20,11 +20,11 @@ Route::get('/limpar-tudo', function () {
     return 'Laravel atualizado no servidor!';
 });
 
-Route::get('/migrations', function () {
-    Artisan::call('migrate:refresh --seed');
-    Artisan::call('db:seed --class=ReportsDemoSeeder');
-    return 'Laravel atualizado no servidor!';
-});
+// Route::get('/migrations', function () {
+//     Artisan::call('migrate:refresh --seed');
+//     Artisan::call('db:seed --class=ReportsDemoSeeder');
+//     return 'Laravel atualizado no servidor!';
+// });
 
 
 

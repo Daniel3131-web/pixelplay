@@ -41,7 +41,7 @@
                                 </span>
                             @endif
 
-                            @if($Tournament->teams()->count() < $Tournament->max_participants)
+                            {{-- @if($Tournament->teams()->count() < $Tournament->max_participants)
                                 <form action="{{ route('org.tournament.attachTeamsTest', $Tournament->id) }}" method="POST"
                                     class="my-4">
                                     @csrf
@@ -49,7 +49,7 @@
                                         ⚡ Preencher Torneio com Times de Teste
                                     </button>
                                 </form>
-                            @endif
+                            @endif --}}
 
                             <a href="{{ route('org.torneio.edit', $Tournament->id) }}"
                                 class="btn btn-sm btn-outline-light fw-bold text-uppercase px-3 py-2">

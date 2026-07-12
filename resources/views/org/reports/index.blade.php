@@ -57,27 +57,6 @@
             </div>
         </div>
 
-        {{-- Filtro por evento --}}
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card card-custom border-0 shadow-sm bg-light p-3">
-                    <form method="GET" action="{{ route('org.reports.index') }}" class="d-flex align-items-center gap-3 flex-wrap">
-                        <label for="event_id" class="fw-bold text-secondary text-uppercase small mb-0">
-                            <i class="bi bi-funnel me-1"></i> Evento:
-                        </label>
-                        <select name="event_id" id="event_id" onchange="this.form.submit()" class="form-select w-auto">
-                            <option value="">Todos os eventos</option>
-                            @foreach ($events as $event)
-                                <option value="{{ $event->id }}" @selected($eventId == $event->id)>
-                                    {{ $event->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </form>
-                </div>
-            </div>
-        </div>
-
         {{-- Cards de indicadores --}}
         <div class="row g-4 mb-5">
             <div class="col-md-4">
@@ -117,6 +96,27 @@
             </div>
         </div>
 
+        {{-- Filtro por evento --}}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card card-custom border-0 shadow-sm bg-light p-3">
+                    <form method="GET" action="{{ route('org.reports.index') }}" class="d-flex align-items-center gap-3 flex-wrap">
+                        <label for="event_id" class="fw-bold text-secondary text-uppercase small mb-0">
+                            <i class="bi bi-funnel me-1"></i> Evento:
+                        </label>
+                        <select name="event_id" id="event_id" onchange="this.form.submit()" class="form-select w-auto">
+                            <option value="">Todos os eventos</option>
+                            @foreach ($events as $event)
+                                <option value="{{ $event->id }}" @selected($eventId == $event->id)>
+                                    {{ $event->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         {{-- Gráficos --}}
         <div class="row g-4">
 
@@ -125,7 +125,7 @@
                     <div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="fw-bold text-uppercase text-secondary mb-0">
-                                Taxa de Abandono (W.O.):
+                                Taxa de Abandono:
                                 <span class="text-danger">{{ $dropout['rate'] }}%</span>
                             </h5>
                             <button onclick="downloadChart('dropoutChart', 'taxa-abandono-pixelplay.png')"
@@ -207,7 +207,7 @@
             new Chart(document.getElementById('dropoutChart').getContext('2d'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Concluíram', 'Abandono / W.O.'],
+                    labels: ['Concluíram', 'Abandono'],
                     datasets: [{
                         data: [dropoutData.active, dropoutData.dropped],
                         backgroundColor: ['#198754', '#dc3545'],

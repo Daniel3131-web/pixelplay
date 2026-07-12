@@ -31,14 +31,14 @@ span {
 
 body {
     width: 100%;
-    min-height: 100vh;
+    min-height: 175vh;
     background-color: #000000;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     transition: all 0.3s ease-in-out;
 
-    >main {
+    >main, footer {
         opacity: 0.2;
     }
 }
@@ -46,7 +46,7 @@ body {
 body.sidebar-collapsed {
     padding-left: 0;
     background-color: var(--a2-color);
-    >main {
+    >main, footer {
         opacity: 1;
     }
 
@@ -66,6 +66,7 @@ footer {
     height: 20vh;
     background-color: var(--d-color);
 }
+
 
 .icon {
     width: 250px;
@@ -104,6 +105,7 @@ footer {
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: left 0.3s ease, background-color 0.2s;
 }
+
 
 body.sidebar-collapsed #sidebarToggle {
     left: 15px;

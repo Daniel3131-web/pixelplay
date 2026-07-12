@@ -301,7 +301,7 @@
         </div>
     </div>
 
-    {{-- <footer class="d-flex justify-content-between p-3">
+    <footer class="d-flex justify-content-between p-3">
         <div class="icon" style="cursor: pointer" onclick="window.location.href='{{ route('landing') }}'"></div>
         <div class="d-flex flex-column justify-content-center">
             <p class="border-bottom text-center">&copy;{{ date('Y') }} Todos os direitos reservados</p>
@@ -311,7 +311,7 @@
                 <a class="nav-link" href="{{ route('sobre') }}">Sobre nós</a>
             </div>
         </div>
-    </footer> --}}
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>

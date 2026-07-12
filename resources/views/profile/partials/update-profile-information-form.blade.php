@@ -46,7 +46,7 @@
                             <span class="fw-semibold text-dark">Alterar imagem</span>
                         </div>
                         <p class="small text-muted mb-0" style="font-size: 0.8rem;">
-                            Clique ou arraste e solte uma nova imagem aqui (PNG, JPG ou WEBP).
+                            Clique ou arraste e solte uma nova imagem aqui (PNG, JPG). A imagem tem que possuir menos que 10MB.
                         </p>
                     </div>
 

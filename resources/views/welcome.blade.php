@@ -188,7 +188,7 @@
         </div>
     </section>
 
-    <section class="container-fluid py-5 video" style="background-image: url('{{ asset('/assets/landing/video.gif') }}'); height: 75vh;">
+    <section class="container-fluid py-5 video" style="background-image: url('https://media.discordapp.net/attachments/1387197936705867916/1525869156350820434/video.gif?ex=6a54f3e4&is=6a53a264&hm=f0770be7f0931f9e89afdeba72c259b12c18e56ce7b5188385ada65038ad8d5a&=&width=1920&height=1080'); height: 75vh;">
 
         <div class="row mb-5 text-center justify-content-center mt-5 w-100 z-1 position-relative">
             <div class="col-12 col-md-6 z-2">

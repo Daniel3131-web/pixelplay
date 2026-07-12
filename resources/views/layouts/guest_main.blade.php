@@ -39,7 +39,7 @@
     @stack('styles')
 </head>
 
-<body>
+<body class="sidebar-collapsed">
 
     <div id="page-loader">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">

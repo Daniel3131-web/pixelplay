@@ -24,9 +24,9 @@ class DatabaseSeeder extends Seeder
     ];
 
     // --- Configurações da Massa de Testes (Dashboard/Relatórios) ---
-    private const TOTAL_DEMO_EVENTS = 5;
+    private const TOTAL_DEMO_EVENTS = 1;
     private const PLAYER_POOL_SIZE = 80;
-    private const DEMO_TEAMS_PER_TOURNAMENT = 8;
+    private const DEMO_TEAMS_PER_TOURNAMENT = 15;
     private const DEMO_STATUS_WEIGHTS = [
         'confirmado' => 75,
         'cancelado'  => 15,
@@ -82,7 +82,7 @@ class DatabaseSeeder extends Seeder
             event: $eventoPresencial,
             name: 'Campeonato de Inverno',
             category: 'valorant',
-            teamCount: 16,
+            teamCount: 15,
             statusWeights: self::MAIN_STATUS_WEIGHTS
         );
 
