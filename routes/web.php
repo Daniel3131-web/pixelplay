@@ -12,13 +12,13 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// DEV ROUTES
-Route::get('/limpar-tudo', function () {
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    Artisan::call('route:clear');
-    return 'Laravel atualizado no servidor!';
-});
+// // DEV ROUTES
+// Route::get('/limpar-tudo', function () {
+//     Artisan::call('config:clear');
+//     Artisan::call('cache:clear');
+//     Artisan::call('route:clear');
+//     return 'Laravel atualizado no servidor!';
+// });
 
 // Route::get('/migrations', function () {
 //     Artisan::call('migrate:refresh --seed');

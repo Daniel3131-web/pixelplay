@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('img')->nullable();
+            $table->string('img')->default('/assets/profiles/avatar/default.png');
             
             $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
             

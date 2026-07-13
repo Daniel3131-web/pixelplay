@@ -26,12 +26,14 @@ class DatabaseSeeder extends Seeder
     // --- Configurações da Massa de Testes (Dashboard/Relatórios) ---
     private const TOTAL_DEMO_EVENTS = 1;
     private const PLAYER_POOL_SIZE = 80;
-    private const DEMO_TEAMS_PER_TOURNAMENT = 15;
     private const DEMO_STATUS_WEIGHTS = [
         'confirmado' => 75,
         'cancelado'  => 15,
         'ausente'    => 10,
     ];
+
+    // --- Pool fixo de times reaproveitado em TODOS os torneios ---
+    private const TEAM_POOL_SIZE = 16;
 
     public function run(): void
     {
@@ -47,15 +49,19 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Organizador', 
                 'email' => 'organizador@gmail.com', 
                 'role' => 'organizador', 
-                'password' => bcrypt('1234')
+                'password' => bcrypt('12345678')
             ]);
 
         User::factory()->create([
             'name' => 'Player', 
             'email' => 'player@gmail.com', 
             'role' => 'player', 
-            'password' => bcrypt('1234')
+            'password' => bcrypt('12345678')
         ]);
+
+        // Pool fixo de 16 times (os "16 primeiros times do banco"), reaproveitado
+        // em TODOS os torneios abaixo — nada de gerar times novos por torneio.
+        $teamPool = $this->createTeamPool(self::TEAM_POOL_SIZE);
 
         // -----------------------------------------------------------------
         // 2. PARTE 1: EVENTO PRINCIPAL PRESENCIAL
@@ -77,13 +83,27 @@ class DatabaseSeeder extends Seeder
             'description' => 'O reencontro do cenário paranaense de e-sports. Stands, arena freeplay e a grande decisão no palco.'
         ]);
 
-        // Cria o torneio de 16 times limpo para testar o botão
+        // Torneio de Dupla Eliminação — capacidade 16, mas só 15 times inscritos
+        // (sobra 1 vaga de propósito pra você entrar e testar seu time)
+        $this->createTournamentWithBracket(
+            event: $eventoPresencial,
+            name: 'Copa de Inverno - Dupla Eliminação',
+            category: 'valorant',
+            teams: $teamPool->take(15),
+            maxParticipants: self::TEAM_POOL_SIZE,
+            statusWeights: self::MAIN_STATUS_WEIGHTS,
+            tournamentType: 'duplo'
+        );
+
+        // Torneio de Eliminação Simples — 16 times, capacidade cheia
         $this->createTournamentWithBracket(
             event: $eventoPresencial,
             name: 'Campeonato de Inverno',
             category: 'valorant',
-            teamCount: 15,
-            statusWeights: self::MAIN_STATUS_WEIGHTS
+            teams: $teamPool,
+            maxParticipants: self::TEAM_POOL_SIZE,
+            statusWeights: self::MAIN_STATUS_WEIGHTS,
+            tournamentType: 'simples'
         );
 
         // -----------------------------------------------------------------
@@ -98,50 +118,70 @@ class DatabaseSeeder extends Seeder
         foreach ($demoEvents as $index => $event) {
             $this->seedEventRegistrations($event, $playerPool);
 
-            // Cria os torneios demo com 8 times, também limpos para testes
+            // Torneio demo, também usando o mesmo pool fixo de 16 times
             $this->createTournamentWithBracket(
                 event: $event,
                 name: 'Torneio Demo Valorant ' . ($index + 1),
                 category: 'valorant', 
-                teamCount: self::DEMO_TEAMS_PER_TOURNAMENT,
+                teams: $teamPool,
+                maxParticipants: self::TEAM_POOL_SIZE,
                 statusWeights: self::DEMO_STATUS_WEIGHTS
             );
         }
     }
 
     /**
-     * Cria o torneio e popula apenas os times, sem gerar partidas.
+     * Cria (uma única vez) o pool fixo de times reaproveitado em todos os torneios,
+     * simulando "os N primeiros times do banco de dados".
+     */
+    private function createTeamPool(int $size): Collection
+    {
+        $teams = Team::factory()->count($size)->create();
+
+        foreach ($teams as $team) {
+            $players = User::factory()->count(5)->create(['team_id' => $team->id]);
+            $team->update(['leader_id' => $players->first()->id]);
+        }
+
+        // Reconsulta ordenado por id pra garantir "os N primeiros times do banco"
+        return Team::orderBy('id')->take($size)->get();
+    }
+
+    /**
+     * Cria o torneio e vincula os times recebidos, sem gerar partidas.
      */
     private function createTournamentWithBracket(
         Event $event, 
         string $name, 
         string $category, 
-        int $teamCount, 
-        array $statusWeights
+        Collection $teams,
+        int $maxParticipants,
+        array $statusWeights,
+        string $tournamentType = 'simples' // 'simples' ou 'duplo'
     ): void {
         $tournament = Tournament::factory()->create([
             'event_id' => $event->id,
             'name' => $name,
             'category' => $category,
-            'max_participants' => $teamCount,
-            'current_participants' => $teamCount,
+            'max_participants' => $maxParticipants,
+            'current_participants' => $teams->count(),
             'user_id' => $event->user_id,
             'streaming_url' => 'https://twitch.tv/pixelplay_' . $category,
+            'tournament_type' => $tournamentType,
+            // Datas sempre no futuro, pra nenhum torneio nascer "finalizado"
+            'entry_date' => now()->addDays(8)->format('Y-m-d'),
+            'start_date' => now()->addDays(15)->format('Y-m-d'),
+            'end_date' => now()->addDays(17)->format('Y-m-d'),
             'bracket_generated_at' => null // Nulo para o botão aparecer na interface
         ]);
 
-        $teams = Team::factory()->count($teamCount)->create();
-
         foreach ($teams as $team) {
-            $players = User::factory()->count(5)->create(['team_id' => $team->id]);
-            $team->update(['leader_id' => $players->first()->id]);
-            
             $tournament->teams()->attach($team->id, [
                 'created_at' => now(),
                 'status' => 'confirmado'
             ]);
 
-            foreach ($players as $player) {
+            foreach ($team->users as $player) {
                 $event->users()->syncWithoutDetaching([
                     $player->id => ['status' => $this->sortearStatus($statusWeights)],
                 ]);
