@@ -57,15 +57,24 @@
         @yield('content')
     </main>
 
-    <footer class="d-flex justify-content-between p-3">
-        <img class="icon" style="cursor: pointer" onclick="window.location.href='{{ route('landing') }}'"></div>
+    <footer class="d-flex justify-content-center p-3">
+        <div class="icon" style="cursor: pointer" onclick="window.location.href='{{ route('landing') }}'"></div>
         <div class="d-flex flex-column justify-content-center">
             <p class="border-bottom text-center">&copy;{{ date('Y') }} Todos os direitos reservados</p>
-            <div class="d-flex justify-content-between gap-3">
+            <div class="d-flex justify-content-center gap-3">
                 <a class="nav-link" href="{{ route('faq') }}">FAQ:Central de ajuda</a>
                 <a class="nav-link" href="{{ route('contato') }}">Contato</a>
                 <a class="nav-link" href="{{ route('sobre') }}">Sobre nós</a>
             </div>
+
+            <small class="text-secondary text-center px-2" style="max-width: 900px;">
+                As imagens, logotipos, nomes, equipes, campeonatos e demais elementos
+                relacionados aos jogos eletrônicos apresentados neste site pertencem aos
+                seus respectivos titulares. Seu uso destina-se exclusivamente a fins
+                acadêmicos e ilustrativos, sem finalidade comercial ou reivindicação de
+                propriedade.
+            </small>
+
         </div>
     </footer>
 
@@ -78,7 +87,7 @@
             
             setTimeout(() => {
                 loader.style.display = 'none';
-            }, 300);
+            }, 0);
         });
     </script>
 
